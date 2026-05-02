@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BlankBread - filling topping preview</title>
+<title>BlankBread - filling topping fixed</title>
 <style>
 :root{
   --bread:#f59e0b;
@@ -44,7 +44,7 @@ body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
 빈 줄을 넣으면 다음 빵입니다.
 치수 질환의 임상적 증상과 조직학적 소견은 [일치하지 않는다]."></textarea><div class="button-row"><button id="addCustomBtn">오븐에 넣기</button><button class="secondary" id="clearInputBtn">반죽 초기화</button></div></div></section>
 <section id="editPanel" class="panel"><div class="card"><h2>🧂 레시피 수정</h2><div class="form-grid"><div><label>빵 종류</label><select id="editSubjectSelect"></select></div><div><label>레시피</label><select id="editUnitSelect"></select></div></div><div id="questionManagerList" class="question-manager-list"></div></div></section>
-<section id="structurePanel" class="panel"><div class="card"><h2>🗂️ 빵 종류 / 레시피 관리</h2><div class="form-grid"><div><label>빵 종류</label><select id="manageSubjectSelect"></select></div><div><label>레시피</label><select id="manageUnitSelect"></select></div></div><div class="button-row"><button class="danger" id="deleteUnitBtn">레시피 버리기</button><button class="danger" id="deleteSubjectBtn">빵 종류 폐기</button><button class="secondary" id="renameSubjectBtn">빵 이름 바꾸기</button><button class="secondary" id="renameUnitBtn">레시피 이름 바꾸기</button></div></div></section>
+<section id="structurePanel" class="panel"><div class="card"><h2>🗂️ 빵 종류 / 레시피 / 필링 / 토핑 관리</h2><p class="guide">빵집 구조를 정리합니다. 필링/토핑 이름을 바꾸면 해당 레시피 안의 빵들이 함께 이동합니다.</p><div class="form-grid"><div><label>빵 종류</label><select id="manageSubjectSelect"></select></div><div><label>레시피</label><select id="manageUnitSelect"></select></div></div><div class="button-row"><button class="danger" id="deleteUnitBtn">레시피 버리기</button><button class="danger" id="deleteSubjectBtn">빵 종류 폐기</button><button class="secondary" id="renameSubjectBtn">빵 이름 바꾸기</button><button class="secondary" id="renameUnitBtn">레시피 이름 바꾸기</button></div><div class="divider"></div><h3>🥐 필링 / 🍯 토핑 관리</h3><div class="form-grid"><div><label>필링</label><select id="manageFillingSelect"></select></div><div><label>토핑</label><select id="manageToppingSelect"></select></div></div><div class="form-grid"><div><label>새 필링 이름</label><input id="manageFillingNameInput" placeholder="선택한 필링을 바꿀 이름"></div><div><label>새 토핑 이름</label><input id="manageToppingNameInput" placeholder="선택한 토핑을 바꿀 이름"></div></div><div class="button-row"><button class="secondary" id="renameFillingBtn">필링 이름 바꾸기</button><button class="danger" id="deleteFillingBtn">필링 삭제</button><button class="secondary" id="renameToppingBtn">토핑 이름 바꾸기</button><button class="danger" id="deleteToppingBtn">토핑 삭제</button></div></div></section>
 <section id="orderPanel" class="panel"><div class="card"><h2>📦 진열대 정리</h2><p class="guide">드래그해서 진열 순서를 바꾼 뒤 저장하세요.</p><h3>빵 종류 진열</h3><div id="subjectOrderList" class="drag-list"></div><div class="divider"></div><h3>레시피 진열</h3><label>빵 종류 선택</label><select id="orderSubjectSelect"></select><div id="unitOrderList" class="drag-list"></div><div class="button-row"><button id="saveOrderBtn">진열 완료</button><button class="secondary" id="resetOrderBtn">진열 리셋</button></div></div></section>
 <section id="exportPanel" class="panel"><div class="card"><h2>📤 빵 포장</h2><p class="guide">아래 내용을 복사해서 GitHub의 <code>data.json</code>에 붙여넣으면 공유 빵집에 반영됩니다.</p><div class="button-row"><button id="makeExportBtn">포장 만들기</button><button class="secondary" id="copyExportBtn">포장 복사</button><button class="danger" id="clearLocalBtn">주방 초기화</button></div><textarea id="exportOutput" readonly></textarea></div></section>
 </main></div>
@@ -71,7 +71,7 @@ document.getElementById("sidebar").innerHTML=menuHTML;
 document.getElementById("desktopSidebar").innerHTML=menuHTML;
 
 function $(id){const node=document.getElementById(id);if(!node)throw new Error("missing #"+id);return node;}
-function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","showBurntAllBtn","burntList","solveSubjectSelect","solveUnitSelect","chapterTitleText","subjectRate","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","fillingSelect","newFillingInput","toppingSelect","newToppingInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","orderSubjectSelect","subjectOrderList","unitOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","clearLocalBtn","exportOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel");}
+function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","showBurntAllBtn","burntList","solveSubjectSelect","solveUnitSelect","chapterTitleText","subjectRate","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","fillingSelect","newFillingInput","toppingSelect","newToppingInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","manageFillingSelect","manageToppingSelect","manageFillingNameInput","manageToppingNameInput","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","renameFillingBtn","deleteFillingBtn","renameToppingBtn","deleteToppingBtn","orderSubjectSelect","subjectOrderList","unitOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","clearLocalBtn","exportOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel");}
 function clone(value){return JSON.parse(JSON.stringify(value||{}));}
 function normalize(data){const result={};Object.entries(data||{}).forEach(([subject,units])=>{const cleanSubject=String(subject||"").trim();if(!cleanSubject||typeof units!=="object"||Array.isArray(units))return;Object.entries(units).forEach(([unit,questions])=>{const cleanUnit=String(unit||"").trim();if(!cleanUnit||!Array.isArray(questions))return;questions.forEach(question=>{const cleanQuestion=String(question||"").trim();if(!cleanQuestion)return;if(!result[cleanSubject])result[cleanSubject]={};if(!result[cleanSubject][cleanUnit])result[cleanSubject][cleanUnit]=[];if(!result[cleanSubject][cleanUnit].includes(cleanQuestion))result[cleanSubject][cleanUnit].push(cleanQuestion);});});});return result;}
 function merge(base,extra){const merged=normalize(base);const cleanExtra=normalize(extra);Object.entries(cleanExtra).forEach(([subject,units])=>{if(!merged[subject])merged[subject]={};Object.entries(units).forEach(([unit,questions])=>{if(!merged[subject][unit])merged[subject][unit]=[];questions.forEach(question=>{if(!merged[subject][unit].includes(question))merged[subject][unit].push(question);});});});return merged;}
@@ -106,7 +106,27 @@ function toggleNewCreateInputs(){if(el.newSubjectInput)el.newSubjectInput.style.
 function refreshCreateSubjectSelect(){fillWithNew(el.createSubjectSelect,subjects(),"➕ 새 빵 종류 추가");refreshCreate();}
 function refreshCreate(){const subject=currentCreateSubject();fillWithNew(el.createUnitSelect,units(subject),"➕ 새 레시피 추가");toggleNewCreateInputs();refreshMetaSelects();}
 function refreshEdit(){fill(el.editUnitSelect,units(el.editSubjectSelect.value));renderManager();}
-function refreshManage(){fill(el.manageUnitSelect,units(el.manageSubjectSelect.value));}
+function refreshManage(){
+  fill(el.manageUnitSelect,units(el.manageSubjectSelect.value));
+  refreshManageMeta();
+}
+function refreshManageMeta(){
+  if(!el.manageFillingSelect||!el.manageToppingSelect)return;
+  const subject=el.manageSubjectSelect.value;
+  const unit=el.manageUnitSelect.value;
+  const meta=getMetaOptions(subject,unit);
+  fill(el.manageFillingSelect,meta.fillings);
+  refreshManageTopping();
+}
+function refreshManageTopping(){
+  if(!el.manageFillingSelect||!el.manageToppingSelect)return;
+  const subject=el.manageSubjectSelect.value;
+  const unit=el.manageUnitSelect.value;
+  const meta=getMetaOptions(subject,unit);
+  const filling=el.manageFillingSelect.value;
+  const toppings=filling&&meta.toppingsByFilling.has(filling)?Array.from(meta.toppingsByFilling.get(filling)):[];
+  fill(el.manageToppingSelect,toppings);
+}
 function esc(value){return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
 function keyOf(subject,unit,question){return subject+"||"+unit+"||"+question;}
 function isBurnt(subject,unit,question){return burntBreads.some(item=>item.key===keyOf(subject,unit,question));}
@@ -115,49 +135,118 @@ function removeBurnt(key){burntBreads=burntBreads.filter(item=>item.key!==key);s
 function getBreadEmoji(subject){const breads=["🍞","🥐","🥯","🥖","🍩","🧁","🥨","🍪","🥞","🧇"];let sum=0;String(subject||"").split("").forEach(char=>{sum+=char.charCodeAt(0);});return breads[sum%breads.length];}
 function updateStats(subject){const stat=statsBySubjectSession[subject]||{correct:0,total:0};const rate=stat.total?Math.round((stat.correct/stat.total)*100):0;el.subjectRate.textContent=getBreadEmoji(subject)+" 제빵 성공률: "+rate+"% ("+stat.correct+"/"+stat.total+")";}
 function parse(question){const answers=[];const html=esc(question).replace(/\[(.+?)\]/g,(_,answer)=>{answers.push(answer);return '<span class="blank"><span>'+esc(answer)+'</span></span>';});return{html,answers};}
-function readMeta(question){
-  let raw=String(question||"").trim();
+function splitMeta(question){
+  let body=String(question||"").trim();
   let filling="";
   let topping="";
 
-  // 새 형식: @필링 \n #토핑 \n 문제
-  let changed=true;
-  while(changed){
-    changed=false;
-    const f=raw.match(/^@([^\n]+)\n([\s\S]*)$/);
-    if(f){filling=f[1].trim();raw=f[2].trim();changed=true;continue;}
-    const t=raw.match(/^#([^\n]+)\n([\s\S]*)$/);
-    if(t){
-      // 호환: @가 없고 #만 있던 옛 데이터는 "필링"으로 취급합니다.
-      if(filling)topping=t[1].trim();
-      else filling=t[1].trim();
-      raw=t[2].trim();changed=true;continue;
-    }
+  // 새 형식: @필링\n#토핑\n본문
+  const f=body.match(/^@([^\n]+)\n([\s\S]*)$/);
+  if(f){
+    filling=f[1].trim();
+    body=f[2].trim();
   }
 
-  // 인라인 지원: @필링|#토핑|문제, #필링|문제
-  const inlineFull=raw.match(/^@([^|]+)\|#([^|]+)\|([\s\S]*)$/);
+  const t=body.match(/^#([^\n]+)\n([\s\S]*)$/);
+  if(t){
+    if(filling){
+      topping=t[1].trim();
+    }else{
+      // 구버전 호환: #소단원만 있던 데이터는 필링으로 읽습니다.
+      filling=t[1].trim();
+    }
+    body=t[2].trim();
+  }
+
+  // 인라인 지원: @필링|#토핑|문제, @필링|문제, #필링|문제
+  const inlineFull=body.match(/^@([^|]+)\|#([^|]+)\|([\s\S]*)$/);
   if(inlineFull)return {filling:inlineFull[1].trim(),topping:inlineFull[2].trim(),text:inlineFull[3].trim()};
-  const inlineFilling=raw.match(/^@([^|]+)\|([\s\S]*)$/);
+  const inlineFilling=body.match(/^@([^|]+)\|([\s\S]*)$/);
   if(inlineFilling)return {filling:inlineFilling[1].trim(),topping:"",text:inlineFilling[2].trim()};
-  const inlineOld=raw.match(/^#([^|]+)\|([\s\S]*)$/);
+  const inlineOld=body.match(/^#([^|]+)\|([\s\S]*)$/);
   if(inlineOld)return {filling:inlineOld[1].trim(),topping:"",text:inlineOld[2].trim()};
 
-  return {filling:filling||"기본 필링",topping:topping||"기본 토핑",text:raw};
+  return {filling,topping,text:body};
+}
+function joinMeta(meta){
+  const filling=String(meta?.filling||"").trim();
+  const topping=String(meta?.topping||"").trim();
+  const text=String(meta?.text||meta?.body||"").trim();
+  let out="";
+  if(filling)out+="@"+filling+"\n";
+  if(topping)out+="#"+topping+"\n";
+  return out+text;
+}
+function readMeta(question){
+  const meta=splitMeta(question);
+  return {
+    filling:meta.filling||"기본 필링",
+    topping:meta.topping||"기본 토핑",
+    text:meta.text
+  };
 }
 function parseQuestion(question){
   const info=readMeta(question);
   const parsed=parse(info.text);
-  return {filling:info.filling||"기본 필링",topping:info.topping||"기본 토핑",text:info.text,html:parsed.html,answers:parsed.answers};
+  return {filling:info.filling, topping:info.topping, text:info.text, html:parsed.html, answers:parsed.answers};
 }
 function composeQuestion(filling,topping,text){
   const cleanFilling=String(filling||"").trim();
   const cleanTopping=String(topping||"").trim();
   const cleanText=String(text||"").trim();
-  let out="";
-  if(cleanFilling)out+="@"+cleanFilling+"\n";
-  if(cleanTopping)out+="#"+cleanTopping+"\n";
-  return out+cleanText;
+  return joinMeta({filling:cleanFilling,topping:cleanTopping,text:cleanText});
+}
+function rewriteUnitQuestions(subject,unit,transformer){
+  const oldQuestions=(quizData?.[subject]?.[unit]||[]).slice();
+  const newQuestions=[];
+  const changedMap=new Map();
+  const deletedSet=new Set();
+  let touched=0;
+
+  oldQuestions.forEach(question=>{
+    const info=readMeta(question);
+    const next=transformer(question,info);
+
+    if(next===undefined){
+      newQuestions.push(question);
+      return;
+    }
+
+    touched++;
+
+    if(next===null||next===false||String(next).trim()===""){
+      deletedSet.add(question);
+      return;
+    }
+
+    const cleanNext=String(next).trim();
+    newQuestions.push(cleanNext);
+    if(cleanNext!==question)changedMap.set(question,cleanNext);
+  });
+
+  changedMap.forEach((newQuestion,oldQuestion)=>{
+    const oldKey=keyOf(subject,unit,oldQuestion);
+    if(!deletedQuestionKeys.includes(oldKey))deletedQuestionKeys.push(oldKey);
+  });
+  deletedSet.forEach(oldQuestion=>{
+    const oldKey=keyOf(subject,unit,oldQuestion);
+    if(!deletedQuestionKeys.includes(oldKey))deletedQuestionKeys.push(oldKey);
+  });
+
+  burntBreads=burntBreads.map(item=>{
+    if(item.subject!==subject||item.unit!==unit)return item;
+    if(changedMap.has(item.question)){
+      const newQuestion=changedMap.get(item.question);
+      return {...item,question:newQuestion,key:keyOf(subject,unit,newQuestion)};
+    }
+    return item;
+  }).filter(item=>!(item.subject===subject&&item.unit===unit&&deletedSet.has(item.question)));
+
+  const unique=[];
+  newQuestions.forEach(q=>{if(q&&!unique.includes(q))unique.push(q);});
+  setQList(subject,unit,unique);
+  saveRefresh();
+  return touched;
 }
 function groupedQuestions(questions){
   const fillings=[];
@@ -493,6 +582,243 @@ function renameSubject(){const old=el.manageSubjectSelect.value;const renamed=pr
 function renameUnit(){const subject=el.manageSubjectSelect.value;const old=el.manageUnitSelect.value;const renamed=prompt("새 레시피 이름:",old);if(!renamed||!renamed.trim()||renamed.trim()===old)return;const clean=renamed.trim();if(quizData[subject]?.[clean])return alert("이미 존재합니다.");if(!renamedUnits[subject])renamedUnits[subject]={};renamedUnits[subject][old]=clean;burntBreads.forEach(item=>{if(item.subject===subject&&item.unit===old){item.unit=clean;item.key=keyOf(item.subject,item.unit,item.question);}});saveRefresh();}
 function delUnit(){const subject=el.manageSubjectSelect.value;const unit=el.manageUnitSelect.value;if(!confirm("이 레시피를 버릴까요?"))return;if(!deletedQuizData[subject])deletedQuizData[subject]={};deletedQuizData[subject][unit]=true;burntBreads=burntBreads.filter(item=>!(item.subject===subject&&item.unit===unit));saveRefresh();}
 function delSubject(){const subject=el.manageSubjectSelect.value;if(!confirm("이 빵 종류 전체를 폐기할까요?"))return;deletedQuizData[subject]=true;burntBreads=burntBreads.filter(item=>item.subject!==subject);delete statsBySubjectSession[subject];saveRefresh();}
+function replaceQuestionEverywhere(subject,unit,oldQuestion,newQuestion){
+  rewriteUnitQuestions(subject,unit,(question)=>{
+    if(question!==oldQuestion)return undefined;
+    return newQuestion||null;
+  });
+}
+function restoreManageSelection(subject,unit,filling,topping){
+  el.manageSubjectSelect.value=subject;
+  fill(el.manageUnitSelect,units(subject));
+  el.manageUnitSelect.value=unit;
+  refreshManageMeta();
+  if(filling){
+    el.manageFillingSelect.value=filling;
+    refreshManageTopping();
+  }
+  if(topping)el.manageToppingSelect.value=topping;
+}
+function renameFilling(){
+  const subject=el.manageSubjectSelect.value;
+  const unit=el.manageUnitSelect.value;
+  const oldName=el.manageFillingSelect.value;
+  const newName=(el.manageFillingNameInput?.value||"").trim();
+  if(!subject||!unit||!oldName)return alert("바꿀 필링이 없습니다.");
+  if(oldName==="기본 필링")return alert("기본 필링은 이름을 바꿀 수 없습니다. 새 필링을 만들어 이동해 주세요.");
+  if(!newName)return alert("새 필링 이름을 입력하세요.");
+  if(newName===oldName)return alert("기존 이름과 같습니다.");
+
+  const changed=rewriteUnitQuestions(subject,unit,(question,info)=>{
+    if(info.filling!==oldName)return undefined;
+    const topping=info.topping==="기본 토핑"?"":info.topping;
+    return joinMeta({filling:newName,topping,text:info.text});
+  });
+
+  if(!changed)return alert("이 필링에 들어있는 빵이 없습니다.");
+  restoreManageSelection(subject,unit,newName,"");
+  if(el.manageFillingNameInput)el.manageFillingNameInput.value="";
+  alert("필링 이름을 바꿨습니다 🥐");
+}
+function renameTopping(){
+  const subject=el.manageSubjectSelect.value;
+  const unit=el.manageUnitSelect.value;
+  const filling=el.manageFillingSelect.value;
+  const oldName=el.manageToppingSelect.value;
+  const newName=(el.manageToppingNameInput?.value||"").trim();
+  if(!subject||!unit||!filling||!oldName)return alert("바꿀 토핑이 없습니다.");
+  if(oldName==="기본 토핑")return alert("기본 토핑은 이름을 바꿀 수 없습니다. 새 토핑을 만들어 이동해 주세요.");
+  if(!newName)return alert("새 토핑 이름을 입력하세요.");
+  if(newName===oldName)return alert("기존 이름과 같습니다.");
+
+  const changed=rewriteUnitQuestions(subject,unit,(question,info)=>{
+    if(info.filling!==filling)return undefined;
+    if(info.topping!==oldName)return undefined;
+    const realFilling=info.filling==="기본 필링"?"":info.filling;
+    return joinMeta({filling:realFilling,topping:newName,text:info.text});
+  });
+
+  if(!changed)return alert("이 토핑에 들어있는 빵이 없습니다.");
+  restoreManageSelection(subject,unit,filling,newName);
+  if(el.manageToppingNameInput)el.manageToppingNameInput.value="";
+  alert("토핑 이름을 바꿨습니다 🍯");
+}
+function deleteFilling(){
+  const subject=el.manageSubjectSelect.value;
+  const unit=el.manageUnitSelect.value;
+  const filling=el.manageFillingSelect.value;
+  if(!subject||!unit||!filling)return alert("삭제할 필링이 없습니다.");
+  if(!confirm("이 필링에 들어있는 빵을 모두 삭제할까요?"))return;
+
+  const changed=rewriteUnitQuestions(subject,unit,(question,info)=>{
+    if(info.filling!==filling)return undefined;
+    return null;
+  });
+
+  if(!changed)return alert("이 필링에 들어있는 빵이 없습니다.");
+  restoreManageSelection(subject,unit,"","");
+  alert("필링을 삭제했습니다 🥐");
+}
+function deleteTopping(){
+  const subject=el.manageSubjectSelect.value;
+  const unit=el.manageUnitSelect.value;
+  const filling=el.manageFillingSelect.value;
+  const topping=el.manageToppingSelect.value;
+  if(!subject||!unit||!filling||!topping)return alert("삭제할 토핑이 없습니다.");
+  if(!confirm("이 토핑에 들어있는 빵을 모두 삭제할까요?"))return;
+
+  const changed=rewriteUnitQuestions(subject,unit,(question,info)=>{
+    if(info.filling!==filling)return undefined;
+    if(info.topping!==topping)return undefined;
+    return null;
+  });
+
+  if(!changed)return alert("이 토핑에 들어있는 빵이 없습니다.");
+  restoreManageSelection(subject,unit,filling,"");
+  alert("토핑을 삭제했습니다 🍯");
+}
+
+/* === Robust management patch: filling/topping buttons === */
+function transformManageMeta(subject, unit, predicate, mutator){
+  const questions=(quizData?.[subject]?.[unit]||[]).slice();
+  const newQuestions=[];
+  const changedMap=new Map();
+  const deletedSet=new Set();
+  let touched=0;
+
+  questions.forEach(question=>{
+    const meta=splitMeta(question);
+    const view={
+      filling: meta.filling || "기본 필링",
+      topping: meta.topping || "기본 토핑",
+      text: meta.text || ""
+    };
+
+    if(!predicate(view, meta, question)){
+      newQuestions.push(question);
+      return;
+    }
+
+    touched++;
+    const next=mutator({...meta}, view, question);
+    if(next===null || next===false){
+      deletedSet.add(question);
+      return;
+    }
+
+    const cleanNext=typeof next==="string" ? next.trim() : joinMeta(next).trim();
+    if(!cleanNext){
+      deletedSet.add(question);
+      return;
+    }
+    newQuestions.push(cleanNext);
+    if(cleanNext!==question)changedMap.set(question,cleanNext);
+  });
+
+  changedMap.forEach((newQuestion, oldQuestion)=>{
+    const oldKey=keyOf(subject,unit,oldQuestion);
+    if(!deletedQuestionKeys.includes(oldKey))deletedQuestionKeys.push(oldKey);
+  });
+  deletedSet.forEach(oldQuestion=>{
+    const oldKey=keyOf(subject,unit,oldQuestion);
+    if(!deletedQuestionKeys.includes(oldKey))deletedQuestionKeys.push(oldKey);
+  });
+
+  burntBreads=burntBreads.map(item=>{
+    if(item.subject!==subject||item.unit!==unit)return item;
+    if(changedMap.has(item.question)){
+      const newQuestion=changedMap.get(item.question);
+      return {...item, question:newQuestion, key:keyOf(subject,unit,newQuestion)};
+    }
+    return item;
+  }).filter(item=>!(item.subject===subject&&item.unit===unit&&deletedSet.has(item.question)));
+
+  const unique=[];
+  newQuestions.forEach(q=>{if(q&&!unique.includes(q))unique.push(q);});
+  setQList(subject,unit,unique);
+  saveRefresh();
+  return touched;
+}
+
+function currentManageChoice(){
+  return {
+    subject: el.manageSubjectSelect?.value || "",
+    unit: el.manageUnitSelect?.value || "",
+    filling: el.manageFillingSelect?.value || "",
+    topping: el.manageToppingSelect?.value || ""
+  };
+}
+
+function renameFilling(){
+  const {subject,unit,filling}=currentManageChoice();
+  const newName=(el.manageFillingNameInput?.value||"").trim();
+  if(!subject||!unit||!filling)return alert("바꿀 필링이 없습니다.");
+  if(!newName)return alert("새 필링 이름을 입력하세요.");
+  if(newName===filling)return alert("기존 이름과 같습니다.");
+
+  const changed=transformManageMeta(
+    subject,
+    unit,
+    view=>view.filling===filling,
+    meta=>({filling:newName, topping:meta.topping||"", text:meta.text})
+  );
+
+  if(!changed)return alert("이 필링에 들어있는 빵이 없습니다.");
+  if(el.manageFillingNameInput)el.manageFillingNameInput.value="";
+  restoreManageSelection(subject,unit,newName,"");
+  alert("필링 이름을 바꿨습니다 🥐");
+}
+
+function renameTopping(){
+  const {subject,unit,filling,topping}=currentManageChoice();
+  const newName=(el.manageToppingNameInput?.value||"").trim();
+  if(!subject||!unit||!filling||!topping)return alert("바꿀 토핑이 없습니다.");
+  if(!newName)return alert("새 토핑 이름을 입력하세요.");
+  if(newName===topping)return alert("기존 이름과 같습니다.");
+
+  const changed=transformManageMeta(
+    subject,
+    unit,
+    view=>view.filling===filling && view.topping===topping,
+    meta=>({filling:meta.filling||"", topping:newName, text:meta.text})
+  );
+
+  if(!changed)return alert("이 토핑에 들어있는 빵이 없습니다.");
+  if(el.manageToppingNameInput)el.manageToppingNameInput.value="";
+  restoreManageSelection(subject,unit,filling,newName);
+  alert("토핑 이름을 바꿨습니다 🍯");
+}
+
+function deleteFilling(){
+  const {subject,unit,filling}=currentManageChoice();
+  if(!subject||!unit||!filling)return alert("삭제할 필링이 없습니다.");
+  const changed=transformManageMeta(subject,unit,view=>view.filling===filling,()=>null);
+  if(!changed)return alert("이 필링에 들어있는 빵이 없습니다.");
+  restoreManageSelection(subject,unit,"","");
+  alert("필링을 삭제했습니다 🥐");
+}
+
+function deleteTopping(){
+  const {subject,unit,filling,topping}=currentManageChoice();
+  if(!subject||!unit||!filling||!topping)return alert("삭제할 토핑이 없습니다.");
+  const changed=transformManageMeta(subject,unit,view=>view.filling===filling && view.topping===topping,()=>null);
+  if(!changed)return alert("이 토핑에 들어있는 빵이 없습니다.");
+  restoreManageSelection(subject,unit,filling,"");
+  alert("토핑을 삭제했습니다 🍯");
+}
+
+// Capturing delegation: prevents silent failures from stale onclick wiring in previews.
+document.addEventListener("click", function(event){
+  const id=event.target && event.target.id;
+  if(!["renameFillingBtn","deleteFillingBtn","renameToppingBtn","deleteToppingBtn"].includes(id))return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  if(id==="renameFillingBtn")renameFilling();
+  if(id==="deleteFillingBtn")deleteFilling();
+  if(id==="renameToppingBtn")renameTopping();
+  if(id==="deleteToppingBtn")deleteTopping();
+}, true);
+
 function makeExport(){el.exportOutput.value=JSON.stringify(quizData,null,2);switchPanel("exportPanel");}
 async function copyExport(){if(!el.exportOutput.value.trim())makeExport();try{await navigator.clipboard.writeText(el.exportOutput.value);}catch{el.exportOutput.select();document.execCommand("copy");}alert("포장 복사 완료!");}
 function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders","blankBreadBurntList","blankBreadDeletedQuestions","blankBreadStatsBySubject"].forEach(key=>localStorage.removeItem(key));localQuizData={};deletedQuizData={};renamedSubjects={};renamedUnits={};subjectOrder=[];unitOrders={};burntBreads=[];deletedQuestionKeys=[];statsBySubjectSession={};rebuild();refresh();}
@@ -517,8 +843,13 @@ function bind(){el.menuBtn.onclick=()=>{el.sidebar.classList.toggle("open");el.b
   // 3. 세션 성공률 초기화
   statsBySubjectSession={};
   updateStats(el.solveSubjectSelect.value);
-};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=()=>{toggleNewCreateInputs();refreshCreate();};el.createUnitSelect.onchange=()=>{toggleNewCreateInputs();refreshMetaSelects();};if(el.fillingSelect)el.fillingSelect.onchange=()=>{toggleNewMetaInputs();refreshToppingSelect();};if(el.toppingSelect)el.toppingSelect.onchange=toggleNewMetaInputs;if(el.newSubjectInput)el.newSubjectInput.oninput=()=>{refreshCreate();};if(el.newUnitInput)el.newUnitInput.oninput=refreshMetaSelects;if(el.newFillingInput)el.newFillingInput.oninput=refreshToppingSelect;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.addEventListener("click",handleQuestionManagerClick);el.manageSubjectSelect.onchange=refreshManage;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";if(el.newSubjectInput)el.newSubjectInput.value="";if(el.newUnitInput)el.newUnitInput.value="";if(el.newFillingInput)el.newFillingInput.value="";if(el.newToppingInput)el.newToppingInput.value="";refreshCreateSubjectSelect();};el.makeExportBtn.onclick=makeExport;el.copyExportBtn.onclick=copyExport;el.clearLocalBtn.onclick=clearLocal;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));[el.subjectOrderList,el.unitOrderList].forEach(container=>{container.addEventListener("dragstart",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.add("dragging");});container.addEventListener("dragend",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.remove("dragging");});container.addEventListener("dragover",event=>{event.preventDefault();const dragging=container.querySelector(".dragging");const after=afterEl(container,event.clientY);if(!dragging)return;after?container.insertBefore(dragging,after):container.appendChild(dragging);});});}
-function runTests(){console.group("BlankBread self-test");const merged=merge({A:{one:["x [y]","same [a]"]}},{A:{one:["same [a]","new [b]"]},B:{two:["z [c]"]}});console.assert(merged.A.one.length===3,"merge deduplicates");const normalized=normalize({" 과목 ":{" 단원 ":[" 문제 [정답] ",""," 문제 [정답] "]}});console.assert(normalized["과목"]["단원"].length===1,"normalize trims and deduplicates");const parsed=parse("A [B] C [D]");console.assert(parsed.answers.length===2,"parse extracts blanks");console.assert(typeof renderManager==="function","renderManager exists");console.assert(typeof handleQuestionManagerClick==="function","question manager click handler exists");const oldDeleted=deletedQuestionKeys.slice();deletedQuestionKeys=[keyOf("A","one","x [y]")];const afterDelete=applyDeletes({A:{one:["x [y]","z [w]"]}});console.assert(afterDelete.A.one.length===1&&afterDelete.A.one[0]==="z [w]","applyDeletes removes individual questions");deletedQuestionKeys=oldDeleted;const previousStats=clone(statsBySubjectSession);statsBySubjectSession={테스트:{correct:1,total:2}};cache();updateStats("테스트");console.assert(el.subjectRate.textContent.includes("50%"),"session stats render percentage");statsBySubjectSession=previousStats;console.groupEnd();}
+};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=()=>{toggleNewCreateInputs();refreshCreate();};el.createUnitSelect.onchange=()=>{toggleNewCreateInputs();refreshMetaSelects();};if(el.fillingSelect)el.fillingSelect.onchange=()=>{toggleNewMetaInputs();refreshToppingSelect();};if(el.toppingSelect)el.toppingSelect.onchange=toggleNewMetaInputs;if(el.newSubjectInput)el.newSubjectInput.oninput=()=>{refreshCreate();};if(el.newUnitInput)el.newUnitInput.oninput=refreshMetaSelects;if(el.newFillingInput)el.newFillingInput.oninput=refreshToppingSelect;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.addEventListener("click",handleQuestionManagerClick);el.manageSubjectSelect.onchange=refreshManage;el.manageUnitSelect.onchange=refreshManageMeta;if(el.manageFillingSelect)el.manageFillingSelect.onchange=refreshManageTopping;if(el.renameFillingBtn)el.renameFillingBtn.onclick=renameFilling;if(el.renameToppingBtn)el.renameToppingBtn.onclick=renameTopping;if(el.deleteFillingBtn)el.deleteFillingBtn.onclick=deleteFilling;if(el.deleteToppingBtn)el.deleteToppingBtn.onclick=deleteTopping;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";if(el.newSubjectInput)el.newSubjectInput.value="";if(el.newUnitInput)el.newUnitInput.value="";if(el.newFillingInput)el.newFillingInput.value="";if(el.newToppingInput)el.newToppingInput.value="";refreshCreateSubjectSelect();};el.makeExportBtn.onclick=makeExport;el.copyExportBtn.onclick=copyExport;el.clearLocalBtn.onclick=clearLocal;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));[el.subjectOrderList,el.unitOrderList].forEach(container=>{container.addEventListener("dragstart",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.add("dragging");});container.addEventListener("dragend",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.remove("dragging");});container.addEventListener("dragover",event=>{event.preventDefault();const dragging=container.querySelector(".dragging");const after=afterEl(container,event.clientY);if(!dragging)return;after?container.insertBefore(dragging,after):container.appendChild(dragging);});});}
+function runTests(){console.group("BlankBread self-test");const merged=merge({A:{one:["x [y]","same [a]"]}},{A:{one:["same [a]","new [b]"]},B:{two:["z [c]"]}});console.assert(merged.A.one.length===3,"merge deduplicates");const normalized=normalize({" 과목 ":{" 단원 ":[" 문제 [정답] ",""," 문제 [정답] "]}});console.assert(normalized["과목"]["단원"].length===1,"normalize trims and deduplicates");const parsed=parse("A [B] C [D]");console.assert(parsed.answers.length===2,"parse extracts blanks");console.assert(typeof renderManager==="function","renderManager exists");console.assert(typeof handleQuestionManagerClick==="function","question manager click handler exists");const oldDeleted=deletedQuestionKeys.slice();deletedQuestionKeys=[keyOf("A","one","x [y]")];const afterDelete=applyDeletes({A:{one:["x [y]","z [w]"]}});console.assert(afterDelete.A.one.length===1&&afterDelete.A.one[0]==="z [w]","applyDeletes removes individual questions");deletedQuestionKeys=oldDeleted;const previousStats=clone(statsBySubjectSession);statsBySubjectSession={테스트:{correct:1,total:2}};cache();updateStats("테스트");console.assert(el.subjectRate.textContent.includes("50%"),"session stats render percentage");
+const m1=splitMeta("@필링A\n#토핑A\n본문 [답]");
+console.assert(m1.filling==="필링A"&&m1.topping==="토핑A","splitMeta separates filling and topping");
+const j1=joinMeta({filling:m1.filling,topping:"토핑B",text:m1.text});
+console.assert(j1.startsWith("@필링A\n#토핑B\n"),"joinMeta changes only topping");
+statsBySubjectSession=previousStats;console.groupEnd();}
 
 async function init(){cache();bind();await loadShared();loadLocal();rebuild();refresh();runTests();}
 init().catch(error=>{console.error(error);alert("앱 오류: "+error.message);});
