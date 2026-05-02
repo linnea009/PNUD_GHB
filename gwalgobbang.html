@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PNU 괄호빵</title>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #4f46e5;
+      --primary-soft: #eef2ff;
+      --border: #e5e7eb;
+      --answer: #dc2626;
+      --shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+    }
+
+    body.dark {
+      --bg: #111827;
+      --card: #1f2937;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --primary: #818cf8;
+      --primary-soft: #312e81;
+      --border: #374151;
+      --answer: #fca5a5;
+      --shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    header {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 28px 20px 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+    }
+
+    h1 { margin: 0; font-size: 30px; letter-spacing: -0.05em; }
+    h2 { margin-top: 0; font-size: 21px; letter-spacing: -0.03em; }
+    h3 { margin: 0 0 12px; font-size: 17px; }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 16px 20px 48px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 16px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .side-title {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 800;
+      margin: 8px 8px 10px;
+    }
+
+    .side-btn {
+      width: 100%;
+      display: block;
+      text-align: left;
+      margin-bottom: 8px;
+      background: transparent;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 13px;
+    }
+
+    .side-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .side-btn.secondaryish {
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .controls,
+    .create-grid,
+    .three-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .three-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .create-grid { margin-bottom: 14px; }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    select,
+    textarea,
+    input {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 150px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    #exportOutput { min-height: 230px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    #editQuestionInput { min-height: 110px; }
+
+    select:focus,
+    textarea:focus,
+    input:focus { border-color: var(--primary); }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    button {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      color: white;
+      background: var(--primary);
+      transition: transform 0.1s, opacity 0.1s;
+    }
+
+    button:hover { transform: translateY(-1px); }
+    button.secondary { background: var(--primary-soft); color: var(--primary); }
+    button.danger { background: #ef4444; }
+    button.ghost { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+
+    .quiz-list { display: flex; flex-direction: column; gap: 14px; }
+
+    .quiz-item {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 16px;
+      line-height: 1.75;
+      background: color-mix(in srgb, var(--card) 92%, var(--primary-soft));
+    }
+
+    .quiz-meta { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+
+    .blank {
+      display: inline-block;
+      min-width: 80px;
+      text-align: center;
+      border-bottom: 2px solid var(--primary);
+      color: transparent;
+      cursor: pointer;
+      margin: 0 3px;
+      font-weight: 800;
+      user-select: none;
+    }
+
+    .blank.revealed { color: var(--answer); border-bottom-color: transparent; user-select: text; }
+    .answer-list { margin-top: 10px; font-size: 14px; color: var(--muted); display: none; }
+    .answer-list.visible { display: block; }
+    .empty { color: var(--muted); text-align: center; padding: 32px 0; }
+    .guide { font-size: 14px; line-height: 1.7; color: var(--muted); }
+    .divider { height: 1px; background: var(--border); margin: 20px 0; }
+
+    code {
+      background: var(--primary-soft);
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    .notice {
+      border: 1px dashed var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.7;
+      background: color-mix(in srgb, var(--card) 90%, var(--primary-soft));
+    }
+
+    .drag-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .drag-item {
+      border: 1px solid var(--border);
+      background: var(--card);
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: grab;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .drag-item:active { cursor: grabbing; }
+    .drag-item.dragging { opacity: 0.45; }
+    .drag-handle { color: var(--muted); font-weight: 900; letter-spacing: 0.08em; }
+    .mini { font-size: 13px; color: var(--muted); }
+
+    .question-manager-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .question-manager-item {
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      background: color-mix(in srgb, var(--card) 95%, var(--primary-soft));
+    }
+
+    .question-manager-text { line-height: 1.65; margin-bottom: 10px; }
+    .small-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .small-row button { padding: 8px 12px; font-size: 13px; }
+
+    @media (max-width: 820px) {
+      header { align-items: flex-start; flex-direction: column; }
+      .layout { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+      .controls, .create-grid, .three-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>PNU 괄호빵</h1>
+      <div class="subtitle">문제 풀기는 메인으로, 생성·관리·Export는 사이드바 관리 도구로 정리했습니다.</div>
+    </div>
+    <button class="secondary" id="darkModeBtn">🌙 다크모드</button>
+  </header>
+
+  <main>
+    <div class="layout">
+      <aside class="sidebar">
+        <div class="side-title">메뉴</div>
+        <button class="side-btn active" data-panel="solvePanel">🍞 문제 풀기</button>
+        <div class="side-title">관리</div>
+        <button class="side-btn" data-panel="createPanel">➕ 문제 생성</button>
+        <button class="side-btn" data-panel="editPanel">✏️ 문제 개별 수정</button>
+        <button class="side-btn" data-panel="structurePanel">🧱 과목/단원 관리</button>
+        <button class="side-btn" data-panel="orderPanel">↕️ 순서 바꾸기</button>
+        <button class="side-btn" data-panel="exportPanel">📦 Export</button>
+      </aside>
+
+      <section class="content">
+        <section id="solvePanel" class="panel active">
+          <section class="card">
+            <h2>학습할 범위 선택</h2>
+            <div class="controls">
+              <div>
+                <label for="solveSubjectSelect">과목</label>
+                <select id="solveSubjectSelect"></select>
+              </div>
+              <div>
+                <label for="solveUnitSelect">단원</label>
+                <select id="solveUnitSelect"></select>
+              </div>
+            </div>
+            <div class="button-row">
+              <button id="showAllBtn">전체 정답 보기</button>
+              <button class="secondary" id="hideAllBtn">전체 정답 숨기기</button>
+              <button class="danger" id="resetBtn">초기화</button>
+            </div>
+          </section>
+
+          <section class="card">
+            <h2 id="quizTitle">문제</h2>
+            <div id="quizList" class="quiz-list"></div>
+          </section>
+        </section>
+
+        <section id="createPanel" class="panel">
+          <section class="card">
+            <h2>문제 생성</h2>
+            <p class="guide">빈칸으로 만들 부분을 <code>[대괄호]</code>로 감싸세요. 여러 줄을 입력하면 줄마다 하나의 문제가 됩니다.</p>
+            <div class="create-grid">
+              <div>
+                <label for="createSubjectSelect">기존 과목 선택</label>
+                <select id="createSubjectSelect"></select>
+              </div>
+              <div>
+                <label for="createUnitSelect">기존 단원 선택</label>
+                <select id="createUnitSelect"></select>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="create-grid">
+              <div>
+                <label for="newSubjectInput">새 과목 추가</label>
+                <input id="newSubjectInput" placeholder="예: 구강악안면외과학" />
+              </div>
+              <div>
+                <label for="newUnitInput">새 단원 추가</label>
+                <input id="newUnitInput" placeholder="예: 악안면 외상" />
+              </div>
+            </div>
+            <p class="guide">새 과목/단원을 입력하면 기존 선택보다 새 입력값이 우선 적용됩니다.</p>
+            <textarea id="customInput" placeholder="예:\n비가역성 치수염은 [자발통]과 [지속성 통증]이 특징이다.\n치수괴사의 경우 전기치수검사에서 일반적으로 [반응이 없다]."></textarea>
+            <div class="button-row">
+              <button id="addCustomBtn">내 브라우저에 저장</button>
+              <button class="secondary" id="clearInputBtn">입력창 비우기</button>
+            </div>
+          </section>
+        </section>
+
+        <section id="editPanel" class="panel">
+          <section class="card">
+            <h2>문제 개별 수정</h2>
+            <p class="guide">문제 하나씩 수정하거나 삭제할 수 있습니다. 수정 후 Export하면 <code>data.json</code>에 반영할 수 있어요.</p>
+            <div class="controls">
+              <div>
+                <label for="editSubjectSelect">과목</label>
+                <select id="editSubjectSelect"></select>
+              </div>
+              <div>
+                <label for="editUnitSelect">단원</label>
+                <select id="editUnitSelect"></select>
+              </div>
+            </div>
+            <div id="questionManagerList" class="question-manager-list"></div>
+          </section>
+        </section>
+
+        <section id="structurePanel" class="panel">
+          <section class="card">
+            <h2>과목 / 단원 관리</h2>
+            <p class="guide">삭제/이름 변경은 미리보기와 Export 결과에 반영됩니다. GitHub의 <code>data.json</code>은 Export 결과를 다시 붙여넣고 커밋해야 바뀝니다.</p>
+            <div class="controls">
+              <div>
+                <label for="manageSubjectSelect">관리할 과목</label>
+                <select id="manageSubjectSelect"></select>
+              </div>
+              <div>
+                <label for="manageUnitSelect">관리할 단원</label>
+                <select id="manageUnitSelect"></select>
+              </div>
+            </div>
+            <div class="button-row">
+              <button class="danger" id="deleteUnitBtn">선택한 단원 삭제</button>
+              <button class="danger" id="deleteSubjectBtn">선택한 과목 전체 삭제</button>
+              <button class="secondary" id="renameSubjectBtn">과목 이름 변경</button>
+              <button class="secondary" id="renameUnitBtn">단원 이름 변경</button>
+            </div>
+          </section>
+        </section>
+
+        <section id="orderPanel" class="panel">
+          <section class="card">
+            <h2>과목 / 단원 순서 바꾸기</h2>
+            <p class="guide">항목을 드래그해서 순서를 바꾸세요. 저장하면 현재 브라우저와 Export 결과에 반영됩니다.</p>
+            <div class="controls">
+              <div>
+                <h3>과목 순서</h3>
+                <div id="subjectOrderList" class="drag-list"></div>
+              </div>
+              <div>
+                <h3>단원 순서</h3>
+                <label for="orderSubjectSelect">단원 순서를 바꿀 과목</label>
+                <select id="orderSubjectSelect"></select>
+                <div id="unitOrderList" class="drag-list"></div>
+              </div>
+            </div>
+            <div class="button-row">
+              <button id="saveOrderBtn">순서 저장</button>
+              <button class="secondary" id="resetOrderBtn">기본 가나다순으로 초기화</button>
+            </div>
+          </section>
+        </section>
+
+        <section id="exportPanel" class="panel">
+          <section class="card">
+            <h2>Export: data.json으로 옮기기</h2>
+            <div class="notice">
+              아래 버튼을 누르면 현재 화면 기준의 전체 데이터가 JSON으로 생성됩니다.<br />
+              이 내용을 복사해서 GitHub의 <code>data.json</code> 파일에 붙여넣으면, 모든 기기와 친구들에게 같은 문제집이 공유됩니다.
+            </div>
+            <div class="button-row">
+              <button id="makeExportBtn">data.json 내용 만들기</button>
+              <button class="secondary" id="copyExportBtn">복사하기</button>
+              <button class="danger" id="clearLocalBtn">내 브라우저 변경사항 초기화</button>
+            </div>
+            <textarea id="exportOutput" readonly placeholder="여기에 data.json에 붙여넣을 내용이 생성됩니다."></textarea>
+          </section>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    "use strict";
+
+    const fallbackQuizData = {
+      "근관치료학": {
+        "단비족 2장": [
+          "비가역성 치수염은 [자발통]과 [지속성 통증]이 특징이다.",
+          "가역성 치수염은 자극 제거 후 통증이 [빠르게 소실]된다.",
+          "치수괴사의 경우 전기치수검사에서 일반적으로 [반응이 없다]."
+        ],
+        "외상": [
+          "미성숙 영구치의 생활치수치료 목표는 [치근 발육 지속]이다.",
+          "Apexogenesis는 생활치수를 유지하여 [치근단 폐쇄]를 유도하는 술식이다.",
+          "Apexification은 괴사치수 미성숙 영구치에서 [치근단 장벽]을 형성시키는 술식이다."
+        ]
+      },
+      "구강병리학": {
+        "치근단 병소": [
+          "치근단낭은 상피 이장된 병적 공간으로, 주로 [Malassez 상피잔사]에서 유래한다.",
+          "Cholesterol cleft는 조직처리 과정에서 지질이 빠져나가 생긴 [침상 공간]이다.",
+          "Foreign body giant cell은 이물질을 둘러싸는 [다핵 거대세포]이다."
+        ]
+      }
+    };
+
+    let sharedQuizData = {};
+    let localQuizData = {};
+    let deletedQuizData = {};
+    let renamedSubjects = {};
+    let renamedUnits = {};
+    let subjectOrder = [];
+    let unitOrders = {};
+    let quizData = {};
+    const elements = {};
+
+    function getElement(id) {
+      const element = document.getElementById(id);
+      if (!element) throw new Error("필수 화면 요소를 찾을 수 없습니다: #" + id);
+      return element;
+    }
+
+    function cacheElements() {
+      [
+        "solveSubjectSelect", "solveUnitSelect", "createSubjectSelect", "createUnitSelect",
+        "editSubjectSelect", "editUnitSelect", "manageSubjectSelect", "manageUnitSelect",
+        "orderSubjectSelect", "newSubjectInput", "newUnitInput", "quizList", "quizTitle",
+        "darkModeBtn", "showAllBtn", "hideAllBtn", "resetBtn", "customInput",
+        "addCustomBtn", "clearInputBtn", "makeExportBtn", "copyExportBtn", "clearLocalBtn",
+        "deleteUnitBtn", "deleteSubjectBtn", "renameSubjectBtn", "renameUnitBtn",
+        "exportOutput", "questionManagerList", "subjectOrderList", "unitOrderList",
+        "saveOrderBtn", "resetOrderBtn"
+      ].forEach(id => { elements[id] = getElement(id); });
+      elements.sideButtons = document.querySelectorAll(".side-btn");
+      elements.panels = document.querySelectorAll(".panel");
+    }
+
+    function cloneData(value) { return JSON.parse(JSON.stringify(value || {})); }
+
+    function normalizeQuizData(data) {
+      const normalized = {};
+      Object.entries(data || {}).forEach(([subject, units]) => {
+        const cleanSubject = String(subject || "").trim();
+        if (!cleanSubject || typeof units !== "object" || Array.isArray(units)) return;
+        Object.entries(units).forEach(([unit, questions]) => {
+          const cleanUnit = String(unit || "").trim();
+          if (!cleanUnit || !Array.isArray(questions)) return;
+          questions.forEach(question => {
+            const cleanQuestion = String(question || "").trim();
+            if (!cleanQuestion) return;
+            if (!normalized[cleanSubject]) normalized[cleanSubject] = {};
+            if (!normalized[cleanSubject][cleanUnit]) normalized[cleanSubject][cleanUnit] = [];
+            if (!normalized[cleanSubject][cleanUnit].includes(cleanQuestion)) normalized[cleanSubject][cleanUnit].push(cleanQuestion);
+          });
+        });
+      });
+      return normalized;
+    }
+
+    function mergeQuizData(base, extra) {
+      const merged = normalizeQuizData(base);
+      const cleanExtra = normalizeQuizData(extra);
+      Object.entries(cleanExtra).forEach(([subject, units]) => {
+        if (!merged[subject]) merged[subject] = {};
+        Object.entries(units).forEach(([unit, questions]) => {
+          if (!merged[subject][unit]) merged[subject][unit] = [];
+          questions.forEach(question => {
+            if (!merged[subject][unit].includes(question)) merged[subject][unit].push(question);
+          });
+        });
+      });
+      return merged;
+    }
+
+    function applyRenames(data, subjectRenames, unitRenames) {
+      const renamed = {};
+      Object.entries(normalizeQuizData(data)).forEach(([subject, units]) => {
+        const newSubject = subjectRenames[subject] || subject;
+        if (!renamed[newSubject]) renamed[newSubject] = {};
+        Object.entries(units).forEach(([unit, questions]) => {
+          const unitMap = unitRenames[subject] || unitRenames[newSubject] || {};
+          const newUnit = unitMap[unit] || unit;
+          if (!renamed[newSubject][newUnit]) renamed[newSubject][newUnit] = [];
+          questions.forEach(question => {
+            if (!renamed[newSubject][newUnit].includes(question)) renamed[newSubject][newUnit].push(question);
+          });
+        });
+      });
+      return renamed;
+    }
+
+    function applyDeletions(data, deletions) {
+      const result = cloneData(data);
+      Object.entries(deletions || {}).forEach(([subject, units]) => {
+        if (!result[subject]) return;
+        if (units === true) { delete result[subject]; return; }
+        Object.entries(units || {}).forEach(([unit, deleted]) => {
+          if (deleted === true && result[subject]) delete result[subject][unit];
+        });
+        if (result[subject] && Object.keys(result[subject]).length === 0) delete result[subject];
+      });
+      return result;
+    }
+
+    function orderedKeys(keys, savedOrder) {
+      const set = new Set(keys);
+      const ordered = (savedOrder || []).filter(item => set.has(item));
+      const rest = keys.filter(item => !ordered.includes(item)).sort((a, b) => a.localeCompare(b, "ko"));
+      return ordered.concat(rest);
+    }
+
+    function orderedQuizData(data) {
+      const clean = normalizeQuizData(data);
+      const result = {};
+      orderedKeys(Object.keys(clean), subjectOrder).forEach(subject => {
+        result[subject] = {};
+        orderedKeys(Object.keys(clean[subject]), unitOrders[subject] || []).forEach(unit => {
+          result[subject][unit] = clean[subject][unit];
+        });
+      });
+      return result;
+    }
+
+    async function loadSharedData() {
+      try {
+        if (window.location.protocol === "file:") throw new Error("file 프로토콜에서는 data.json fetch를 건너뜁니다.");
+        const response = await fetch("data.json", { cache: "no-store" });
+        if (!response.ok) throw new Error("data.json을 찾을 수 없습니다.");
+        sharedQuizData = normalizeQuizData(await response.json());
+      } catch (error) {
+        console.warn("data.json을 불러오지 못해 예시 데이터를 사용합니다.", error);
+        sharedQuizData = normalizeQuizData(fallbackQuizData);
+      }
+    }
+
+    function loadLocalData() {
+      try { localQuizData = normalizeQuizData(JSON.parse(localStorage.getItem("blankQuizLocalData") || "{}")); } catch { localQuizData = {}; }
+      try { deletedQuizData = JSON.parse(localStorage.getItem("blankQuizDeletedData") || "{}"); } catch { deletedQuizData = {}; }
+      try { renamedSubjects = JSON.parse(localStorage.getItem("blankQuizRenamedSubjects") || "{}"); } catch { renamedSubjects = {}; }
+      try { renamedUnits = JSON.parse(localStorage.getItem("blankQuizRenamedUnits") || "{}"); } catch { renamedUnits = {}; }
+      try { subjectOrder = JSON.parse(localStorage.getItem("blankQuizSubjectOrder") || "[]"); } catch { subjectOrder = []; }
+      try { unitOrders = JSON.parse(localStorage.getItem("blankQuizUnitOrders") || "{}"); } catch { unitOrders = {}; }
+    }
+
+    function saveLocalData() {
+      localQuizData = normalizeQuizData(localQuizData);
+      localStorage.setItem("blankQuizLocalData", JSON.stringify(localQuizData));
+      localStorage.setItem("blankQuizDeletedData", JSON.stringify(deletedQuizData || {}));
+      localStorage.setItem("blankQuizRenamedSubjects", JSON.stringify(renamedSubjects || {}));
+      localStorage.setItem("blankQuizRenamedUnits", JSON.stringify(renamedUnits || {}));
+      localStorage.setItem("blankQuizSubjectOrder", JSON.stringify(subjectOrder || []));
+      localStorage.setItem("blankQuizUnitOrders", JSON.stringify(unitOrders || {}));
+    }
+
+    function rebuildQuizData() {
+      const merged = mergeQuizData(sharedQuizData, localQuizData);
+      const renamed = applyRenames(merged, renamedSubjects, renamedUnits);
+      const deleted = applyDeletions(renamed, deletedQuizData);
+      quizData = orderedQuizData(deleted);
+    }
+
+    function getSubjects() { return Object.keys(quizData); }
+    function getUnits(subject) { return subject && quizData[subject] ? Object.keys(quizData[subject]) : []; }
+
+    function fillSelect(select, values) {
+      const previousValue = select.value;
+      select.innerHTML = "";
+      values.forEach(value => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+      if (values.includes(previousValue)) select.value = previousValue;
+      else if (values.length > 0) select.value = values[0];
+    }
+
+    function refreshAll() {
+      const subjects = getSubjects();
+      [elements.solveSubjectSelect, elements.createSubjectSelect, elements.editSubjectSelect, elements.manageSubjectSelect, elements.orderSubjectSelect]
+        .forEach(select => fillSelect(select, subjects));
+      refreshSolveUnits();
+      refreshCreateUnits();
+      refreshEditUnits();
+      refreshManageUnits();
+      renderOrderLists();
+    }
+
+    function refreshSolveUnits() { fillSelect(elements.solveUnitSelect, getUnits(elements.solveSubjectSelect.value)); renderQuiz(); }
+    function refreshCreateUnits() { fillSelect(elements.createUnitSelect, getUnits(elements.createSubjectSelect.value)); }
+    function refreshEditUnits() { fillSelect(elements.editUnitSelect, getUnits(elements.editSubjectSelect.value)); renderQuestionManager(); }
+    function refreshManageUnits() { fillSelect(elements.manageUnitSelect, getUnits(elements.manageSubjectSelect.value)); }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function parseQuestion(text) {
+      const answers = [];
+      const safeText = escapeHtml(text);
+      const html = safeText.replace(/\[(.+?)\]/g, (_match, answer) => {
+        answers.push(answer);
+        return "<span class=\"blank\">" + escapeHtml(answer) + "</span>";
+      });
+      return { html, answers };
+    }
+
+    function renderQuiz() {
+      const subject = elements.solveSubjectSelect.value;
+      const unit = elements.solveUnitSelect.value;
+      const questions = quizData?.[subject]?.[unit] || [];
+      elements.quizTitle.textContent = subject && unit ? subject + " / " + unit : "문제";
+      elements.quizList.innerHTML = "";
+      if (questions.length === 0) {
+        elements.quizList.innerHTML = "<div class=\"empty\">아직 문제가 없습니다. 텅 빈 시험지… 교수님도 이런 자비를 좀 주셨으면.</div>";
+        return;
+      }
+      questions.forEach((question, index) => {
+        const parsed = parseQuestion(question);
+        const item = document.createElement("div");
+        item.className = "quiz-item";
+        item.innerHTML =
+          "<div class=\"quiz-meta\">문제 " + (index + 1) + "</div>" +
+          "<div>" + parsed.html + "</div>" +
+          "<div class=\"answer-list\">정답: " + parsed.answers.map(escapeHtml).join(", ") + "</div>";
+        elements.quizList.appendChild(item);
+      });
+    }
+
+    function switchPanel(panelId) {
+      elements.sideButtons.forEach(button => button.classList.toggle("active", button.dataset.panel === panelId));
+      elements.panels.forEach(panel => panel.classList.toggle("active", panel.id === panelId));
+      if (panelId === "editPanel") renderQuestionManager();
+      if (panelId === "orderPanel") renderOrderLists();
+    }
+
+    function ensureVisibleQuestion(subject, unit, question) {
+      if (!localQuizData[subject]) localQuizData[subject] = {};
+      if (!localQuizData[subject][unit]) localQuizData[subject][unit] = [];
+      if (!localQuizData[subject][unit].includes(question)) localQuizData[subject][unit].push(question);
+      if (deletedQuizData[subject] === true) delete deletedQuizData[subject];
+      if (deletedQuizData[subject]?.[unit]) delete deletedQuizData[subject][unit];
+    }
+
+    function addCustomQuestions() {
+      const lines = elements.customInput.value.split("\n").map(line => line.trim()).filter(Boolean);
+      if (lines.length === 0) return alert("추가할 문제를 입력해 주세요.");
+      if (lines.some(line => !/\[.+?\]/.test(line))) return alert("대괄호 [정답]이 없는 줄이 있습니다.");
+
+      const subject = elements.newSubjectInput.value.trim() || elements.createSubjectSelect.value;
+      const unit = elements.newUnitInput.value.trim() || elements.createUnitSelect.value;
+      if (!subject) return alert("과목을 선택하거나 새 과목을 입력해 주세요.");
+      if (!unit) return alert("단원을 선택하거나 새 단원을 입력해 주세요.");
+      lines.forEach(line => ensureVisibleQuestion(subject, unit, line));
+
+      saveAndRefresh();
+      elements.customInput.value = "";
+      elements.newSubjectInput.value = "";
+      elements.newUnitInput.value = "";
+      elements.solveSubjectSelect.value = subject;
+      refreshSolveUnits();
+      elements.solveUnitSelect.value = unit;
+      renderQuiz();
+      switchPanel("solvePanel");
+    }
+
+    function saveAndRefresh() {
+      saveLocalData();
+      rebuildQuizData();
+      refreshAll();
+      elements.exportOutput.value = "";
+    }
+
+    function makeExportJson() {
+      elements.exportOutput.value = JSON.stringify(quizData, null, 2);
+      switchPanel("exportPanel");
+    }
+
+    async function copyExportJson() {
+      if (!elements.exportOutput.value.trim()) makeExportJson();
+      try { await navigator.clipboard.writeText(elements.exportOutput.value); }
+      catch {
+        elements.exportOutput.select();
+        document.execCommand("copy");
+      }
+      alert("복사했습니다. 이제 GitHub의 data.json에 붙여넣으면 됩니다.");
+    }
+
+    function clearLocalQuestions() {
+      if (!confirm("내 브라우저의 추가 문제, 삭제 기록, 이름 변경 기록, 순서 기록을 모두 초기화할까요?")) return;
+      localQuizData = {};
+      deletedQuizData = {};
+      renamedSubjects = {};
+      renamedUnits = {};
+      subjectOrder = [];
+      unitOrders = {};
+      ["blankQuizLocalData", "blankQuizDeletedData", "blankQuizRenamedSubjects", "blankQuizRenamedUnits", "blankQuizSubjectOrder", "blankQuizUnitOrders"]
+        .forEach(key => localStorage.removeItem(key));
+      rebuildQuizData();
+      refreshAll();
+      alert("브라우저 변경사항을 초기화했습니다.");
+    }
+
+    function deleteSelectedUnit() {
+      const subject = elements.manageSubjectSelect.value;
+      const unit = elements.manageUnitSelect.value;
+      if (!subject || !unit) return alert("삭제할 과목과 단원을 선택해 주세요.");
+      if (!confirm("'" + subject + " / " + unit + "' 단원을 삭제할까요?")) return;
+      if (localQuizData?.[subject]?.[unit]) {
+        delete localQuizData[subject][unit];
+        if (Object.keys(localQuizData[subject]).length === 0) delete localQuizData[subject];
+      }
+      if (deletedQuizData[subject] !== true) {
+        if (!deletedQuizData[subject]) deletedQuizData[subject] = {};
+        deletedQuizData[subject][unit] = true;
+      }
+      saveAndRefresh();
+      alert("선택한 단원을 삭제했습니다.");
+    }
+
+    function deleteSelectedSubject() {
+      const subject = elements.manageSubjectSelect.value;
+      if (!subject) return alert("삭제할 과목을 선택해 주세요.");
+      if (!confirm("'" + subject + "' 과목 전체를 삭제할까요?")) return;
+      if (localQuizData?.[subject]) delete localQuizData[subject];
+      deletedQuizData[subject] = true;
+      saveAndRefresh();
+      alert("선택한 과목을 삭제했습니다.");
+    }
+
+    function renameSubject() {
+      const oldName = elements.manageSubjectSelect.value;
+      if (!oldName) return alert("과목을 선택해 주세요.");
+      const newName = prompt("새 과목 이름 입력:", oldName);
+      if (!newName || !newName.trim()) return;
+      const clean = newName.trim();
+      if (clean === oldName) return;
+      if (quizData[clean]) return alert("이미 존재하는 과목 이름입니다.");
+      renamedSubjects[oldName] = clean;
+      if (localQuizData[oldName]) { localQuizData[clean] = localQuizData[oldName]; delete localQuizData[oldName]; }
+      if (deletedQuizData[oldName]) { deletedQuizData[clean] = deletedQuizData[oldName]; delete deletedQuizData[oldName]; }
+      if (renamedUnits[oldName]) { renamedUnits[clean] = renamedUnits[oldName]; delete renamedUnits[oldName]; }
+      subjectOrder = subjectOrder.map(item => item === oldName ? clean : item);
+      if (unitOrders[oldName]) { unitOrders[clean] = unitOrders[oldName]; delete unitOrders[oldName]; }
+      saveAndRefresh();
+      elements.solveSubjectSelect.value = clean;
+      refreshSolveUnits();
+      alert("과목 이름을 변경했습니다.");
+    }
+
+    function renameUnit() {
+      const subject = elements.manageSubjectSelect.value;
+      const oldUnit = elements.manageUnitSelect.value;
+      if (!subject || !oldUnit) return alert("과목과 단원을 선택해 주세요.");
+      const newName = prompt("새 단원 이름 입력:", oldUnit);
+      if (!newName || !newName.trim()) return;
+      const clean = newName.trim();
+      if (clean === oldUnit) return;
+      if (quizData?.[subject]?.[clean]) return alert("이미 존재하는 단원 이름입니다.");
+      if (!renamedUnits[subject]) renamedUnits[subject] = {};
+      renamedUnits[subject][oldUnit] = clean;
+      if (localQuizData?.[subject]?.[oldUnit]) {
+        localQuizData[subject][clean] = (localQuizData[subject][clean] || []).concat(localQuizData[subject][oldUnit]);
+        delete localQuizData[subject][oldUnit];
+      }
+      if (deletedQuizData?.[subject]?.[oldUnit]) { deletedQuizData[subject][clean] = deletedQuizData[subject][oldUnit]; delete deletedQuizData[subject][oldUnit]; }
+      if (unitOrders[subject]) unitOrders[subject] = unitOrders[subject].map(item => item === oldUnit ? clean : item);
+      saveAndRefresh();
+      elements.solveSubjectSelect.value = subject;
+      refreshSolveUnits();
+      elements.solveUnitSelect.value = clean;
+      renderQuiz();
+      alert("단원 이름을 변경했습니다.");
+    }
+
+    function setQuestionList(subject, unit, questions) {
+      if (!localQuizData[subject]) localQuizData[subject] = {};
+      localQuizData[subject][unit] = questions.slice();
+      if (deletedQuizData[subject] === true) delete deletedQuizData[subject];
+      if (deletedQuizData[subject]?.[unit]) delete deletedQuizData[subject][unit];
+    }
+
+    function editQuestion(subject, unit, index) {
+      const questions = (quizData?.[subject]?.[unit] || []).slice();
+      const oldQuestion = questions[index];
+      const newQuestion = prompt("문제를 수정하세요. 빈칸은 [정답] 형식으로 유지하세요:", oldQuestion);
+      if (!newQuestion || !newQuestion.trim()) return;
+      const clean = newQuestion.trim();
+      if (!/\[.+?\]/.test(clean)) return alert("대괄호 [정답]이 없는 문제는 저장할 수 없습니다.");
+      questions[index] = clean;
+      setQuestionList(subject, unit, questions);
+      saveAndRefresh();
+      elements.editSubjectSelect.value = subject;
+      refreshEditUnits();
+      elements.editUnitSelect.value = unit;
+      renderQuestionManager();
+      alert("문제를 수정했습니다.");
+    }
+
+    function deleteQuestion(subject, unit, index) {
+      const questions = (quizData?.[subject]?.[unit] || []).slice();
+      if (!questions[index]) return;
+      if (!confirm("이 문제를 삭제할까요?")) return;
+      questions.splice(index, 1);
+      setQuestionList(subject, unit, questions);
+      saveAndRefresh();
+      elements.editSubjectSelect.value = subject;
+      refreshEditUnits();
+      elements.editUnitSelect.value = unit;
+      renderQuestionManager();
+    }
+
+    function renderQuestionManager() {
+      const subject = elements.editSubjectSelect.value;
+      const unit = elements.editUnitSelect.value;
+      const questions = quizData?.[subject]?.[unit] || [];
+      elements.questionManagerList.innerHTML = "";
+      if (!subject || !unit || questions.length === 0) {
+        elements.questionManagerList.innerHTML = "<div class=\"empty\">수정할 문제가 없습니다.</div>";
+        return;
+      }
+      questions.forEach((question, index) => {
+        const item = document.createElement("div");
+        item.className = "question-manager-item";
+        item.innerHTML =
+          "<div class=\"mini\">문제 " + (index + 1) + "</div>" +
+          "<div class=\"question-manager-text\">" + escapeHtml(question) + "</div>" +
+          "<div class=\"small-row\">" +
+          "<button class=\"secondary\" data-action=\"edit\" data-index=\"" + index + "\">수정</button>" +
+          "<button class=\"danger\" data-action=\"delete\" data-index=\"" + index + "\">삭제</button>" +
+          "</div>";
+        elements.questionManagerList.appendChild(item);
+      });
+    }
+
+    function renderOrderLists() {
+      renderDragList(elements.subjectOrderList, getSubjects(), "subject");
+      fillSelect(elements.orderSubjectSelect, getSubjects());
+      renderDragList(elements.unitOrderList, getUnits(elements.orderSubjectSelect.value), "unit");
+    }
+
+    function renderDragList(container, values, type) {
+      container.innerHTML = "";
+      if (values.length === 0) {
+        container.innerHTML = "<div class=\"empty\">항목이 없습니다.</div>";
+        return;
+      }
+      values.forEach(value => {
+        const item = document.createElement("div");
+        item.className = "drag-item";
+        item.draggable = true;
+        item.dataset.value = value;
+        item.dataset.type = type;
+        item.innerHTML = "<span>" + escapeHtml(value) + "</span><span class=\"drag-handle\">☰</span>";
+        container.appendChild(item);
+      });
+    }
+
+    function getDragAfterElement(container, y) {
+      const draggableElements = [...container.querySelectorAll(".drag-item:not(.dragging)")];
+      return draggableElements.reduce((closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = y - box.top - box.height / 2;
+        if (offset < 0 && offset > closest.offset) return { offset, element: child };
+        return closest;
+      }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    function saveOrder() {
+      subjectOrder = [...elements.subjectOrderList.querySelectorAll(".drag-item")].map(item => item.dataset.value);
+      const subject = elements.orderSubjectSelect.value;
+      if (subject) unitOrders[subject] = [...elements.unitOrderList.querySelectorAll(".drag-item")].map(item => item.dataset.value);
+      saveAndRefresh();
+      switchPanel("orderPanel");
+      alert("순서를 저장했습니다.");
+    }
+
+    function resetOrder() {
+      if (!confirm("과목/단원 순서를 기본 가나다순으로 초기화할까요?")) return;
+      subjectOrder = [];
+      unitOrders = {};
+      saveAndRefresh();
+      switchPanel("orderPanel");
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem("blankQuizDarkMode");
+      if (savedTheme === "on") { document.body.classList.add("dark"); elements.darkModeBtn.textContent = "☀️ 라이트모드"; }
+    }
+
+    function bindEvents() {
+      elements.sideButtons.forEach(button => button.addEventListener("click", () => switchPanel(button.dataset.panel)));
+      elements.quizList.addEventListener("click", event => { if (event.target.classList.contains("blank")) event.target.classList.toggle("revealed"); });
+
+      elements.solveSubjectSelect.addEventListener("change", refreshSolveUnits);
+      elements.solveUnitSelect.addEventListener("change", renderQuiz);
+      elements.createSubjectSelect.addEventListener("change", refreshCreateUnits);
+      elements.editSubjectSelect.addEventListener("change", refreshEditUnits);
+      elements.editUnitSelect.addEventListener("change", renderQuestionManager);
+      elements.manageSubjectSelect.addEventListener("change", refreshManageUnits);
+      elements.orderSubjectSelect.addEventListener("change", () => renderDragList(elements.unitOrderList, getUnits(elements.orderSubjectSelect.value), "unit"));
+
+      elements.showAllBtn.addEventListener("click", () => {
+        document.querySelectorAll(".blank").forEach(blank => blank.classList.add("revealed"));
+        document.querySelectorAll(".answer-list").forEach(list => list.classList.add("visible"));
+      });
+      elements.hideAllBtn.addEventListener("click", () => {
+        document.querySelectorAll(".blank").forEach(blank => blank.classList.remove("revealed"));
+        document.querySelectorAll(".answer-list").forEach(list => list.classList.remove("visible"));
+      });
+      elements.resetBtn.addEventListener("click", () => { elements.hideAllBtn.click(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+      elements.darkModeBtn.addEventListener("click", () => {
+        document.body.classList.toggle("dark");
+        const isDark = document.body.classList.contains("dark");
+        localStorage.setItem("blankQuizDarkMode", isDark ? "on" : "off");
+        elements.darkModeBtn.textContent = isDark ? "☀️ 라이트모드" : "🌙 다크모드";
+      });
+
+      elements.addCustomBtn.addEventListener("click", addCustomQuestions);
+      elements.clearInputBtn.addEventListener("click", () => { elements.customInput.value = ""; });
+      elements.makeExportBtn.addEventListener("click", makeExportJson);
+      elements.copyExportBtn.addEventListener("click", copyExportJson);
+      elements.clearLocalBtn.addEventListener("click", clearLocalQuestions);
+      elements.deleteUnitBtn.addEventListener("click", deleteSelectedUnit);
+      elements.deleteSubjectBtn.addEventListener("click", deleteSelectedSubject);
+      elements.renameSubjectBtn.addEventListener("click", renameSubject);
+      elements.renameUnitBtn.addEventListener("click", renameUnit);
+      elements.saveOrderBtn.addEventListener("click", saveOrder);
+      elements.resetOrderBtn.addEventListener("click", resetOrder);
+
+      elements.questionManagerList.addEventListener("click", event => {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+        const subject = elements.editSubjectSelect.value;
+        const unit = elements.editUnitSelect.value;
+        const index = Number(button.dataset.index);
+        if (button.dataset.action === "edit") editQuestion(subject, unit, index);
+        if (button.dataset.action === "delete") deleteQuestion(subject, unit, index);
+      });
+
+      [elements.subjectOrderList, elements.unitOrderList].forEach(container => {
+        container.addEventListener("dragstart", event => {
+          if (event.target.classList.contains("drag-item")) event.target.classList.add("dragging");
+        });
+        container.addEventListener("dragend", event => {
+          if (event.target.classList.contains("drag-item")) event.target.classList.remove("dragging");
+        });
+        container.addEventListener("dragover", event => {
+          event.preventDefault();
+          const dragging = container.querySelector(".dragging");
+          if (!dragging) return;
+          const afterElement = getDragAfterElement(container, event.clientY);
+          if (afterElement == null) container.appendChild(dragging);
+          else container.insertBefore(dragging, afterElement);
+        });
+      });
+    }
+
+    function runTests() {
+      console.group("PNU 괄호빵 self-test");
+      const merged = mergeQuizData(
+        { "A": { "1": ["x [y]", "same [a]"] } },
+        { "A": { "1": ["same [a]", "new [b]"] }, "B": { "2": ["z [c]"] } }
+      );
+      console.assert(merged.A["1"].length === 3, "mergeQuizData should merge and deduplicate questions");
+      console.assert(merged.B["2"][0] === "z [c]", "mergeQuizData should add new subjects and units");
+      const renamed = applyRenames(merged, { "A": "AA" }, { "AA": { "1": "11" } });
+      console.assert(renamed.AA["11"].length === 3, "applyRenames should rename subject and unit");
+      const deletedUnitData = applyDeletions(merged, { "A": { "1": true } });
+      console.assert(!deletedUnitData.A, "applyDeletions should remove a selected unit and empty subject");
+      const deletedSubjectData = applyDeletions(merged, { "B": true });
+      console.assert(!deletedSubjectData.B, "applyDeletions should remove a selected subject");
+      const ordered = orderedKeys(["B", "A", "C"], ["C", "A"]);
+      console.assert(ordered.join(",") === "C,A,B", "orderedKeys should preserve saved order and append sorted leftovers");
+      const parsed = parseQuestion("비가역성 치수염은 [자발통]과 [지속성 통증]이 특징이다.");
+      console.assert(parsed.answers.length === 2, "parseQuestion should extract two answers");
+      console.assert(parsed.answers[0] === "자발통", "parseQuestion should extract the first answer");
+      const normalizedData = normalizeQuizData({ " 과목 ": { " 단원 ": [" 문제 [정답] ", "", " 문제 [정답] "] } });
+      console.assert(normalizedData["과목"]["단원"].length === 1, "normalizeQuizData should trim and deduplicate");
+      console.groupEnd();
+    }
+
+    async function init() {
+      cacheElements();
+      bindEvents();
+      initTheme();
+      await loadSharedData();
+      loadLocalData();
+      rebuildQuizData();
+      refreshAll();
+      runTests();
+    }
+
+    init().catch(error => {
+      console.error("PNU 괄호빵 초기화 실패:", error);
+      alert("앱을 불러오는 중 오류가 발생했습니다: " + error.message);
+    });
+  </script>
+</body>
+</html>
