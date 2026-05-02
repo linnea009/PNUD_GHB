@@ -3,6 +3,201 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>BlankBread</title>
+
+<style>
+:root{
+  --bread:#f59e0b;
+  --cream:#fef3c7;
+  --choco:#78350f;
+  --bg:#fff7ed;
+  --card:#ffffff;
+  --text:#3f2c1d;
+}
+
+body{
+  margin:0;
+  font-family:system-ui;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* 🍞 상단 바 */
+.header{
+  background:linear-gradient(135deg,#f59e0b,#fb923c);
+  color:white;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  position:sticky;
+  top:0;
+}
+
+.menu-btn{
+  font-size:22px;
+  cursor:pointer;
+}
+
+.title{
+  font-weight:900;
+}
+
+/* 🥐 사이드 */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-250px;
+  width:230px;
+  height:100%;
+  background:#fffaf0;
+  padding:16px;
+  transition:0.3s;
+  box-shadow:0 0 20px rgba(0,0,0,0.2);
+}
+.sidebar.open{left:0}
+
+.side-btn{
+  display:block;
+  width:100%;
+  margin-bottom:10px;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+  background:#fde68a;
+  font-weight:700;
+}
+
+/* 🍽 컨텐츠 */
+.container{
+  padding:16px;
+}
+
+button{
+  background:var(--bread);
+  border:none;
+  color:white;
+  padding:12px 14px;
+  border-radius:12px;
+  font-weight:700;
+}
+
+button.secondary{
+  background:#fde68a;
+  color:#78350f;
+}
+
+/* 🍞 카드 */
+.card{
+  background:white;
+  border-radius:16px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.05);
+}
+
+.chapter{
+  background:var(--bread);
+  color:white;
+  padding:14px;
+  border-radius:14px;
+  font-weight:900;
+}
+
+.quiz-item{
+  background:var(--cream);
+  padding:14px;
+  border-radius:12px;
+  margin-top:10px;
+}
+
+.blank{
+  background:var(--choco);
+  color:transparent;
+  padding:4px 8px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+.blank.revealed{
+  color:white;
+}
+
+.message{
+  text-align:center;
+  margin-top:30px;
+  color:#92400e;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="menu-btn" id="menuBtn">☰</div>
+  <div class="title">🥖 BlankBread</div>
+</div>
+
+<div class="sidebar" id="sidebar">
+  <button class="side-btn">🍽️ 빵 먹기</button>
+  <button class="side-btn">👨‍🍳 빵 굽기</button>
+  <button class="side-btn">⚙️ 주방 관리</button>
+</div>
+
+<div class="container">
+
+  <div class="card">
+    <button>속 재료 다 보기</button>
+    <button class="secondary">다시 굽기</button>
+  </div>
+
+  <div class="chapter">오늘의 빵 🍞</div>
+
+  <div id="quiz"></div>
+
+  <div class="message" id="emptyMsg">아직 구워진 빵이 없습니다 🥲</div>
+
+</div>
+
+<script>
+const sidebar=document.getElementById("sidebar");
+document.getElementById("menuBtn").onclick=()=>sidebar.classList.toggle("open");
+
+let questions=[
+"치수에 해로운 자극은 [괴사]나 [염증]을 유발한다"
+];
+
+const quiz=document.getElementById("quiz");
+const emptyMsg=document.getElementById("emptyMsg");
+
+function render(){
+ quiz.innerHTML="";
+ if(!questions.length){emptyMsg.style.display="block";return}
+ emptyMsg.style.display="none";
+
+ questions.forEach(q=>{
+  const div=document.createElement("div");
+  div.className="quiz-item";
+  div.innerHTML=q.replace(/\[(.+?)\]/g,'<span class="blank">$1</span>');
+  quiz.appendChild(div);
+ });
+
+ document.querySelectorAll(".blank").forEach(b=>{
+  b.onclick=()=>b.classList.toggle("revealed");
+ });
+}
+
+render();
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>PNU 괄호빵</title>
 <style>
 :root{
