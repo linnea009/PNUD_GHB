@@ -4,192 +4,81 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>BlankBread</title>
-
 <style>
 :root{
   --bread:#f59e0b;
-  --cream:#fef3c7;
-  --choco:#78350f;
-  --bg:#fff7ed;
+  --bread-dark:#b45309;
+  --toast:#fb923c;
+  --cream:#fff7ed;
+  --butter:#fef3c7;
+  --choco:#3f2414;
   --card:#ffffff;
   --text:#3f2c1d;
+  --muted:#8a6b4c;
+  --border:#f3d7a6;
+  --danger:#dc2626;
+  --shadow:0 8px 20px rgba(120,53,15,.12);
 }
-
-body{
-  margin:0;
-  font-family:system-ui;
-  background:var(--bg);
-  color:var(--text);
-}
-
-/* 🍞 상단 바 */
-.header{
-  background:linear-gradient(135deg,#f59e0b,#fb923c);
-  color:white;
-  padding:14px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  position:sticky;
-  top:0;
-}
-
-.menu-btn{
-  font-size:22px;
-  cursor:pointer;
-}
-
-.title{
-  font-weight:900;
-}
-
-/* 🥐 사이드 */
-.sidebar{
-  position:fixed;
-  top:0;
-  left:-250px;
-  width:230px;
-  height:100%;
-  background:#fffaf0;
-  padding:16px;
-  transition:0.3s;
-  box-shadow:0 0 20px rgba(0,0,0,0.2);
-}
-.sidebar.open{left:0}
-
-.side-btn{
-  display:block;
-  width:100%;
-  margin-bottom:10px;
-  padding:12px;
-  border-radius:12px;
-  border:none;
-  background:#fde68a;
-  font-weight:700;
-}
-
-/* 🍽 컨텐츠 */
-.container{
-  padding:16px;
-}
-
-button{
-  background:var(--bread);
-  border:none;
-  color:white;
-  padding:12px 14px;
-  border-radius:12px;
-  font-weight:700;
-}
-
-button.secondary{
-  background:#fde68a;
-  color:#78350f;
-}
-
-/* 🍞 카드 */
-.card{
-  background:white;
-  border-radius:16px;
-  padding:16px;
-  margin-bottom:14px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-}
-
-.chapter{
-  background:var(--bread);
-  color:white;
-  padding:14px;
-  border-radius:14px;
-  font-weight:900;
-}
-
-.quiz-item{
-  background:var(--cream);
-  padding:14px;
-  border-radius:12px;
-  margin-top:10px;
-}
-
-.blank{
-  background:var(--choco);
-  color:transparent;
-  padding:4px 8px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.blank.revealed{
-  color:white;
-}
-
-.message{
-  text-align:center;
-  margin-top:30px;
-  color:#92400e;
-}
-
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 14% 8%,rgba(253,230,138,.65),transparent 30%),radial-gradient(circle at 86% 90%,rgba(251,146,60,.22),transparent 35%),var(--cream);color:var(--text)}
+.header{height:64px;background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff;display:flex;align-items:center;gap:14px;padding:0 18px;position:sticky;top:0;z-index:1000;box-shadow:0 4px 18px rgba(120,53,15,.22)}
+.menu-btn{font-size:28px;line-height:1;cursor:pointer;user-select:none}.app-title{font-size:20px;font-weight:950;letter-spacing:-.03em}.app-sub{font-size:12px;opacity:.9;margin-top:1px}.title-wrap{display:flex;flex-direction:column}.backdrop{display:none;position:fixed;inset:0;background:rgba(63,36,20,.45);z-index:1001}.backdrop.open{display:block}.sidebar{position:fixed;top:0;left:-290px;width:270px;height:100dvh;background:#fffaf0;z-index:1002;padding:18px 14px;box-shadow:0 0 28px rgba(63,36,20,.28);transition:left .25s ease;overflow-y:auto}.sidebar.open{left:0}.side-head{font-weight:950;margin:6px 8px 16px;color:var(--bread-dark);font-size:20px}.side-label{font-size:12px;font-weight:950;color:var(--muted);margin:18px 8px 8px}.side-btn{width:100%;border:0;background:#fde68a;color:#5a371d;padding:13px 14px;margin-bottom:9px;border-radius:14px;text-align:left;font-weight:900;font-size:15px;box-shadow:none}.side-btn.active{background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff}.desktop-layout{display:block;max-width:760px;margin:0 auto}.desktop-sidebar{display:none}.container{padding:22px 14px 56px}.panel{display:none}.panel.active{display:block}.top-actions{display:flex;gap:12px;margin:8px 0 24px;flex-wrap:wrap}button{border:0;border-radius:14px;padding:12px 16px;background:var(--bread);color:#fff;font-weight:950;font-size:15px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease,opacity .12s ease}button:hover{transform:translateY(-1px)}button.secondary{background:#fde68a;color:#5a371d}button.danger{background:var(--danger);color:#fff}button.ghost{background:#fff7ed;color:#5a371d;border:1px solid var(--border)}.chapter{background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff;padding:18px 20px;border-radius:16px;font-size:23px;font-weight:950;letter-spacing:-.035em;margin:14px 0 28px;box-shadow:var(--shadow)}.section{background:#fbbf24;color:#5a371d;padding:16px 20px;border-radius:14px;font-size:20px;font-weight:950;margin:0 0 24px;box-shadow:0 5px 14px rgba(180,83,9,.12)}.subsection{background:#fff1c9;border-left:6px solid var(--bread);padding:15px 18px;font-size:18px;font-weight:950;color:#7c3f10;margin:24px 0 14px;border-radius:12px}.card,.quiz-item{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}.quiz-item{font-size:20px;line-height:1.85;background:#fffaf0}.quiz-num{font-size:14px;color:var(--bread-dark);font-weight:950;margin-bottom:8px}.blank{display:inline-block;min-width:70px;background:var(--choco);color:transparent;border-radius:8px;padding:1px 9px;margin:0 3px;font-weight:950;line-height:1.45;cursor:pointer;vertical-align:middle;transition:transform .14s ease}.blank:active{transform:scale(1.12)}.blank.revealed{color:#fff}.answer-list{display:none;margin-top:10px;color:var(--muted);font-size:14px}.answer-list.visible{display:block}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}label{display:block;color:var(--muted);font-size:13px;font-weight:950;margin-bottom:6px}select,input,textarea{width:100%;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--text);padding:13px 14px;font-size:16px;outline:none}select:focus,input:focus,textarea:focus{border-color:var(--bread)}textarea{min-height:150px;resize:vertical;line-height:1.6}.guide{color:var(--muted);line-height:1.65;font-size:14px}.divider{height:1px;background:var(--border);margin:20px 0}.button-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.button-row button{flex:1 1 auto}.empty{text-align:center;color:var(--muted);padding:32px 0}.question-manager-list,.drag-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}.question-manager-item,.drag-item{background:#fffaf0;border:1px solid var(--border);border-radius:15px;padding:14px;box-shadow:0 2px 8px rgba(120,53,15,.06)}.question-manager-text{line-height:1.65;margin:8px 0}.small-row{display:flex;gap:8px;flex-wrap:wrap}.small-row button{font-size:13px;padding:9px 12px;flex:0 0 auto}.drag-item{cursor:grab;display:flex;justify-content:space-between;align-items:center;font-weight:900}.drag-item.dragging{opacity:.45}.drag-handle{color:var(--muted)}#exportOutput{min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}code{background:#fde68a;color:#7c3f10;padding:2px 6px;border-radius:8px}@media(min-width:900px){.desktop-layout{display:grid;grid-template-columns:210px 1fr;gap:20px;max-width:1100px;margin:0 auto;padding:22px 20px}.container{padding:0;max-width:none}.desktop-sidebar{display:block;position:sticky;top:82px;align-self:start;background:#fffaf0;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:var(--shadow)}.header{padding:0 28px}.menu-btn{display:none}.chapter{font-size:24px}.section{font-size:22px}.quiz-item{font-size:19px}.form-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.container{padding:20px 12px 48px}.header{height:60px;padding:0 16px}.app-title{font-size:19px}.app-sub{display:none}.chapter{font-size:21px;margin-bottom:24px}.section{font-size:20px;margin-bottom:22px}.subsection{font-size:17px}.quiz-item{font-size:20px;padding:16px}.form-grid{grid-template-columns:1fr}.blank{min-width:62px}.top-actions button{flex:1 1 auto}}
 </style>
 </head>
-
 <body>
-
-<div class="header">
-  <div class="menu-btn" id="menuBtn">☰</div>
-  <div class="title">🥖 BlankBread</div>
-</div>
-
-<div class="sidebar" id="sidebar">
-  <button class="side-btn">🍽️ 빵 먹기</button>
-  <button class="side-btn">👨‍🍳 빵 굽기</button>
-  <button class="side-btn">⚙️ 주방 관리</button>
-</div>
-
-<div class="container">
-
-  <div class="card">
-    <button>속 재료 다 보기</button>
-    <button class="secondary">다시 굽기</button>
-  </div>
-
-  <div class="chapter">오늘의 빵 🍞</div>
-
-  <div id="quiz"></div>
-
-  <div class="message" id="emptyMsg">아직 구워진 빵이 없습니다 🥲</div>
-
-</div>
-
+<header class="header"><div class="menu-btn" id="menuBtn">☰</div><div class="title-wrap"><div class="app-title">🥖 BlankBread</div><div class="app-sub">지식을 굽고 먹는 빈칸 빵집</div></div></header>
+<div class="backdrop" id="backdrop"></div>
+<aside class="sidebar" id="sidebar"></aside>
+<div class="desktop-layout"><aside class="desktop-sidebar" id="desktopSidebar"></aside><main class="container">
+<section id="solvePanel" class="panel active">
+  <div class="top-actions"><button id="showAllBtn">속 재료 다 보기</button><button class="secondary" id="hideAllBtn">다시 굽기</button></div>
+  <div class="card"><div class="form-grid"><div><label>빵 종류</label><select id="solveSubjectSelect"></select></div><div><label>레시피</label><select id="solveUnitSelect"></select></div></div></div>
+  <div class="chapter" id="chapterTitle">오늘의 빵</div><div class="section" id="sectionTitle">레시피</div><div class="subsection">갓 구운 문제</div><div id="quizList"></div>
+</section>
+<section id="createPanel" class="panel"><div class="card"><h2>👨‍🍳 빵 굽기</h2><p class="guide">빈칸은 <b>[정답]</b> 형식으로 감싸세요. 여러 줄 입력 시 줄마다 빵 하나가 구워집니다.</p><div class="form-grid"><div><label>기존 빵 종류</label><select id="createSubjectSelect"></select></div><div><label>기존 레시피</label><select id="createUnitSelect"></select></div></div><div class="divider"></div><div class="form-grid"><div><label>새 빵 종류</label><input id="newSubjectInput" placeholder="예: 근관치료학"></div><div><label>새 레시피</label><input id="newUnitInput" placeholder="예: 치수 질환"></div></div><textarea id="customInput" placeholder="예:\n치수에 해로운 자극은 치수 [괴사]나 [염증]을 유발한다."></textarea><div class="button-row"><button id="addCustomBtn">오븐에 넣기</button><button class="secondary" id="clearInputBtn">반죽 초기화</button></div></div></section>
+<section id="editPanel" class="panel"><div class="card"><h2>🧂 레시피 수정</h2><div class="form-grid"><div><label>빵 종류</label><select id="editSubjectSelect"></select></div><div><label>레시피</label><select id="editUnitSelect"></select></div></div><div id="questionManagerList" class="question-manager-list"></div></div></section>
+<section id="structurePanel" class="panel"><div class="card"><h2>🗂️ 빵 종류 / 레시피 관리</h2><div class="form-grid"><div><label>빵 종류</label><select id="manageSubjectSelect"></select></div><div><label>레시피</label><select id="manageUnitSelect"></select></div></div><div class="button-row"><button class="danger" id="deleteUnitBtn">레시피 버리기</button><button class="danger" id="deleteSubjectBtn">빵 종류 폐기</button><button class="secondary" id="renameSubjectBtn">빵 이름 바꾸기</button><button class="secondary" id="renameUnitBtn">레시피 이름 바꾸기</button></div></div></section>
+<section id="orderPanel" class="panel"><div class="card"><h2>📦 진열대 정리</h2><p class="guide">드래그해서 진열 순서를 바꾼 뒤 저장하세요.</p><h3>빵 종류 진열</h3><div id="subjectOrderList" class="drag-list"></div><div class="divider"></div><h3>레시피 진열</h3><label>빵 종류 선택</label><select id="orderSubjectSelect"></select><div id="unitOrderList" class="drag-list"></div><div class="button-row"><button id="saveOrderBtn">진열 완료</button><button class="secondary" id="resetOrderBtn">진열 리셋</button></div></div></section>
+<section id="exportPanel" class="panel"><div class="card"><h2>📤 빵 포장</h2><p class="guide">아래 내용을 복사해서 GitHub의 <code>data.json</code>에 붙여넣으면 공유 빵집에 반영됩니다.</p><div class="button-row"><button id="makeExportBtn">포장 만들기</button><button class="secondary" id="copyExportBtn">포장 복사</button><button class="danger" id="clearLocalBtn">주방 초기화</button></div><textarea id="exportOutput" readonly></textarea></div></section>
+</main></div>
 <script>
-const sidebar=document.getElementById("sidebar");
-document.getElementById("menuBtn").onclick=()=>sidebar.classList.toggle("open");
-
-let questions=[
-"치수에 해로운 자극은 [괴사]나 [염증]을 유발한다"
-];
-
-const quiz=document.getElementById("quiz");
-const emptyMsg=document.getElementById("emptyMsg");
-
-function render(){
- quiz.innerHTML="";
- if(!questions.length){emptyMsg.style.display="block";return}
- emptyMsg.style.display="none";
-
- questions.forEach(q=>{
-  const div=document.createElement("div");
-  div.className="quiz-item";
-  div.innerHTML=q.replace(/\[(.+?)\]/g,'<span class="blank">$1</span>');
-  quiz.appendChild(div);
- });
-
- document.querySelectorAll(".blank").forEach(b=>{
-  b.onclick=()=>b.classList.toggle("revealed");
- });
-}
-
-render();
+"use strict";
+const fallbackQuizData={"근관치료학":{"단비족 2장":["비가역성 치수염은 [자발통]과 [지속성 통증]이 특징이다.","가역성 치수염은 자극 제거 후 통증이 [빠르게 소실]된다.","치수괴사의 경우 전기치수검사에서 일반적으로 [반응이 없다]."],"외상":["미성숙 영구치의 생활치수치료 목표는 [치근 발육 지속]이다.","Apexogenesis는 생활치수를 유지하여 [치근단 폐쇄]를 유도하는 술식이다."]},"구강병리학":{"치근단 병소":["치근단낭은 주로 [Malassez 상피잔사]에서 유래한다.","Cholesterol cleft는 지질이 빠져나가 생긴 [침상 공간]이다."]}};
+let sharedQuizData={},localQuizData={},deletedQuizData={},renamedSubjects={},renamedUnits={},subjectOrder=[],unitOrders={},quizData={};const el={};
+const menuHTML='<div class="side-head">🥖 BlankBread</div><div class="side-label">시식</div><button class="side-btn active" data-panel="solvePanel">🍽️ 빵 먹기</button><div class="side-label">주방</div><button class="side-btn" data-panel="createPanel">👨‍🍳 빵 굽기</button><button class="side-btn" data-panel="editPanel">🧂 레시피 수정</button><button class="side-btn" data-panel="structurePanel">🗂️ 빵 종류 관리</button><button class="side-btn" data-panel="orderPanel">📦 진열대 정리</button><button class="side-btn" data-panel="exportPanel">📤 빵 포장</button>';
+document.getElementById("sidebar").innerHTML=menuHTML;document.getElementById("desktopSidebar").innerHTML=menuHTML;
+function $(id){const x=document.getElementById(id);if(!x)throw new Error("missing #"+id);return x}
+function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","solveSubjectSelect","solveUnitSelect","chapterTitle","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","orderSubjectSelect","subjectOrderList","unitOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","clearLocalBtn","exportOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel")}
+function clone(x){return JSON.parse(JSON.stringify(x||{}))}
+function normalize(data){const n={};Object.entries(data||{}).forEach(([s,units])=>{s=String(s||"").trim();if(!s||typeof units!=="object"||Array.isArray(units))return;Object.entries(units).forEach(([u,qs])=>{u=String(u||"").trim();if(!u||!Array.isArray(qs))return;qs.forEach(q=>{q=String(q||"").trim();if(!q)return;if(!n[s])n[s]={};if(!n[s][u])n[s][u]=[];if(!n[s][u].includes(q))n[s][u].push(q)})})});return n}
+function merge(a,b){const m=normalize(a),e=normalize(b);Object.entries(e).forEach(([s,units])=>{if(!m[s])m[s]={};Object.entries(units).forEach(([u,qs])=>{if(!m[s][u])m[s][u]=[];qs.forEach(q=>{if(!m[s][u].includes(q))m[s][u].push(q)})})});return m}
+function applyRenames(data){const r={};Object.entries(normalize(data)).forEach(([s,units])=>{const ns=renamedSubjects[s]||s;if(!r[ns])r[ns]={};Object.entries(units).forEach(([u,qs])=>{const map=renamedUnits[s]||renamedUnits[ns]||{},nu=map[u]||u;if(!r[ns][nu])r[ns][nu]=[];qs.forEach(q=>{if(!r[ns][nu].includes(q))r[ns][nu].push(q)})})});return r}
+function applyDeletes(data){const r=clone(data);Object.entries(deletedQuizData||{}).forEach(([s,units])=>{if(!r[s])return;if(units===true){delete r[s];return}Object.entries(units||{}).forEach(([u,d])=>{if(d===true&&r[s])delete r[s][u]});if(r[s]&&Object.keys(r[s]).length===0)delete r[s]});return r}
+function orderedKeys(keys,order){const set=new Set(keys),o=(order||[]).filter(x=>set.has(x)),rest=keys.filter(x=>!o.includes(x)).sort((a,b)=>a.localeCompare(b,"ko"));return o.concat(rest)}
+function ordered(data){const c=normalize(data),r={};orderedKeys(Object.keys(c),subjectOrder).forEach(s=>{r[s]={};orderedKeys(Object.keys(c[s]),unitOrders[s]||[]).forEach(u=>r[s][u]=c[s][u])});return r}
+async function loadShared(){try{if(location.protocol==="file:")throw new Error("file protocol");const res=await fetch("data.json",{cache:"no-store"});if(!res.ok)throw new Error("no data.json");sharedQuizData=normalize(await res.json())}catch(e){console.warn(e);sharedQuizData=normalize(fallbackQuizData)}}
+function loadLocal(){try{localQuizData=normalize(JSON.parse(localStorage.getItem("blankQuizLocalData")||"{}"))}catch{localQuizData={}}try{deletedQuizData=JSON.parse(localStorage.getItem("blankQuizDeletedData")||"{}")}catch{deletedQuizData={}}try{renamedSubjects=JSON.parse(localStorage.getItem("blankQuizRenamedSubjects")||"{}") }catch{renamedSubjects={}}try{renamedUnits=JSON.parse(localStorage.getItem("blankQuizRenamedUnits")||"{}")}catch{renamedUnits={}}try{subjectOrder=JSON.parse(localStorage.getItem("blankQuizSubjectOrder")||"[]")}catch{subjectOrder=[]}try{unitOrders=JSON.parse(localStorage.getItem("blankQuizUnitOrders")||"{}") }catch{unitOrders={}}}
+function saveLocal(){localQuizData=normalize(localQuizData);localStorage.setItem("blankQuizLocalData",JSON.stringify(localQuizData));localStorage.setItem("blankQuizDeletedData",JSON.stringify(deletedQuizData));localStorage.setItem("blankQuizRenamedSubjects",JSON.stringify(renamedSubjects));localStorage.setItem("blankQuizRenamedUnits",JSON.stringify(renamedUnits));localStorage.setItem("blankQuizSubjectOrder",JSON.stringify(subjectOrder));localStorage.setItem("blankQuizUnitOrders",JSON.stringify(unitOrders))}
+function rebuild(){quizData=ordered(applyDeletes(applyRenames(merge(sharedQuizData,localQuizData))))}
+function subjects(){return Object.keys(quizData)}function units(s){return s&&quizData[s]?Object.keys(quizData[s]):[]}
+function fill(sel,vals){const old=sel.value;sel.innerHTML="";vals.forEach(v=>{const o=document.createElement("option");o.value=v;o.textContent=v;sel.appendChild(o)});if(vals.includes(old))sel.value=old;else if(vals.length)sel.value=vals[0]}
+function refresh(){const ss=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect].forEach(x=>fill(x,ss));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder()}
+function refreshSolve(){fill(el.solveUnitSelect,units(el.solveSubjectSelect.value));renderQuiz()}function refreshCreate(){fill(el.createUnitSelect,units(el.createSubjectSelect.value))}function refreshEdit(){fill(el.editUnitSelect,units(el.editSubjectSelect.value));renderManager()}function refreshManage(){fill(el.manageUnitSelect,units(el.manageSubjectSelect.value))}
+function esc(x){return String(x).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
+function parse(q){const ans=[];const html=esc(q).replace(/\[(.+?)\]/g,(_,a)=>{ans.push(a);return '<span class="blank">'+esc(a)+'</span>'});return{html,ans}}
+function renderQuiz(){const s=el.solveSubjectSelect.value,u=el.solveUnitSelect.value,qs=quizData?.[s]?.[u]||[];el.chapterTitle.textContent=s||"오늘의 빵";el.sectionTitle.textContent=u||"레시피";el.quizList.innerHTML="";if(!qs.length){el.quizList.innerHTML='<div class="empty">아직 구워진 빵이 없습니다 🥲</div>';return}qs.forEach((q,i)=>{const p=parse(q),d=document.createElement("div");d.className="quiz-item";d.innerHTML='<div class="quiz-num">빵 '+(i+1)+'</div><div>ㆍ '+p.html+'</div><div class="answer-list">속 재료: '+p.ans.map(esc).join(", ")+'</div>';el.quizList.appendChild(d)})}
+function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.remove("open")}function switchPanel(id){el.sideButtons.forEach(b=>b.classList.toggle("active",b.dataset.panel===id));el.panels.forEach(p=>p.classList.toggle("active",p.id===id));closeMenu();if(id==="editPanel")renderManager();if(id==="orderPanel")renderOrder()}
+function saveRefresh(){saveLocal();rebuild();refresh();el.exportOutput.value=""}
+function ensureQ(s,u,q){if(!localQuizData[s])localQuizData[s]={};if(!localQuizData[s][u])localQuizData[s][u]=[];if(!localQuizData[s][u].includes(q))localQuizData[s][u].push(q);if(deletedQuizData[s]===true)delete deletedQuizData[s];if(deletedQuizData[s]?.[u])delete deletedQuizData[s][u]}
+function addQ(){const lines=el.customInput.value.split("\n").map(x=>x.trim()).filter(Boolean);if(!lines.length)return alert("반죽이 비었습니다.");if(lines.some(x=>!/\[.+?\]/.test(x)))return alert("[속 재료] 형식이 없는 줄이 있습니다.");const s=el.newSubjectInput.value.trim()||el.createSubjectSelect.value,u=el.newUnitInput.value.trim()||el.createUnitSelect.value;if(!s||!u)return alert("빵 종류/레시피를 선택하거나 입력하세요.");lines.forEach(q=>ensureQ(s,u,q));saveRefresh();el.customInput.value="";el.newSubjectInput.value="";el.newUnitInput.value="";el.solveSubjectSelect.value=s;refreshSolve();el.solveUnitSelect.value=u;renderQuiz();switchPanel("solvePanel");alert("갓 구운 빵 완성!")}
+function setQList(s,u,qs){if(!localQuizData[s])localQuizData[s]={};localQuizData[s][u]=qs.slice();if(deletedQuizData[s]===true)delete deletedQuizData[s];if(deletedQuizData[s]?.[u])delete deletedQuizData[s][u]}
+function renderManager(){const s=el.editSubjectSelect.value,u=el.editUnitSelect.value,qs=quizData?.[s]?.[u]||[];el.questionManagerList.innerHTML="";if(!qs.length){el.questionManagerList.innerHTML='<div class="empty">손볼 레시피가 없습니다.</div>';return}qs.forEach((q,i)=>{const d=document.createElement("div");d.className="question-manager-item";d.innerHTML='<div class="quiz-num">빵 '+(i+1)+'</div><div class="question-manager-text">'+esc(q)+'</div><div class="small-row"><button class="secondary" data-act="edit" data-i="'+i+'">수정</button><button class="danger" data-act="del" data-i="'+i+'">삭제</button></div>';el.questionManagerList.appendChild(d)})}
+function editQ(s,u,i){const qs=(quizData?.[s]?.[u]||[]).slice(),n=prompt("레시피를 수정하세요:",qs[i]);if(!n||!n.trim())return;if(!/\[.+?\]/.test(n))return alert("[속 재료] 형식이 필요합니다.");qs[i]=n.trim();setQList(s,u,qs);saveRefresh();el.editSubjectSelect.value=s;refreshEdit();el.editUnitSelect.value=u;renderManager()}function delQ(s,u,i){const qs=(quizData?.[s]?.[u]||[]).slice();if(!confirm("이 빵을 버릴까요?"))return;qs.splice(i,1);setQList(s,u,qs);saveRefresh();el.editSubjectSelect.value=s;refreshEdit();el.editUnitSelect.value=u;renderManager()}
+function renameSubject(){const old=el.manageSubjectSelect.value,n=prompt("새 빵 이름:",old);if(!n||!n.trim()||n.trim()===old)return;if(quizData[n.trim()])return alert("이미 존재합니다.");renamedSubjects[old]=n.trim();saveRefresh()}function renameUnit(){const s=el.manageSubjectSelect.value,old=el.manageUnitSelect.value,n=prompt("새 레시피 이름:",old);if(!n||!n.trim()||n.trim()===old)return;if(quizData[s]?.[n.trim()])return alert("이미 존재합니다.");if(!renamedUnits[s])renamedUnits[s]={};renamedUnits[s][old]=n.trim();saveRefresh()}function delUnit(){const s=el.manageSubjectSelect.value,u=el.manageUnitSelect.value;if(!confirm("이 레시피를 버릴까요?"))return;if(!deletedQuizData[s])deletedQuizData[s]={};deletedQuizData[s][u]=true;saveRefresh()}function delSubject(){const s=el.manageSubjectSelect.value;if(!confirm("이 빵 종류 전체를 폐기할까요?"))return;deletedQuizData[s]=true;saveRefresh()}
+function makeExport(){el.exportOutput.value=JSON.stringify(quizData,null,2);switchPanel("exportPanel")}async function copyExport(){if(!el.exportOutput.value.trim())makeExport();try{await navigator.clipboard.writeText(el.exportOutput.value)}catch{el.exportOutput.select();document.execCommand("copy")}alert("포장 복사 완료!")}function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders"].forEach(k=>localStorage.removeItem(k));localQuizData={};deletedQuizData={};renamedSubjects={};renamedUnits={};subjectOrder=[];unitOrders={};rebuild();refresh()}
+function renderDrag(container,vals){container.innerHTML="";vals.forEach(v=>{const d=document.createElement("div");d.className="drag-item";d.draggable=true;d.dataset.value=v;d.innerHTML='<span>'+esc(v)+'</span><span class="drag-handle">☰</span>';container.appendChild(d)})}function renderOrder(){renderDrag(el.subjectOrderList,subjects());fill(el.orderSubjectSelect,subjects());renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value))}function afterEl(c,y){return [...c.querySelectorAll(".drag-item:not(.dragging)")].reduce((cl,ch)=>{const b=ch.getBoundingClientRect(),o=y-b.top-b.height/2;return o<0&&o>cl.offset?{offset:o,element:ch}:cl},{offset:-Infinity}).element}function saveOrder(){subjectOrder=[...el.subjectOrderList.querySelectorAll(".drag-item")].map(x=>x.dataset.value);const s=el.orderSubjectSelect.value;if(s)unitOrders[s]=[...el.unitOrderList.querySelectorAll(".drag-item")].map(x=>x.dataset.value);saveRefresh();switchPanel("orderPanel")}function resetOrder(){subjectOrder=[];unitOrders={};saveRefresh();switchPanel("orderPanel")}
+function bind(){el.menuBtn.onclick=()=>{el.sidebar.classList.toggle("open");el.backdrop.classList.toggle("open")};el.backdrop.onclick=closeMenu;el.sideButtons.forEach(b=>b.onclick=()=>switchPanel(b.dataset.panel));el.quizList.onclick=e=>{if(e.target.classList.contains("blank"))e.target.classList.toggle("revealed")};el.showAllBtn.onclick=()=>{document.querySelectorAll(".blank").forEach(x=>x.classList.add("revealed"));document.querySelectorAll(".answer-list").forEach(x=>x.classList.add("visible"))};el.hideAllBtn.onclick=()=>{document.querySelectorAll(".blank").forEach(x=>x.classList.remove("revealed"));document.querySelectorAll(".answer-list").forEach(x=>x.classList.remove("visible"))};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=refreshCreate;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.manageSubjectSelect.onchange=refreshManage;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>el.customInput.value="";el.makeExportBtn.onclick=makeExport;el.copyExportBtn.onclick=copyExport;el.clearLocalBtn.onclick=clearLocal;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));el.questionManagerList.onclick=e=>{const b=e.target.closest("button[data-act]");if(!b)return;const s=el.editSubjectSelect.value,u=el.editUnitSelect.value,i=Number(b.dataset.i);b.dataset.act==="edit"?editQ(s,u,i):delQ(s,u,i)};[el.subjectOrderList,el.unitOrderList].forEach(c=>{c.addEventListener("dragstart",e=>{if(e.target.classList.contains("drag-item"))e.target.classList.add("dragging")});c.addEventListener("dragend",e=>{if(e.target.classList.contains("drag-item"))e.target.classList.remove("dragging")});c.addEventListener("dragover",e=>{e.preventDefault();const d=c.querySelector(".dragging"),a=afterEl(c,e.clientY);if(!d)return;a?c.insertBefore(d,a):c.appendChild(d)})})}
+async function init(){cache();bind();await loadShared();loadLocal();rebuild();refresh()}init().catch(e=>{console.error(e);alert("앱 오류: "+e.message)});
 </script>
-
 </body>
 </html>
