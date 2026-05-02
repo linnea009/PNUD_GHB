@@ -56,6 +56,7 @@ let renamedUnits={};
 let subjectOrder=[];
 let unitOrders={};
 let burntBreads=[];
+let deletedQuestionKeys=[];
 let statsBySubjectSession={};
 let quizData={};
 const el={};
@@ -70,12 +71,23 @@ function clone(value){return JSON.parse(JSON.stringify(value||{}));}
 function normalize(data){const result={};Object.entries(data||{}).forEach(([subject,units])=>{const cleanSubject=String(subject||"").trim();if(!cleanSubject||typeof units!=="object"||Array.isArray(units))return;Object.entries(units).forEach(([unit,questions])=>{const cleanUnit=String(unit||"").trim();if(!cleanUnit||!Array.isArray(questions))return;questions.forEach(question=>{const cleanQuestion=String(question||"").trim();if(!cleanQuestion)return;if(!result[cleanSubject])result[cleanSubject]={};if(!result[cleanSubject][cleanUnit])result[cleanSubject][cleanUnit]=[];if(!result[cleanSubject][cleanUnit].includes(cleanQuestion))result[cleanSubject][cleanUnit].push(cleanQuestion);});});});return result;}
 function merge(base,extra){const merged=normalize(base);const cleanExtra=normalize(extra);Object.entries(cleanExtra).forEach(([subject,units])=>{if(!merged[subject])merged[subject]={};Object.entries(units).forEach(([unit,questions])=>{if(!merged[subject][unit])merged[subject][unit]=[];questions.forEach(question=>{if(!merged[subject][unit].includes(question))merged[subject][unit].push(question);});});});return merged;}
 function applyRenames(data){const renamed={};Object.entries(normalize(data)).forEach(([subject,units])=>{const newSubject=renamedSubjects[subject]||subject;if(!renamed[newSubject])renamed[newSubject]={};Object.entries(units).forEach(([unit,questions])=>{const unitMap=renamedUnits[subject]||renamedUnits[newSubject]||{};const newUnit=unitMap[unit]||unit;if(!renamed[newSubject][newUnit])renamed[newSubject][newUnit]=[];questions.forEach(question=>{if(!renamed[newSubject][newUnit].includes(question))renamed[newSubject][newUnit].push(question);});});});return renamed;}
-function applyDeletes(data){const result=clone(data);Object.entries(deletedQuizData||{}).forEach(([subject,units])=>{if(!result[subject])return;if(units===true){delete result[subject];return;}Object.entries(units||{}).forEach(([unit,deleted])=>{if(deleted===true&&result[subject])delete result[subject][unit];});if(result[subject]&&Object.keys(result[subject]).length===0)delete result[subject];});return result;}
+function applyDeletes(data){const result=clone(data);Object.entries(deletedQuizData||{}).forEach(([subject,units])=>{if(!result[subject])return;if(units===true){delete result[subject];return;}Object.entries(units||{}).forEach(([unit,deleted])=>{if(deleted===true&&result[subject])delete result[subject][unit];});if(result[subject]&&Object.keys(result[subject]).length===0)delete result[subject];});
+  Object.entries(result).forEach(([subject,units])=>{
+    Object.entries(units).forEach(([unit,questions])=>{
+      result[subject][unit]=questions.filter(question=>!deletedQuestionKeys.includes(keyOf(subject,unit,question)));
+      if(result[subject][unit].length===0) delete result[subject][unit];
+    });
+    if(Object.keys(result[subject]).length===0) delete result[subject];
+  });
+  return result;
+}
 function orderedKeys(keys,order){const set=new Set(keys);const ordered=(order||[]).filter(item=>set.has(item));const rest=keys.filter(item=>!ordered.includes(item)).sort((a,b)=>a.localeCompare(b,"ko"));return ordered.concat(rest);}
 function ordered(data){const clean=normalize(data);const result={};orderedKeys(Object.keys(clean),subjectOrder).forEach(subject=>{result[subject]={};orderedKeys(Object.keys(clean[subject]),unitOrders[subject]||[]).forEach(unit=>{result[subject][unit]=clean[subject][unit];});});return result;}
 async function loadShared(){try{if(location.protocol==="file:")throw new Error("file protocol");const response=await fetch("data.json",{cache:"no-store"});if(!response.ok)throw new Error("no data.json");sharedQuizData=normalize(await response.json());}catch(error){console.warn(error);sharedQuizData=normalize(fallbackQuizData);}}
-function loadLocal(){try{localQuizData=normalize(JSON.parse(localStorage.getItem("blankQuizLocalData")||"{}"));}catch{localQuizData={};}try{deletedQuizData=JSON.parse(localStorage.getItem("blankQuizDeletedData")||"{}");}catch{deletedQuizData={};}try{renamedSubjects=JSON.parse(localStorage.getItem("blankQuizRenamedSubjects")||"{}");}catch{renamedSubjects={};}try{renamedUnits=JSON.parse(localStorage.getItem("blankQuizRenamedUnits")||"{}");}catch{renamedUnits={};}try{subjectOrder=JSON.parse(localStorage.getItem("blankQuizSubjectOrder")||"[]");}catch{subjectOrder=[];}try{unitOrders=JSON.parse(localStorage.getItem("blankQuizUnitOrders")||"{}");}catch{unitOrders={};}try{burntBreads=JSON.parse(localStorage.getItem("blankBreadBurntList")||"[]");}catch{burntBreads=[];}statsBySubjectSession={};}
-function saveLocal(){localQuizData=normalize(localQuizData);localStorage.setItem("blankQuizLocalData",JSON.stringify(localQuizData));localStorage.setItem("blankQuizDeletedData",JSON.stringify(deletedQuizData||{}));localStorage.setItem("blankQuizRenamedSubjects",JSON.stringify(renamedSubjects||{}));localStorage.setItem("blankQuizRenamedUnits",JSON.stringify(renamedUnits||{}));localStorage.setItem("blankQuizSubjectOrder",JSON.stringify(subjectOrder||[]));localStorage.setItem("blankQuizUnitOrders",JSON.stringify(unitOrders||{}));localStorage.setItem("blankBreadBurntList",JSON.stringify(burntBreads||[]));}
+function loadLocal(){try{localQuizData=normalize(JSON.parse(localStorage.getItem("blankQuizLocalData")||"{}"));}catch{localQuizData={};}try{deletedQuizData=JSON.parse(localStorage.getItem("blankQuizDeletedData")||"{}");}catch{deletedQuizData={};}try{renamedSubjects=JSON.parse(localStorage.getItem("blankQuizRenamedSubjects")||"{}");}catch{renamedSubjects={};}try{renamedUnits=JSON.parse(localStorage.getItem("blankQuizRenamedUnits")||"{}");}catch{renamedUnits={};}try{subjectOrder=JSON.parse(localStorage.getItem("blankQuizSubjectOrder")||"[]");}catch{subjectOrder=[];}try{unitOrders=JSON.parse(localStorage.getItem("blankQuizUnitOrders")||"{}");}catch{unitOrders={};}try{burntBreads=JSON.parse(localStorage.getItem("blankBreadBurntList")||"[]");}catch{burntBreads=[];}
+  try{deletedQuestionKeys=JSON.parse(localStorage.getItem("blankBreadDeletedQuestions")||"[]");}catch{deletedQuestionKeys=[];}
+  statsBySubjectSession={};}
+function saveLocal(){localQuizData=normalize(localQuizData);localStorage.setItem("blankQuizLocalData",JSON.stringify(localQuizData));localStorage.setItem("blankQuizDeletedData",JSON.stringify(deletedQuizData||{}));localStorage.setItem("blankQuizRenamedSubjects",JSON.stringify(renamedSubjects||{}));localStorage.setItem("blankQuizRenamedUnits",JSON.stringify(renamedUnits||{}));localStorage.setItem("blankQuizSubjectOrder",JSON.stringify(subjectOrder||[]));localStorage.setItem("blankQuizUnitOrders",JSON.stringify(unitOrders||{}));localStorage.setItem("blankBreadBurntList",JSON.stringify(burntBreads||[]));localStorage.setItem("blankBreadDeletedQuestions",JSON.stringify(deletedQuestionKeys||[]));}
 function rebuild(){quizData=ordered(applyDeletes(applyRenames(merge(sharedQuizData,localQuizData))));}
 function subjects(){return Object.keys(quizData);}
 function units(subject){return subject&&quizData[subject]?Object.keys(quizData[subject]):[];}
@@ -102,19 +114,134 @@ function markForgotten(card){if(card.dataset.judged==="true")return;card.dataset
 function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.remove("open");}
 function switchPanel(id){el.sideButtons.forEach(button=>button.classList.toggle("active",button.dataset.panel===id));el.panels.forEach(panel=>panel.classList.toggle("active",panel.id===id));closeMenu();if(id==="editPanel")renderManager();if(id==="orderPanel")renderOrder();if(id==="burntPanel")renderBurnt();}
 function saveRefresh(){saveLocal();rebuild();refresh();el.exportOutput.value="";}
-function ensureQ(subject,unit,question){if(!localQuizData[subject])localQuizData[subject]={};if(!localQuizData[subject][unit])localQuizData[subject][unit]=[];if(!localQuizData[subject][unit].includes(question))localQuizData[subject][unit].push(question);if(deletedQuizData[subject]===true)delete deletedQuizData[subject];if(deletedQuizData[subject]?.[unit])delete deletedQuizData[subject][unit];}
+function ensureQ(subject,unit,question){if(!localQuizData[subject])localQuizData[subject]={};if(!localQuizData[subject][unit])localQuizData[subject][unit]=[];if(!localQuizData[subject][unit].includes(question))localQuizData[subject][unit].push(question);if(deletedQuizData[subject]===true)delete deletedQuizData[subject];if(deletedQuizData[subject]?.[unit])delete deletedQuizData[subject][unit];deletedQuestionKeys=deletedQuestionKeys.filter(key=>key!==keyOf(subject,unit,question));}
 function addQ(){const lines=el.customInput.value.split("\n").map(line=>line.trim()).filter(Boolean);if(!lines.length)return alert("반죽이 비었습니다.");if(lines.some(line=>!/\[.+?\]/.test(line)))return alert("[속 재료] 형식이 없는 줄이 있습니다.");const subject=el.newSubjectInput.value.trim()||el.createSubjectSelect.value;const unit=el.newUnitInput.value.trim()||el.createUnitSelect.value;if(!subject||!unit)return alert("빵 종류/레시피를 선택하거나 입력하세요.");lines.forEach(question=>ensureQ(subject,unit,question));saveRefresh();el.customInput.value="";el.newSubjectInput.value="";el.newUnitInput.value="";el.solveSubjectSelect.value=subject;refreshSolve();el.solveUnitSelect.value=unit;renderQuiz();switchPanel("solvePanel");alert("갓 구운 빵 완성!");}
 function setQList(subject,unit,questions){if(!localQuizData[subject])localQuizData[subject]={};localQuizData[subject][unit]=questions.slice();if(deletedQuizData[subject]===true)delete deletedQuizData[subject];if(deletedQuizData[subject]?.[unit])delete deletedQuizData[subject][unit];}
-function renderManager(){const subject=el.editSubjectSelect.value;const unit=el.editUnitSelect.value;const questions=quizData?.[subject]?.[unit]||[];el.questionManagerList.innerHTML="";if(!questions.length){el.questionManagerList.innerHTML='<div class="empty">손볼 레시피가 없습니다.</div>';return;}questions.forEach((question,index)=>{const item=document.createElement("div");item.className="question-manager-item";item.innerHTML='<div class="quiz-num">빵 '+(index+1)+'</div><div class="question-manager-text">'+esc(question)+'</div><div class="small-row"><button class="secondary" data-act="edit" data-i="'+index+'">수정</button><button class="danger" data-act="del" data-i="'+index+'">삭제</button></div>';el.questionManagerList.appendChild(item);});}
-function editQ(subject,unit,index){const questions=(quizData?.[subject]?.[unit]||[]).slice();const old=questions[index];const edited=prompt("레시피를 수정하세요:",old);if(!edited||!edited.trim())return;if(!/\[.+?\]/.test(edited))return alert("[속 재료] 형식이 필요합니다.");removeBurnt(keyOf(subject,unit,old));questions[index]=edited.trim();setQList(subject,unit,questions);saveRefresh();el.editSubjectSelect.value=subject;refreshEdit();el.editUnitSelect.value=unit;renderManager();}
-function delQ(subject,unit,index){const questions=(quizData?.[subject]?.[unit]||[]).slice();if(!confirm("이 빵을 버릴까요?"))return;removeBurnt(keyOf(subject,unit,questions[index]));questions.splice(index,1);setQList(subject,unit,questions);saveRefresh();el.editSubjectSelect.value=subject;refreshEdit();el.editUnitSelect.value=unit;renderManager();}
+function renderManager(){
+  const subject=el.editSubjectSelect.value;
+  const unit=el.editUnitSelect.value;
+  const questions=quizData?.[subject]?.[unit]||[];
+  el.questionManagerList.innerHTML="";
+
+  if(!subject||!unit||!questions.length){
+    el.questionManagerList.innerHTML='<div class="empty">손볼 레시피가 없습니다.</div>';
+    return;
+  }
+
+  questions.forEach((question,index)=>{
+    const item=document.createElement("div");
+    item.className="question-manager-item";
+    item.dataset.index=String(index);
+    item.innerHTML=
+      '<div class="quiz-num">빵 '+(index+1)+'</div>'+ 
+      '<div class="question-manager-text">'+esc(question)+'</div>'+ 
+      '<div class="small-row">'+
+        '<button type="button" class="secondary" data-action="edit">수정</button>'+ 
+        '<button type="button" class="danger" data-action="delete">삭제</button>'+ 
+      '</div>';
+    el.questionManagerList.appendChild(item);
+  });
+}
+
+function handleQuestionManagerClick(event){
+  const button=event.target.closest("button[data-action]");
+  if(!button||!el.questionManagerList.contains(button))return;
+  event.preventDefault();
+  event.stopPropagation();
+
+  const item=button.closest(".question-manager-item");
+  if(!item)return;
+
+  const subject=el.editSubjectSelect.value;
+  const unit=el.editUnitSelect.value;
+  const index=Number(item.dataset.index);
+  const action=button.dataset.action;
+
+  if(action==="edit")return openInlineEditor(item,subject,unit,index);
+  if(action==="cancel")return renderManager();
+  if(action==="save")return saveInlineEdit(item,subject,unit,index);
+  if(action==="delete")return openInlineDelete(item,subject,unit,index);
+  if(action==="delete-confirm")return delQ(subject,unit,index);
+}
+
+function openInlineEditor(item,subject,unit,index){
+  const questions=(quizData?.[subject]?.[unit]||[]).slice();
+  const old=questions[index]||"";
+  item.innerHTML=
+    '<div class="quiz-num">빵 '+(index+1)+' 수정 중</div>'+ 
+    '<textarea class="edit-question-textarea">'+esc(old)+'</textarea>'+ 
+    '<p class="guide">빈칸은 <b>[정답]</b> 형식으로 남겨야 합니다.</p>'+ 
+    '<div class="small-row">'+
+      '<button type="button" class="good" data-action="save">저장</button>'+ 
+      '<button type="button" class="secondary" data-action="cancel">취소</button>'+ 
+    '</div>';
+  const textarea=item.querySelector("textarea");
+  textarea.focus();
+  textarea.setSelectionRange(textarea.value.length,textarea.value.length);
+}
+
+function saveInlineEdit(item,subject,unit,index){
+  const textarea=item.querySelector("textarea");
+  const edited=(textarea?.value||"").trim();
+  if(!edited)return alert("빈 레시피는 저장할 수 없습니다.");
+  if(!/\[.+?\]/.test(edited))return alert("[속 재료] 형식이 필요합니다.");
+
+  const questions=(quizData?.[subject]?.[unit]||[]).slice();
+  const old=questions[index];
+  if(old===edited)return renderManager();
+
+  removeBurnt(keyOf(subject,unit,old));
+  deletedQuestionKeys=deletedQuestionKeys.filter(key=>key!==keyOf(subject,unit,old));
+  questions[index]=edited;
+  setQList(subject,unit,questions);
+  saveRefresh();
+  el.editSubjectSelect.value=subject;
+  refreshEdit();
+  el.editUnitSelect.value=unit;
+  renderManager();
+}
+
+function openInlineDelete(item,subject,unit,index){
+  const questions=(quizData?.[subject]?.[unit]||[]).slice();
+  const question=questions[index]||"";
+  item.innerHTML=
+    '<div class="quiz-num">빵 '+(index+1)+' 삭제 확인</div>'+ 
+    '<div class="question-manager-text">'+esc(question)+'</div>'+ 
+    '<p class="guide">정말 이 빵을 버릴까요? 되돌리려면 다시 구워야 합니다.</p>'+ 
+    '<div class="small-row">'+
+      '<button type="button" class="danger" data-action="delete-confirm">진짜 삭제</button>'+ 
+      '<button type="button" class="secondary" data-action="cancel">취소</button>'+ 
+    '</div>';
+}
+
+function editQ(subject,unit,index){
+  const item=el.questionManagerList.querySelector('.question-manager-item[data-index="'+index+'"]');
+  if(item)openInlineEditor(item,subject,unit,index);
+}
+
+function delQ(subject,unit,index){
+  const questions=(quizData?.[subject]?.[unit]||[]).slice();
+  const question=questions[index];
+  if(question===undefined)return renderManager();
+
+  removeBurnt(keyOf(subject,unit,question));
+  const deletedKey=keyOf(subject,unit,question);
+  if(!deletedQuestionKeys.includes(deletedKey))deletedQuestionKeys.push(deletedKey);
+  questions.splice(index,1);
+  setQList(subject,unit,questions);
+  saveRefresh();
+  el.editSubjectSelect.value=subject;
+  refreshEdit();
+  el.editUnitSelect.value=unit;
+  renderManager();
+}
 function renameSubject(){const old=el.manageSubjectSelect.value;const renamed=prompt("새 빵 이름:",old);if(!renamed||!renamed.trim()||renamed.trim()===old)return;const clean=renamed.trim();if(quizData[clean])return alert("이미 존재합니다.");renamedSubjects[old]=clean;burntBreads.forEach(item=>{if(item.subject===old){item.subject=clean;item.key=keyOf(item.subject,item.unit,item.question);}});if(statsBySubjectSession[old]){statsBySubjectSession[clean]=statsBySubjectSession[old];delete statsBySubjectSession[old];}saveRefresh();}
 function renameUnit(){const subject=el.manageSubjectSelect.value;const old=el.manageUnitSelect.value;const renamed=prompt("새 레시피 이름:",old);if(!renamed||!renamed.trim()||renamed.trim()===old)return;const clean=renamed.trim();if(quizData[subject]?.[clean])return alert("이미 존재합니다.");if(!renamedUnits[subject])renamedUnits[subject]={};renamedUnits[subject][old]=clean;burntBreads.forEach(item=>{if(item.subject===subject&&item.unit===old){item.unit=clean;item.key=keyOf(item.subject,item.unit,item.question);}});saveRefresh();}
 function delUnit(){const subject=el.manageSubjectSelect.value;const unit=el.manageUnitSelect.value;if(!confirm("이 레시피를 버릴까요?"))return;if(!deletedQuizData[subject])deletedQuizData[subject]={};deletedQuizData[subject][unit]=true;burntBreads=burntBreads.filter(item=>!(item.subject===subject&&item.unit===unit));saveRefresh();}
 function delSubject(){const subject=el.manageSubjectSelect.value;if(!confirm("이 빵 종류 전체를 폐기할까요?"))return;deletedQuizData[subject]=true;burntBreads=burntBreads.filter(item=>item.subject!==subject);delete statsBySubjectSession[subject];saveRefresh();}
 function makeExport(){el.exportOutput.value=JSON.stringify(quizData,null,2);switchPanel("exportPanel");}
 async function copyExport(){if(!el.exportOutput.value.trim())makeExport();try{await navigator.clipboard.writeText(el.exportOutput.value);}catch{el.exportOutput.select();document.execCommand("copy");}alert("포장 복사 완료!");}
-function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders","blankBreadBurntList","blankBreadStatsBySubject"].forEach(key=>localStorage.removeItem(key));localQuizData={};deletedQuizData={};renamedSubjects={};renamedUnits={};subjectOrder=[];unitOrders={};burntBreads=[];statsBySubjectSession={};rebuild();refresh();}
+function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders","blankBreadBurntList","blankBreadDeletedQuestions","blankBreadStatsBySubject"].forEach(key=>localStorage.removeItem(key));localQuizData={};deletedQuizData={};renamedSubjects={};renamedUnits={};subjectOrder=[];unitOrders={};burntBreads=[];deletedQuestionKeys=[];statsBySubjectSession={};rebuild();refresh();}
 function renderDrag(container,values){container.innerHTML="";values.forEach(value=>{const item=document.createElement("div");item.className="drag-item";item.draggable=true;item.dataset.value=value;item.innerHTML='<span>'+esc(value)+'</span><span class="drag-handle">☰</span>';container.appendChild(item);});}
 function renderOrder(){renderDrag(el.subjectOrderList,subjects());fill(el.orderSubjectSelect,subjects());renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));}
 function afterEl(container,y){return [...container.querySelectorAll(".drag-item:not(.dragging)")].reduce((closest,child)=>{const box=child.getBoundingClientRect();const offset=y-box.top-box.height/2;return offset<0&&offset>closest.offset?{offset,element:child}:closest;},{offset:-Infinity}).element;}
@@ -136,8 +263,8 @@ function bind(){el.menuBtn.onclick=()=>{el.sidebar.classList.toggle("open");el.b
   // 3. 세션 성공률 초기화
   statsBySubjectSession={};
   updateStats(el.solveSubjectSelect.value);
-};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=refreshCreate;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.manageSubjectSelect.onchange=refreshManage;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";};el.makeExportBtn.onclick=makeExport;el.copyExportBtn.onclick=copyExport;el.clearLocalBtn.onclick=clearLocal;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));el.questionManagerList.onclick=event=>{const button=event.target.closest("button[data-act]");if(!button)return;const subject=el.editSubjectSelect.value;const unit=el.editUnitSelect.value;const index=Number(button.dataset.i);button.dataset.act==="edit"?editQ(subject,unit,index):delQ(subject,unit,index);};[el.subjectOrderList,el.unitOrderList].forEach(container=>{container.addEventListener("dragstart",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.add("dragging");});container.addEventListener("dragend",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.remove("dragging");});container.addEventListener("dragover",event=>{event.preventDefault();const dragging=container.querySelector(".dragging");const after=afterEl(container,event.clientY);if(!dragging)return;after?container.insertBefore(dragging,after):container.appendChild(dragging);});});}
-function runTests(){console.group("BlankBread self-test");const merged=merge({A:{one:["x [y]","same [a]"]}},{A:{one:["same [a]","new [b]"]},B:{two:["z [c]"]}});console.assert(merged.A.one.length===3,"merge deduplicates");const normalized=normalize({" 과목 ":{" 단원 ":[" 문제 [정답] ",""," 문제 [정답] "]}});console.assert(normalized["과목"]["단원"].length===1,"normalize trims and deduplicates");const parsed=parse("A [B] C [D]");console.assert(parsed.answers.length===2,"parse extracts blanks");const previousStats=clone(statsBySubjectSession);statsBySubjectSession={테스트:{correct:1,total:2}};cache();updateStats("테스트");console.assert(el.subjectRate.textContent.includes("50%"),"session stats render percentage");statsBySubjectSession=previousStats;console.groupEnd();}
+};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=refreshCreate;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.addEventListener("click",handleQuestionManagerClick);el.manageSubjectSelect.onchange=refreshManage;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";};el.makeExportBtn.onclick=makeExport;el.copyExportBtn.onclick=copyExport;el.clearLocalBtn.onclick=clearLocal;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));[el.subjectOrderList,el.unitOrderList].forEach(container=>{container.addEventListener("dragstart",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.add("dragging");});container.addEventListener("dragend",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.remove("dragging");});container.addEventListener("dragover",event=>{event.preventDefault();const dragging=container.querySelector(".dragging");const after=afterEl(container,event.clientY);if(!dragging)return;after?container.insertBefore(dragging,after):container.appendChild(dragging);});});}
+function runTests(){console.group("BlankBread self-test");const merged=merge({A:{one:["x [y]","same [a]"]}},{A:{one:["same [a]","new [b]"]},B:{two:["z [c]"]}});console.assert(merged.A.one.length===3,"merge deduplicates");const normalized=normalize({" 과목 ":{" 단원 ":[" 문제 [정답] ",""," 문제 [정답] "]}});console.assert(normalized["과목"]["단원"].length===1,"normalize trims and deduplicates");const parsed=parse("A [B] C [D]");console.assert(parsed.answers.length===2,"parse extracts blanks");console.assert(typeof renderManager==="function","renderManager exists");console.assert(typeof handleQuestionManagerClick==="function","question manager click handler exists");const oldDeleted=deletedQuestionKeys.slice();deletedQuestionKeys=[keyOf("A","one","x [y]")];const afterDelete=applyDeletes({A:{one:["x [y]","z [w]"]}});console.assert(afterDelete.A.one.length===1&&afterDelete.A.one[0]==="z [w]","applyDeletes removes individual questions");deletedQuestionKeys=oldDeleted;const previousStats=clone(statsBySubjectSession);statsBySubjectSession={테스트:{correct:1,total:2}};cache();updateStats("테스트");console.assert(el.subjectRate.textContent.includes("50%"),"session stats render percentage");statsBySubjectSession=previousStats;console.groupEnd();}
 
 async function init(){cache();bind();await loadShared();loadLocal();rebuild();refresh();runTests();}
 init().catch(error=>{console.error(error);alert("앱 오류: "+error.message);});
