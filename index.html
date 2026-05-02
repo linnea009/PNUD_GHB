@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>BlankBread</title>
+<title>BlankBread - filling topping preview</title>
 <style>
 :root{
   --bread:#f59e0b;
@@ -23,7 +23,7 @@
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at 14% 8%,rgba(253,230,138,.65),transparent 30%),radial-gradient(circle at 86% 90%,rgba(251,146,60,.22),transparent 35%),var(--cream);color:var(--text)}
 .header{height:64px;background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff;display:flex;align-items:center;gap:14px;padding:0 18px;position:sticky;top:0;z-index:1000;box-shadow:0 4px 18px rgba(120,53,15,.22)}
-.menu-btn{font-size:28px;line-height:1;cursor:pointer;user-select:none}.app-title{font-size:20px;font-weight:950;letter-spacing:-.03em}.app-sub{font-size:12px;opacity:.9;margin-top:1px}.title-wrap{display:flex;flex-direction:column}.backdrop{display:none;position:fixed;inset:0;background:rgba(63,36,20,.45);z-index:1001}.backdrop.open{display:block}.sidebar{position:fixed;top:0;left:-290px;width:270px;height:100dvh;background:#fffaf0;z-index:1002;padding:18px 14px;box-shadow:0 0 28px rgba(63,36,20,.28);transition:left .25s ease;overflow-y:auto}.sidebar.open{left:0}.side-head{font-weight:950;margin:6px 8px 16px;color:var(--bread-dark);font-size:20px}.side-label{font-size:12px;font-weight:950;color:var(--muted);margin:18px 8px 8px}.side-btn{width:100%;border:0;background:#fde68a;color:#5a371d;padding:13px 14px;margin-bottom:9px;border-radius:14px;text-align:left;font-weight:900;font-size:15px;box-shadow:none}.side-btn.active{background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff}.desktop-layout{display:block;max-width:760px;margin:0 auto}.desktop-sidebar{display:none}.container{padding:22px 14px 56px}.panel{display:none}.panel.active{display:block}.top-actions{display:flex;gap:12px;margin:8px 0 24px;flex-wrap:wrap}button{border:0;border-radius:14px;padding:12px 16px;background:var(--bread);color:#fff;font-weight:950;font-size:15px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease,opacity .12s ease}button:hover{transform:translateY(-1px)}button:disabled{opacity:.55;cursor:not-allowed;transform:none}button.secondary{background:#fde68a;color:#5a371d}button.danger{background:var(--danger);color:#fff}button.good{background:var(--good);color:#fff}.chapter{background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff;padding:18px 20px;border-radius:16px;font-size:23px;font-weight:950;letter-spacing:-.035em;margin:14px 0 28px;box-shadow:var(--shadow)}.rate-pill{display:inline-block;font-size:14px;margin-left:10px;background:rgba(255,255,255,.24);padding:5px 10px;border-radius:999px;vertical-align:middle}.section{background:#fbbf24;color:#5a371d;padding:16px 20px;border-radius:14px;font-size:20px;font-weight:950;margin:0 0 24px;box-shadow:0 5px 14px rgba(180,83,9,.12)}.subsection{background:#fff1c9;border-left:6px solid var(--bread);padding:15px 18px;font-size:18px;font-weight:950;color:#7c3f10;margin:24px 0 14px;border-radius:12px}.card,.quiz-item{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}.quiz-item{font-size:20px;line-height:1.85;background:#fffaf0;transition:background .2s,border-color .2s,transform .12s}.quiz-item.creamed{background:#fff7d6;border-color:#facc15}.quiz-item.burnt{background:#2a1b14;color:#fff1c9;border-color:#1c120c}.quiz-item.burnt .quiz-num{color:#fbbf24}.quiz-item.burnt .answer-list{color:#fde68a}.quiz-num{font-size:14px;color:var(--bread-dark);font-weight:950;margin-bottom:8px}.blank{position:relative;display:inline-block;min-width:70px;background:var(--choco);color:transparent;border-radius:8px;padding:1px 9px;margin:0 3px;font-weight:950;line-height:1.45;cursor:pointer;vertical-align:middle;transition:transform .14s ease,background .2s,color .2s;overflow:hidden}.blank::before{content:"";position:absolute;inset:0;width:0;background:var(--cream-fill);transition:width .28s ease;z-index:0}.blank span{position:relative;z-index:1}.blank:active{transform:scale(1.12)}.blank.revealed{color:var(--choco);background:var(--cream-fill)}.blank.revealed::before{width:100%}.burnt .blank{background:#000;color:transparent}.burnt .blank.revealed{color:#fff;background:#000}.burnt .blank.revealed::before{width:0}.answer-list{display:none;margin-top:10px;color:var(--muted);font-size:14px}.answer-list.visible{display:block}.judge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.judge-row button{font-size:13px;padding:9px 12px;flex:1 1 auto}.status-pill{display:inline-block;font-size:12px;font-weight:950;border-radius:999px;padding:4px 9px;margin-left:6px;background:#111;color:#fbbf24}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}label{display:block;color:var(--muted);font-size:13px;font-weight:950;margin-bottom:6px}select,input,textarea{width:100%;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--text);padding:13px 14px;font-size:16px;outline:none}select:focus,input:focus,textarea:focus{border-color:var(--bread)}textarea{min-height:150px;resize:vertical;line-height:1.6}.guide{color:var(--muted);line-height:1.65;font-size:14px}.divider{height:1px;background:var(--border);margin:20px 0}.button-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.button-row button{flex:1 1 auto}.empty{text-align:center;color:var(--muted);padding:32px 0}.question-manager-list,.drag-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}.question-manager-item,.drag-item{background:#fffaf0;border:1px solid var(--border);border-radius:15px;padding:14px;box-shadow:0 2px 8px rgba(120,53,15,.06)}.question-manager-text{line-height:1.65;margin:8px 0}.small-row{display:flex;gap:8px;flex-wrap:wrap}.small-row button{font-size:13px;padding:9px 12px;flex:0 0 auto}.drag-item{cursor:grab;display:flex;justify-content:space-between;align-items:center;font-weight:900}.drag-item.dragging{opacity:.45}.drag-handle{color:var(--muted)}#exportOutput{min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}code{background:#fde68a;color:#7c3f10;padding:2px 6px;border-radius:8px}@media(min-width:900px){.desktop-layout{display:grid;grid-template-columns:210px 1fr;gap:20px;max-width:1100px;margin:0 auto;padding:22px 20px}.container{padding:0;max-width:none}.desktop-sidebar{display:block;position:sticky;top:82px;align-self:start;background:#fffaf0;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:var(--shadow)}.header{padding:0 28px}.menu-btn{display:none}.chapter{font-size:24px}.section{font-size:22px}.quiz-item{font-size:19px}.form-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.container{padding:20px 12px 48px}.header{height:60px;padding:0 16px}.app-title{font-size:19px}.app-sub{display:none}.chapter{font-size:21px;margin-bottom:24px}.rate-pill{font-size:12px;margin-left:0;margin-top:8px}.section{font-size:20px;margin-bottom:22px}.subsection{font-size:17px}.quiz-item{font-size:20px;padding:16px}.form-grid{grid-template-columns:1fr}.blank{min-width:62px}.top-actions button{flex:1 1 auto}}
+.menu-btn{font-size:28px;line-height:1;cursor:pointer;user-select:none}.app-title{font-size:20px;font-weight:950;letter-spacing:-.03em}.app-sub{font-size:12px;opacity:.9;margin-top:1px}.title-wrap{display:flex;flex-direction:column}.backdrop{display:none;position:fixed;inset:0;background:rgba(63,36,20,.45);z-index:1001}.backdrop.open{display:block}.sidebar{position:fixed;top:0;left:-290px;width:270px;height:100dvh;background:#fffaf0;z-index:1002;padding:18px 14px;box-shadow:0 0 28px rgba(63,36,20,.28);transition:left .25s ease;overflow-y:auto}.sidebar.open{left:0}.side-head{font-weight:950;margin:6px 8px 16px;color:var(--bread-dark);font-size:20px}.side-label{font-size:12px;font-weight:950;color:var(--muted);margin:18px 8px 8px}.side-btn{width:100%;border:0;background:#fde68a;color:#5a371d;padding:13px 14px;margin-bottom:9px;border-radius:14px;text-align:left;font-weight:900;font-size:15px;box-shadow:none}.side-btn.active{background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff}.desktop-layout{display:block;max-width:760px;margin:0 auto}.desktop-sidebar{display:none}.container{padding:22px 14px 56px}.panel{display:none}.panel.active{display:block}.top-actions{display:flex;gap:12px;margin:8px 0 24px;flex-wrap:wrap}button{border:0;border-radius:14px;padding:12px 16px;background:var(--bread);color:#fff;font-weight:950;font-size:15px;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s ease,opacity .12s ease}button:hover{transform:translateY(-1px)}button:disabled{opacity:.55;cursor:not-allowed;transform:none}button.secondary{background:#fde68a;color:#5a371d}button.danger{background:var(--danger);color:#fff}button.good{background:var(--good);color:#fff}.chapter{background:linear-gradient(135deg,var(--bread),var(--toast));color:#fff;padding:18px 20px;border-radius:16px;font-size:23px;font-weight:950;letter-spacing:-.035em;margin:14px 0 28px;box-shadow:var(--shadow)}.rate-pill{display:inline-block;font-size:14px;margin-left:10px;background:rgba(255,255,255,.24);padding:5px 10px;border-radius:999px;vertical-align:middle}.section{background:#fbbf24;color:#5a371d;padding:16px 20px;border-radius:14px;font-size:20px;font-weight:950;margin:0 0 24px;box-shadow:0 5px 14px rgba(180,83,9,.12)}.subsection{background:#fff1c9;border-left:6px solid var(--bread);padding:15px 18px;font-size:18px;font-weight:950;color:#7c3f10;margin:24px 0 14px;border-radius:12px}.quiz-section-block{margin:22px 0 10px}.quiz-section-heading{background:#eff6ff;border-left:6px solid #2563eb;color:#123a8c;padding:13px 16px;margin:0 0 10px;border-radius:10px;font-size:16px;font-weight:950;cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center;gap:10px}.quiz-section-title{display:block}.quiz-section-toggle{font-size:13px;color:#2563eb;background:#dbeafe;border-radius:999px;padding:4px 9px;white-space:nowrap}.quiz-section-block.collapsed .quiz-section-body{display:none}.quiz-section-block.collapsed .quiz-section-toggle::before{content:"펼치기"}.quiz-section-block:not(.collapsed) .quiz-section-toggle::before{content:"접기"}.quiz-section-meta{display:block;font-size:12px;color:var(--muted);font-weight:900;margin-top:3px}.question-section-badge{display:inline-block;background:#e0ecff;color:#123a8c;border-radius:999px;padding:4px 9px;margin:0 0 8px;font-size:12px;font-weight:950}.question-meta-badge{display:inline-block;background:#fff1c9;color:#7c3f10;border-radius:999px;padding:4px 9px;margin:0 6px 8px 0;font-size:12px;font-weight:950}.filling-block{margin:24px 0 14px}.filling-heading{background:#fff1c9;border-left:6px solid var(--bread);color:#7c3f10;padding:15px 18px;border-radius:12px;font-size:18px;font-weight:950;margin:0 0 12px}.topping-block{margin:12px 0 18px}.topping-heading{background:#eff6ff;border-left:6px solid #2563eb;color:#123a8c;padding:13px 16px;margin:0 0 10px;border-radius:10px;font-size:16px;font-weight:950;cursor:pointer;user-select:none;display:flex;justify-content:space-between;align-items:center}.topping-body{margin-left:0}.topping-block.collapsed .topping-body{display:none}.topping-block.collapsed .quiz-section-toggle::before{content:"펼치기"}.topping-block:not(.collapsed) .quiz-section-toggle::before{content:"접기"}.section-input-wrap{background:#fffaf0;border:1px dashed var(--border);border-radius:16px;padding:14px;margin:10px 0 14px}.section-input-wrap .guide{margin:8px 0 0}.edit-section-input{margin-bottom:10px}.edit-question-textarea{min-height:110px}.card,.quiz-item{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:var(--shadow)}.quiz-item{font-size:20px;line-height:1.85;background:#fffaf0;transition:background .2s,border-color .2s,transform .12s}.quiz-item.creamed{background:#fff7d6;border-color:#facc15}.quiz-item.burnt{background:#2a1b14;color:#fff1c9;border-color:#1c120c}.quiz-item.burnt .quiz-num{color:#fbbf24}.quiz-item.burnt .answer-list{color:#fde68a}.quiz-num{font-size:14px;color:var(--bread-dark);font-weight:950;margin-bottom:8px}.blank{position:relative;display:inline-block;min-width:70px;background:var(--choco);color:transparent;border-radius:8px;padding:1px 9px;margin:0 3px;font-weight:950;line-height:1.45;cursor:pointer;vertical-align:middle;transition:transform .14s ease,background .2s,color .2s;overflow:hidden}.blank::before{content:"";position:absolute;inset:0;width:0;background:var(--cream-fill);transition:width .28s ease;z-index:0}.blank span{position:relative;z-index:1}.blank:active{transform:scale(1.12)}.blank.revealed{color:var(--choco);background:var(--cream-fill)}.blank.revealed::before{width:100%}.burnt .blank{background:#000;color:transparent}.burnt .blank.revealed{color:#fff;background:#000}.burnt .blank.revealed::before{width:0}.answer-list{display:none;margin-top:10px;color:var(--muted);font-size:14px}.answer-list.visible{display:block}.judge-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.judge-row button{font-size:13px;padding:9px 12px;flex:1 1 auto}.status-pill{display:inline-block;font-size:12px;font-weight:950;border-radius:999px;padding:4px 9px;margin-left:6px;background:#111;color:#fbbf24}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}label{display:block;color:var(--muted);font-size:13px;font-weight:950;margin-bottom:6px}select,input,textarea{width:100%;border:1px solid var(--border);border-radius:14px;background:#fff;color:var(--text);padding:13px 14px;font-size:16px;outline:none}select:focus,input:focus,textarea:focus{border-color:var(--bread)}textarea{min-height:150px;resize:vertical;line-height:1.6}.guide{color:var(--muted);line-height:1.65;font-size:14px}.divider{height:1px;background:var(--border);margin:20px 0}.button-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.button-row button{flex:1 1 auto}.empty{text-align:center;color:var(--muted);padding:32px 0}.question-manager-list,.drag-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}.question-manager-item,.drag-item{background:#fffaf0;border:1px solid var(--border);border-radius:15px;padding:14px;box-shadow:0 2px 8px rgba(120,53,15,.06)}.question-manager-text{line-height:1.65;margin:8px 0}.small-row{display:flex;gap:8px;flex-wrap:wrap}.small-row button{font-size:13px;padding:9px 12px;flex:0 0 auto}.drag-item{cursor:grab;display:flex;justify-content:space-between;align-items:center;font-weight:900}.drag-item.dragging{opacity:.45}.drag-handle{color:var(--muted)}#exportOutput{min-height:260px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:13px}code{background:#fde68a;color:#7c3f10;padding:2px 6px;border-radius:8px}@media(min-width:900px){.desktop-layout{display:grid;grid-template-columns:210px 1fr;gap:20px;max-width:1100px;margin:0 auto;padding:22px 20px}.container{padding:0;max-width:none}.desktop-sidebar{display:block;position:sticky;top:82px;align-self:start;background:#fffaf0;border:1px solid var(--border);border-radius:20px;padding:14px;box-shadow:var(--shadow)}.header{padding:0 28px}.menu-btn{display:none}.chapter{font-size:24px}.section{font-size:22px}.quiz-item{font-size:19px}.form-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.container{padding:20px 12px 48px}.header{height:60px;padding:0 16px}.app-title{font-size:19px}.app-sub{display:none}.chapter{font-size:21px;margin-bottom:24px}.rate-pill{font-size:12px;margin-left:0;margin-top:8px}.section{font-size:20px;margin-bottom:22px}.subsection{font-size:17px}.quiz-item{font-size:20px;padding:16px}.form-grid{grid-template-columns:1fr}.blank{min-width:62px}.top-actions button{flex:1 1 auto}}
 </style>
 </head>
 <body>
@@ -37,7 +37,12 @@ body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",
   <div class="chapter"><span id="chapterTitleText">오늘의 빵</span><span id="subjectRate" class="rate-pill">🍞 제빵 성공률: 0% (0/0)</span></div><div class="section" id="sectionTitle">레시피</div><div class="subsection">먼저 떠올리고, 속 재료를 확인한 뒤 직접 판정하세요</div><div id="quizList"></div>
 </section>
 <section id="burntPanel" class="panel"><div class="top-actions"><button id="showBurntAllBtn">탄 빵 속 보기</button></div><div class="chapter">🔥 탄 빵 재탕</div><div class="section">기억 안 났던 빵만 다시 굽기</div><div class="subsection">다시 떠올려볼 빵들</div><div id="burntList"></div></section>
-<section id="createPanel" class="panel"><div class="card"><h2>👨‍🍳 빵 굽기</h2><p class="guide">빈칸은 <b>[정답]</b> 형식으로 감싸세요. 여러 줄 입력 시 줄마다 빵 하나가 구워집니다.</p><div class="form-grid"><div><label>기존 빵 종류</label><select id="createSubjectSelect"></select></div><div><label>기존 레시피</label><select id="createUnitSelect"></select></div></div><div class="divider"></div><div class="form-grid"><div><label>새 빵 종류</label><input id="newSubjectInput" placeholder="예: 근관치료학"></div><div><label>새 레시피</label><input id="newUnitInput" placeholder="예: 치수 질환"></div></div><textarea id="customInput" placeholder="예:\n치수에 해로운 자극은 치수 [괴사]나 [염증]을 유발한다."></textarea><div class="button-row"><button id="addCustomBtn">오븐에 넣기</button><button class="secondary" id="clearInputBtn">반죽 초기화</button></div></div></section>
+<section id="createPanel" class="panel"><div class="card"><h2>👨‍🍳 빵 굽기</h2><p class="guide">빈칸은 <b>[정답]</b> 형식으로 감싸세요. <b>필링</b>은 소단원, <b>토핑</b>은 section입니다. <b>빈 줄</b>을 넣으면 새 문제로 구분되고, 한 문제 안의 줄바꿈은 이어 붙습니다.</p><div class="form-grid"><div><label>빵 종류 선택</label><select id="createSubjectSelect"></select><input id="newSubjectInput" placeholder="새 빵 종류 입력 (예: 근관치료학)" style="display:none;margin-top:8px"></div><div><label>레시피 선택</label><select id="createUnitSelect"></select><input id="newUnitInput" placeholder="새 레시피 입력 (예: 단비족 2장)" style="display:none;margin-top:8px"></div></div><div class="section-input-wrap"><div class="form-grid"><div><label>🥐 필링 선택</label><select id="fillingSelect"></select><input id="newFillingInput" placeholder="새 필링 입력 (예: 1. 치수 질환의 원인)" style="display:none;margin-top:8px"></div><div><label>🍯 토핑 선택</label><select id="toppingSelect"></select><input id="newToppingInput" placeholder="새 토핑 입력 (예: 세균적 원인)" style="display:none;margin-top:8px"></div></div><p class="guide">기존 필링/토핑을 고르거나 맨 아래의 <b>➕ 새로 추가</b>를 선택하세요. 문제창 안에 <b>@필링</b>, <b>#토핑</b>을 직접 써도 됩니다.</p></div><textarea id="customInput" placeholder="예:
+치수에 해로운 자극은 치수 [염증]이나 [괴사]를 유발한다.
+치아우식증과 근관 내의 [세균]은 주요 원인이 된다.
+
+빈 줄을 넣으면 다음 빵입니다.
+치수 질환의 임상적 증상과 조직학적 소견은 [일치하지 않는다]."></textarea><div class="button-row"><button id="addCustomBtn">오븐에 넣기</button><button class="secondary" id="clearInputBtn">반죽 초기화</button></div></div></section>
 <section id="editPanel" class="panel"><div class="card"><h2>🧂 레시피 수정</h2><div class="form-grid"><div><label>빵 종류</label><select id="editSubjectSelect"></select></div><div><label>레시피</label><select id="editUnitSelect"></select></div></div><div id="questionManagerList" class="question-manager-list"></div></div></section>
 <section id="structurePanel" class="panel"><div class="card"><h2>🗂️ 빵 종류 / 레시피 관리</h2><div class="form-grid"><div><label>빵 종류</label><select id="manageSubjectSelect"></select></div><div><label>레시피</label><select id="manageUnitSelect"></select></div></div><div class="button-row"><button class="danger" id="deleteUnitBtn">레시피 버리기</button><button class="danger" id="deleteSubjectBtn">빵 종류 폐기</button><button class="secondary" id="renameSubjectBtn">빵 이름 바꾸기</button><button class="secondary" id="renameUnitBtn">레시피 이름 바꾸기</button></div></div></section>
 <section id="orderPanel" class="panel"><div class="card"><h2>📦 진열대 정리</h2><p class="guide">드래그해서 진열 순서를 바꾼 뒤 저장하세요.</p><h3>빵 종류 진열</h3><div id="subjectOrderList" class="drag-list"></div><div class="divider"></div><h3>레시피 진열</h3><label>빵 종류 선택</label><select id="orderSubjectSelect"></select><div id="unitOrderList" class="drag-list"></div><div class="button-row"><button id="saveOrderBtn">진열 완료</button><button class="secondary" id="resetOrderBtn">진열 리셋</button></div></div></section>
@@ -66,7 +71,7 @@ document.getElementById("sidebar").innerHTML=menuHTML;
 document.getElementById("desktopSidebar").innerHTML=menuHTML;
 
 function $(id){const node=document.getElementById(id);if(!node)throw new Error("missing #"+id);return node;}
-function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","showBurntAllBtn","burntList","solveSubjectSelect","solveUnitSelect","chapterTitleText","subjectRate","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","orderSubjectSelect","subjectOrderList","unitOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","clearLocalBtn","exportOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel");}
+function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","showBurntAllBtn","burntList","solveSubjectSelect","solveUnitSelect","chapterTitleText","subjectRate","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","fillingSelect","newFillingInput","toppingSelect","newToppingInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","orderSubjectSelect","subjectOrderList","unitOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","clearLocalBtn","exportOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel");}
 function clone(value){return JSON.parse(JSON.stringify(value||{}));}
 function normalize(data){const result={};Object.entries(data||{}).forEach(([subject,units])=>{const cleanSubject=String(subject||"").trim();if(!cleanSubject||typeof units!=="object"||Array.isArray(units))return;Object.entries(units).forEach(([unit,questions])=>{const cleanUnit=String(unit||"").trim();if(!cleanUnit||!Array.isArray(questions))return;questions.forEach(question=>{const cleanQuestion=String(question||"").trim();if(!cleanQuestion)return;if(!result[cleanSubject])result[cleanSubject]={};if(!result[cleanSubject][cleanUnit])result[cleanSubject][cleanUnit]=[];if(!result[cleanSubject][cleanUnit].includes(cleanQuestion))result[cleanSubject][cleanUnit].push(cleanQuestion);});});});return result;}
 function merge(base,extra){const merged=normalize(base);const cleanExtra=normalize(extra);Object.entries(cleanExtra).forEach(([subject,units])=>{if(!merged[subject])merged[subject]={};Object.entries(units).forEach(([unit,questions])=>{if(!merged[subject][unit])merged[subject][unit]=[];questions.forEach(question=>{if(!merged[subject][unit].includes(question))merged[subject][unit].push(question);});});});return merged;}
@@ -92,9 +97,14 @@ function rebuild(){quizData=ordered(applyDeletes(applyRenames(merge(sharedQuizDa
 function subjects(){return Object.keys(quizData);}
 function units(subject){return subject&&quizData[subject]?Object.keys(quizData[subject]):[];}
 function fill(select,values){const old=select.value;select.innerHTML="";values.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;select.appendChild(option);});if(values.includes(old))select.value=old;else if(values.length)select.value=values[0];}
-function refresh(){const subjectList=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect].forEach(select=>fill(select,subjectList));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder();renderBurnt();}
+function refresh(){const subjectList=subjects();[el.solveSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect].forEach(select=>fill(select,subjectList));refreshCreateSubjectSelect();refreshSolve();refreshEdit();refreshManage();renderOrder();renderBurnt();}
 function refreshSolve(){fill(el.solveUnitSelect,units(el.solveSubjectSelect.value));renderQuiz();}
-function refreshCreate(){fill(el.createUnitSelect,units(el.createSubjectSelect.value));}
+function fillWithNew(select,values,newLabel){const old=select.value;select.innerHTML="";values.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;select.appendChild(option);});const add=document.createElement("option");add.value="__new__";add.textContent=newLabel;select.appendChild(add);if(values.includes(old)||old==="__new__")select.value=old;else if(values.length)select.value=values[0];else select.value="__new__";}
+function currentCreateSubject(){return el.createSubjectSelect.value==="__new__"?el.newSubjectInput.value.trim():el.createSubjectSelect.value;}
+function currentCreateUnit(){return el.createUnitSelect.value==="__new__"?el.newUnitInput.value.trim():el.createUnitSelect.value;}
+function toggleNewCreateInputs(){if(el.newSubjectInput)el.newSubjectInput.style.display=el.createSubjectSelect.value==="__new__"?"block":"none";if(el.newUnitInput)el.newUnitInput.style.display=el.createUnitSelect.value==="__new__"?"block":"none";}
+function refreshCreateSubjectSelect(){fillWithNew(el.createSubjectSelect,subjects(),"➕ 새 빵 종류 추가");refreshCreate();}
+function refreshCreate(){const subject=currentCreateSubject();fillWithNew(el.createUnitSelect,units(subject),"➕ 새 레시피 추가");toggleNewCreateInputs();refreshMetaSelects();}
 function refreshEdit(){fill(el.editUnitSelect,units(el.editSubjectSelect.value));renderManager();}
 function refreshManage(){fill(el.manageUnitSelect,units(el.manageSubjectSelect.value));}
 function esc(value){return String(value).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");}
@@ -105,9 +115,193 @@ function removeBurnt(key){burntBreads=burntBreads.filter(item=>item.key!==key);s
 function getBreadEmoji(subject){const breads=["🍞","🥐","🥯","🥖","🍩","🧁","🥨","🍪","🥞","🧇"];let sum=0;String(subject||"").split("").forEach(char=>{sum+=char.charCodeAt(0);});return breads[sum%breads.length];}
 function updateStats(subject){const stat=statsBySubjectSession[subject]||{correct:0,total:0};const rate=stat.total?Math.round((stat.correct/stat.total)*100):0;el.subjectRate.textContent=getBreadEmoji(subject)+" 제빵 성공률: "+rate+"% ("+stat.correct+"/"+stat.total+")";}
 function parse(question){const answers=[];const html=esc(question).replace(/\[(.+?)\]/g,(_,answer)=>{answers.push(answer);return '<span class="blank"><span>'+esc(answer)+'</span></span>';});return{html,answers};}
-function quizCard(subject,unit,question,index){const parsed=parse(question);const burnt=isBurnt(subject,unit,question);const card=document.createElement("div");card.className="quiz-item"+(burnt?" burnt":"");card.dataset.subject=subject;card.dataset.unit=unit;card.dataset.question=question;card.dataset.judged="false";card.innerHTML='<div class="quiz-num">빵 '+(index+1)+(burnt?' <span class="status-pill">기억 안 났던 빵</span>':'')+'</div><div>ㆍ '+parsed.html+'</div><div class="answer-list">속 재료: '+parsed.answers.map(esc).join(", ")+'</div><div class="guide">1) 먼저 떠올리기 → 2) 빈칸 눌러 확인 → 3) 자기판정</div><div class="judge-row"><button class="good" data-judge="correct">🍰 기억났음</button><button class="danger" data-judge="wrong">🔥 기억 안 남</button></div>';return card;}
-function renderQuiz(){const subject=el.solveSubjectSelect.value;const unit=el.solveUnitSelect.value;const questions=quizData?.[subject]?.[unit]||[];el.chapterTitleText.textContent=subject||"오늘의 빵";el.sectionTitle.textContent=unit||"레시피";updateStats(subject);el.quizList.innerHTML="";if(!questions.length){el.quizList.innerHTML='<div class="empty">아직 구워진 빵이 없습니다 🥲</div>';return;}questions.forEach((question,index)=>el.quizList.appendChild(quizCard(subject,unit,question,index)));}
-function renderBurnt(){el.burntList.innerHTML="";if(!burntBreads.length){el.burntList.innerHTML='<div class="empty">기억 안 났던 빵이 없습니다. 오늘의 오븐 상태 아주 좋음 🍞</div>';return;}burntBreads.forEach((item,index)=>el.burntList.appendChild(quizCard(item.subject,item.unit,item.question,index)));}
+function readMeta(question){
+  let raw=String(question||"").trim();
+  let filling="";
+  let topping="";
+
+  // 새 형식: @필링 \n #토핑 \n 문제
+  let changed=true;
+  while(changed){
+    changed=false;
+    const f=raw.match(/^@([^\n]+)\n([\s\S]*)$/);
+    if(f){filling=f[1].trim();raw=f[2].trim();changed=true;continue;}
+    const t=raw.match(/^#([^\n]+)\n([\s\S]*)$/);
+    if(t){
+      // 호환: @가 없고 #만 있던 옛 데이터는 "필링"으로 취급합니다.
+      if(filling)topping=t[1].trim();
+      else filling=t[1].trim();
+      raw=t[2].trim();changed=true;continue;
+    }
+  }
+
+  // 인라인 지원: @필링|#토핑|문제, #필링|문제
+  const inlineFull=raw.match(/^@([^|]+)\|#([^|]+)\|([\s\S]*)$/);
+  if(inlineFull)return {filling:inlineFull[1].trim(),topping:inlineFull[2].trim(),text:inlineFull[3].trim()};
+  const inlineFilling=raw.match(/^@([^|]+)\|([\s\S]*)$/);
+  if(inlineFilling)return {filling:inlineFilling[1].trim(),topping:"",text:inlineFilling[2].trim()};
+  const inlineOld=raw.match(/^#([^|]+)\|([\s\S]*)$/);
+  if(inlineOld)return {filling:inlineOld[1].trim(),topping:"",text:inlineOld[2].trim()};
+
+  return {filling:filling||"기본 필링",topping:topping||"기본 토핑",text:raw};
+}
+function parseQuestion(question){
+  const info=readMeta(question);
+  const parsed=parse(info.text);
+  return {filling:info.filling||"기본 필링",topping:info.topping||"기본 토핑",text:info.text,html:parsed.html,answers:parsed.answers};
+}
+function composeQuestion(filling,topping,text){
+  const cleanFilling=String(filling||"").trim();
+  const cleanTopping=String(topping||"").trim();
+  const cleanText=String(text||"").trim();
+  let out="";
+  if(cleanFilling)out+="@"+cleanFilling+"\n";
+  if(cleanTopping)out+="#"+cleanTopping+"\n";
+  return out+cleanText;
+}
+function groupedQuestions(questions){
+  const fillings=[];
+  const fmap=new Map();
+  (questions||[]).forEach((question,index)=>{
+    const parsed=parseQuestion(question);
+    const filling=parsed.filling||"기본 필링";
+    const topping=parsed.topping||"기본 토핑";
+    if(!fmap.has(filling)){
+      const group={filling,toppings:[],tmap:new Map(),count:0};
+      fmap.set(filling,group);
+      fillings.push(group);
+    }
+    const fgroup=fmap.get(filling);
+    if(!fgroup.tmap.has(topping)){
+      const tgroup={topping,items:[]};
+      fgroup.tmap.set(topping,tgroup);
+      fgroup.toppings.push(tgroup);
+    }
+    fgroup.tmap.get(topping).items.push({question,index,parsed});
+    fgroup.count++;
+  });
+  return fillings;
+}
+function makeFillingBlock(filling,count){
+  const block=document.createElement("div");
+  block.className="filling-block";
+  const heading=document.createElement("div");
+  heading.className="filling-heading";
+  heading.innerHTML="🥐 "+esc(filling)+" <span class=\"quiz-section-meta\">"+count+"개 빵</span>";
+  const body=document.createElement("div");
+  body.className="filling-body";
+  block.appendChild(heading);
+  block.appendChild(body);
+  return {block,body};
+}
+function makeToppingBlock(topping,count){
+  const block=document.createElement("div");
+  block.className="topping-block";
+  const heading=document.createElement("div");
+  heading.className="topping-heading";
+  heading.innerHTML='<span>🍯 '+esc(topping)+'<span class="quiz-section-meta">'+count+'개 빵</span></span><span class="quiz-section-toggle" aria-hidden="true"></span>';
+  const body=document.createElement("div");
+  body.className="topping-body";
+  heading.addEventListener("click",()=>block.classList.toggle("collapsed"));
+  block.appendChild(heading);
+  block.appendChild(body);
+  return {block,body};
+}
+function parseInputLines(value){
+  const raw=String(value||"").trim();
+  if(!raw)return [];
+  const items=[];
+  let currentFilling="";
+  let currentTopping="";
+
+  raw.split(/\n\s*\n+/).forEach(block=>{
+    let text=String(block||"").trim();
+    if(!text)return;
+    const lines=text.split("\n").map(line=>line.trim()).filter(Boolean);
+    let body=[];
+    lines.forEach(line=>{
+      if(line.startsWith("@")){
+        currentFilling=line.replace(/^@+/,"").trim()||currentFilling;
+        return;
+      }
+      if(line.startsWith("#")){
+        currentTopping=line.replace(/^#+/,"").trim()||currentTopping;
+        return;
+      }
+      body.push(line);
+    });
+    const merged=body.join(" ").trim();
+    if(!merged)return;
+    items.push(composeQuestion(currentFilling,currentTopping,merged));
+  });
+  return items;
+}
+function getMetaOptions(subject,unit){
+  const questions=quizData?.[subject]?.[unit]||[];
+  const fillings=[];
+  const fmap=new Map();
+  questions.forEach(question=>{
+    const parsed=parseQuestion(question);
+    const filling=parsed.filling||"기본 필링";
+    const topping=parsed.topping||"기본 토핑";
+    if(!fmap.has(filling)){fmap.set(filling,new Set());fillings.push(filling);}
+    fmap.get(filling).add(topping);
+  });
+  return {fillings,toppingsByFilling:fmap};
+}
+function fillMetaSelect(select,values,newLabel,emptyLabel){
+  const old=select.value;
+  select.innerHTML="";
+  if(!values.length){
+    const empty=document.createElement("option");
+    empty.value="";empty.textContent=emptyLabel;
+    select.appendChild(empty);
+  }
+  values.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;select.appendChild(option);});
+  const add=document.createElement("option");
+  add.value="__new__";add.textContent=newLabel;
+  select.appendChild(add);
+  if(values.includes(old))select.value=old;
+  else if(values.length)select.value=values[0];
+  else select.value="__new__";
+}
+function refreshMetaSelects(){
+  if(!el.fillingSelect||!el.toppingSelect)return;
+  const subject=currentCreateSubject();
+  const unit=currentCreateUnit();
+  const meta=getMetaOptions(subject,unit);
+  fillMetaSelect(el.fillingSelect,meta.fillings,"➕ 새 필링 추가","필링 없음");
+  toggleNewMetaInputs();
+  refreshToppingSelect();
+}
+function refreshToppingSelect(){
+  if(!el.fillingSelect||!el.toppingSelect)return;
+  const subject=currentCreateSubject();
+  const unit=currentCreateUnit();
+  const meta=getMetaOptions(subject,unit);
+  const selectedFilling=el.fillingSelect.value==="__new__"?(el.newFillingInput.value.trim()||""):el.fillingSelect.value;
+  const values=selectedFilling&&meta.toppingsByFilling.has(selectedFilling)?Array.from(meta.toppingsByFilling.get(selectedFilling)):[];
+  fillMetaSelect(el.toppingSelect,values,"➕ 새 토핑 추가","토핑 없음");
+  toggleNewMetaInputs();
+}
+function toggleNewMetaInputs(){
+  if(el.newFillingInput)el.newFillingInput.style.display=el.fillingSelect?.value==="__new__"?"block":"none";
+  if(el.newToppingInput)el.newToppingInput.style.display=el.toppingSelect?.value==="__new__"?"block":"none";
+}
+function quizCard(subject,unit,question,index){const parsed=parseQuestion(question);const burnt=isBurnt(subject,unit,question);const card=document.createElement("div");card.className="quiz-item"+(burnt?" burnt":"");card.dataset.subject=subject;card.dataset.unit=unit;card.dataset.question=question;card.dataset.judged="false";card.innerHTML='<div class="quiz-num">'+esc(unit||"레시피")+' · 빵 '+(index+1)+(burnt?' <span class="status-pill">기억 안 났던 빵</span>':'')+'</div><div>ㆍ '+parsed.html+'</div><div class="answer-list">속 재료: '+parsed.answers.map(esc).join(", ")+'</div><div class="guide">1) 먼저 떠올리기 → 2) 빈칸 눌러 확인 → 3) 자기판정</div><div class="judge-row"><button class="good" data-judge="correct">🍰 기억났음</button><button class="danger" data-judge="wrong">🔥 기억 안 남</button></div>';return card;}
+function renderGrouped(container,questions,makeCard){
+  groupedQuestions(questions).forEach(fgroup=>{
+    const fillingBlock=makeFillingBlock(fgroup.filling,fgroup.count);
+    fgroup.toppings.forEach(tgroup=>{
+      const toppingBlock=makeToppingBlock(tgroup.topping,tgroup.items.length);
+      tgroup.items.forEach(item=>toppingBlock.body.appendChild(makeCard(item)));
+      fillingBlock.body.appendChild(toppingBlock.block);
+    });
+    container.appendChild(fillingBlock.block);
+  });
+}
+function renderQuiz(){const subject=el.solveSubjectSelect.value;const unit=el.solveUnitSelect.value;const questions=quizData?.[subject]?.[unit]||[];el.chapterTitleText.textContent=subject||"오늘의 빵";el.sectionTitle.textContent=unit||"레시피";updateStats(subject);el.quizList.innerHTML="";if(!questions.length){el.quizList.innerHTML='<div class="empty">아직 구워진 빵이 없습니다 🥲</div>';return;}renderGrouped(el.quizList,questions,item=>quizCard(subject,unit,item.question,item.index));}
+function renderBurnt(){el.burntList.innerHTML="";if(!burntBreads.length){el.burntList.innerHTML='<div class="empty">기억 안 났던 빵이 없습니다. 오늘의 오븐 상태 아주 좋음 🍞</div>';return;}const questions=burntBreads.map(item=>item.question);groupedQuestions(questions).forEach(fgroup=>{const fillingBlock=makeFillingBlock(fgroup.filling,fgroup.count);fgroup.toppings.forEach(tgroup=>{const toppingBlock=makeToppingBlock(tgroup.topping,tgroup.items.length);tgroup.items.forEach(({index})=>{const item=burntBreads[index];toppingBlock.body.appendChild(quizCard(item.subject,item.unit,item.question,index));});fillingBlock.body.appendChild(toppingBlock.block);});el.burntList.appendChild(fillingBlock.block);});}
 
 function markRemembered(card){if(card.dataset.judged==="true")return;card.dataset.judged="true";const subject=card.dataset.subject;if(!statsBySubjectSession[subject])statsBySubjectSession[subject]={correct:0,total:0};statsBySubjectSession[subject].correct++;statsBySubjectSession[subject].total++;updateStats(subject);card.classList.remove("burnt");card.classList.add("creamed");card.querySelectorAll(".blank").forEach(blank=>blank.classList.add("revealed"));card.querySelectorAll("button[data-judge]").forEach(button=>button.disabled=true);removeBurnt(keyOf(card.dataset.subject,card.dataset.unit,card.dataset.question));renderBurnt();}
 function markForgotten(card){if(card.dataset.judged==="true")return;card.dataset.judged="true";const subject=card.dataset.subject;if(!statsBySubjectSession[subject])statsBySubjectSession[subject]={correct:0,total:0};statsBySubjectSession[subject].total++;updateStats(subject);card.classList.remove("creamed");card.classList.add("burnt");card.querySelectorAll(".blank").forEach(blank=>blank.classList.add("revealed"));card.querySelectorAll("button[data-judge]").forEach(button=>button.disabled=true);addBurnt(card.dataset.subject,card.dataset.unit,card.dataset.question);renderBurnt();}
@@ -115,7 +309,47 @@ function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.r
 function switchPanel(id){el.sideButtons.forEach(button=>button.classList.toggle("active",button.dataset.panel===id));el.panels.forEach(panel=>panel.classList.toggle("active",panel.id===id));closeMenu();if(id==="editPanel")renderManager();if(id==="orderPanel")renderOrder();if(id==="burntPanel")renderBurnt();}
 function saveRefresh(){saveLocal();rebuild();refresh();el.exportOutput.value="";}
 function ensureQ(subject,unit,question){if(!localQuizData[subject])localQuizData[subject]={};if(!localQuizData[subject][unit])localQuizData[subject][unit]=[];if(!localQuizData[subject][unit].includes(question))localQuizData[subject][unit].push(question);if(deletedQuizData[subject]===true)delete deletedQuizData[subject];if(deletedQuizData[subject]?.[unit])delete deletedQuizData[subject][unit];deletedQuestionKeys=deletedQuestionKeys.filter(key=>key!==keyOf(subject,unit,question));}
-function addQ(){const lines=el.customInput.value.split("\n").map(line=>line.trim()).filter(Boolean);if(!lines.length)return alert("반죽이 비었습니다.");if(lines.some(line=>!/\[.+?\]/.test(line)))return alert("[속 재료] 형식이 없는 줄이 있습니다.");const subject=el.newSubjectInput.value.trim()||el.createSubjectSelect.value;const unit=el.newUnitInput.value.trim()||el.createUnitSelect.value;if(!subject||!unit)return alert("빵 종류/레시피를 선택하거나 입력하세요.");lines.forEach(question=>ensureQ(subject,unit,question));saveRefresh();el.customInput.value="";el.newSubjectInput.value="";el.newUnitInput.value="";el.solveSubjectSelect.value=subject;refreshSolve();el.solveUnitSelect.value=unit;renderQuiz();switchPanel("solvePanel");alert("갓 구운 빵 완성!");}
+function addQ(){
+  let lines=parseInputLines(el.customInput.value);
+  if(!lines.length)return alert("반죽이 비었습니다.");
+
+  const chosenFilling=el.fillingSelect?.value==="__new__"?(el.newFillingInput?.value||"").trim():(el.fillingSelect?.value||"").trim();
+  const chosenTopping=el.toppingSelect?.value==="__new__"?(el.newToppingInput?.value||"").trim():(el.toppingSelect?.value||"").trim();
+
+  if(chosenFilling||chosenTopping){
+    // 선택 UI의 필링/토핑을 최우선으로 적용합니다. 문제창 안의 @/#보다 우선합니다.
+    lines=lines.map(question=>{
+      const info=readMeta(question);
+      return composeQuestion(chosenFilling||info.filling,chosenTopping||info.topping,info.text);
+    });
+  }
+
+  if(lines.some(line=>!/[\[].+?[\]]/.test(readMeta(line).text)))
+    return alert("[속 재료] 형식이 없는 문제가 있습니다. 필링/토핑 줄에는 빈칸이 없어도 됩니다.");
+
+  const subject=currentCreateSubject();
+  const unit=currentCreateUnit();
+  if(!subject||!unit)return alert("빵 종류/레시피를 선택하거나 입력하세요.");
+
+  lines.forEach(question=>ensureQ(subject,unit,question));
+  saveRefresh();
+  if(el.createSubjectSelect){el.createSubjectSelect.value=subject;refreshCreate();}
+  if(el.createUnitSelect){el.createUnitSelect.value=unit;refreshMetaSelects();}
+
+  el.customInput.value="";
+  el.newSubjectInput.value="";
+  el.newUnitInput.value="";
+  if(el.newFillingInput)el.newFillingInput.value="";
+  if(el.newToppingInput)el.newToppingInput.value="";
+  refreshMetaSelects();
+
+  el.solveSubjectSelect.value=subject;
+  refreshSolve();
+  el.solveUnitSelect.value=unit;
+  renderQuiz();
+  switchPanel("solvePanel");
+  alert(lines.length+"개 빵 완성! 🍞");
+}
 function setQList(subject,unit,questions){if(!localQuizData[subject])localQuizData[subject]={};localQuizData[subject][unit]=questions.slice();if(deletedQuizData[subject]===true)delete deletedQuizData[subject];if(deletedQuizData[subject]?.[unit])delete deletedQuizData[subject][unit];}
 function renderManager(){
   const subject=el.editSubjectSelect.value;
@@ -128,18 +362,27 @@ function renderManager(){
     return;
   }
 
-  questions.forEach((question,index)=>{
-    const item=document.createElement("div");
-    item.className="question-manager-item";
-    item.dataset.index=String(index);
-    item.innerHTML=
-      '<div class="quiz-num">빵 '+(index+1)+'</div>'+ 
-      '<div class="question-manager-text">'+esc(question)+'</div>'+ 
-      '<div class="small-row">'+
-        '<button type="button" class="secondary" data-action="edit">수정</button>'+ 
-        '<button type="button" class="danger" data-action="delete">삭제</button>'+ 
-      '</div>';
-    el.questionManagerList.appendChild(item);
+  groupedQuestions(questions).forEach(fgroup=>{
+    const fillingBlock=makeFillingBlock(fgroup.filling,fgroup.count);
+    fgroup.toppings.forEach(tgroup=>{
+      const toppingBlock=makeToppingBlock(tgroup.topping,tgroup.items.length);
+      tgroup.items.forEach(({question,index,parsed})=>{
+        const item=document.createElement("div");
+        item.className="question-manager-item";
+        item.dataset.index=String(index);
+        item.innerHTML=
+          '<div class="quiz-num">'+esc(unit)+' · 빵 '+(index+1)+'</div>'+ 
+          '<div><span class="question-meta-badge">🥐 '+esc(parsed.filling)+'</span><span class="question-meta-badge">🍯 '+esc(parsed.topping)+'</span></div>'+ 
+          '<div class="question-manager-text">'+esc(parsed.text)+'</div>'+ 
+          '<div class="small-row">'+
+            '<button type="button" class="secondary" data-action="edit">수정</button>'+ 
+            '<button type="button" class="danger" data-action="delete">삭제</button>'+ 
+          '</div>';
+        toppingBlock.body.appendChild(item);
+      });
+      fillingBlock.body.appendChild(toppingBlock.block);
+    });
+    el.questionManagerList.appendChild(fillingBlock.block);
   });
 }
 
@@ -167,10 +410,16 @@ function handleQuestionManagerClick(event){
 function openInlineEditor(item,subject,unit,index){
   const questions=(quizData?.[subject]?.[unit]||[]).slice();
   const old=questions[index]||"";
+  const parsed=readMeta(old);
   item.innerHTML=
     '<div class="quiz-num">빵 '+(index+1)+' 수정 중</div>'+ 
-    '<textarea class="edit-question-textarea">'+esc(old)+'</textarea>'+ 
-    '<p class="guide">빈칸은 <b>[정답]</b> 형식으로 남겨야 합니다.</p>'+ 
+    '<div class="form-grid"><div><label>🥐 필링</label>'+ 
+    '<input class="edit-filling-input" value="'+esc(parsed.filling==="기본 필링"?"":parsed.filling)+'" placeholder="예: 1. 치수 질환의 원인"></div>'+ 
+    '<div><label>🍯 토핑</label>'+ 
+    '<input class="edit-topping-input" value="'+esc(parsed.topping==="기본 토핑"?"":parsed.topping)+'" placeholder="예: 세균적 원인"></div></div>'+ 
+    '<label>문제 문장</label>'+ 
+    '<textarea class="edit-question-textarea">'+esc(parsed.text)+'</textarea>'+ 
+    '<p class="guide">필링/토핑을 비워두면 기본값으로 저장됩니다. 빈칸은 <b>[정답]</b> 형식으로 남겨야 합니다.</p>'+ 
     '<div class="small-row">'+
       '<button type="button" class="good" data-action="save">저장</button>'+ 
       '<button type="button" class="secondary" data-action="cancel">취소</button>'+ 
@@ -181,19 +430,24 @@ function openInlineEditor(item,subject,unit,index){
 }
 
 function saveInlineEdit(item,subject,unit,index){
+  const fillingInput=item.querySelector(".edit-filling-input");
+  const toppingInput=item.querySelector(".edit-topping-input");
   const textarea=item.querySelector("textarea");
-  const edited=(textarea?.value||"").trim();
-  if(!edited)return alert("빈 레시피는 저장할 수 없습니다.");
-  if(!/\[.+?\]/.test(edited))return alert("[속 재료] 형식이 필요합니다.");
+  const edited=composeQuestion(fillingInput?.value||"",toppingInput?.value||"",textarea?.value||"");
+  const editedText=readMeta(edited).text;
+  if(!editedText)return alert("빈 레시피는 저장할 수 없습니다.");
+  if(!/[\[].+?[\]]/.test(editedText))return alert("[속 재료] 형식이 필요합니다.");
 
   const questions=(quizData?.[subject]?.[unit]||[]).slice();
   const old=questions[index];
   if(old===edited)return renderManager();
 
-  removeBurnt(keyOf(subject,unit,old));
-  deletedQuestionKeys=deletedQuestionKeys.filter(key=>key!==keyOf(subject,unit,old));
-  questions[index]=edited;
-  setQList(subject,unit,questions);
+  const oldKey=keyOf(subject,unit,old);
+  removeBurnt(oldKey);
+  if(!deletedQuestionKeys.includes(oldKey))deletedQuestionKeys.push(oldKey);
+
+  ensureQ(subject,unit,edited);
+
   saveRefresh();
   el.editSubjectSelect.value=subject;
   refreshEdit();
@@ -263,7 +517,7 @@ function bind(){el.menuBtn.onclick=()=>{el.sidebar.classList.toggle("open");el.b
   // 3. 세션 성공률 초기화
   statsBySubjectSession={};
   updateStats(el.solveSubjectSelect.value);
-};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=refreshCreate;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.addEventListener("click",handleQuestionManagerClick);el.manageSubjectSelect.onchange=refreshManage;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";};el.makeExportBtn.onclick=makeExport;el.copyExportBtn.onclick=copyExport;el.clearLocalBtn.onclick=clearLocal;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));[el.subjectOrderList,el.unitOrderList].forEach(container=>{container.addEventListener("dragstart",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.add("dragging");});container.addEventListener("dragend",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.remove("dragging");});container.addEventListener("dragover",event=>{event.preventDefault();const dragging=container.querySelector(".dragging");const after=afterEl(container,event.clientY);if(!dragging)return;after?container.insertBefore(dragging,after):container.appendChild(dragging);});});}
+};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=()=>{toggleNewCreateInputs();refreshCreate();};el.createUnitSelect.onchange=()=>{toggleNewCreateInputs();refreshMetaSelects();};if(el.fillingSelect)el.fillingSelect.onchange=()=>{toggleNewMetaInputs();refreshToppingSelect();};if(el.toppingSelect)el.toppingSelect.onchange=toggleNewMetaInputs;if(el.newSubjectInput)el.newSubjectInput.oninput=()=>{refreshCreate();};if(el.newUnitInput)el.newUnitInput.oninput=refreshMetaSelects;if(el.newFillingInput)el.newFillingInput.oninput=refreshToppingSelect;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.addEventListener("click",handleQuestionManagerClick);el.manageSubjectSelect.onchange=refreshManage;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";if(el.newSubjectInput)el.newSubjectInput.value="";if(el.newUnitInput)el.newUnitInput.value="";if(el.newFillingInput)el.newFillingInput.value="";if(el.newToppingInput)el.newToppingInput.value="";refreshCreateSubjectSelect();};el.makeExportBtn.onclick=makeExport;el.copyExportBtn.onclick=copyExport;el.clearLocalBtn.onclick=clearLocal;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));[el.subjectOrderList,el.unitOrderList].forEach(container=>{container.addEventListener("dragstart",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.add("dragging");});container.addEventListener("dragend",event=>{if(event.target.classList.contains("drag-item"))event.target.classList.remove("dragging");});container.addEventListener("dragover",event=>{event.preventDefault();const dragging=container.querySelector(".dragging");const after=afterEl(container,event.clientY);if(!dragging)return;after?container.insertBefore(dragging,after):container.appendChild(dragging);});});}
 function runTests(){console.group("BlankBread self-test");const merged=merge({A:{one:["x [y]","same [a]"]}},{A:{one:["same [a]","new [b]"]},B:{two:["z [c]"]}});console.assert(merged.A.one.length===3,"merge deduplicates");const normalized=normalize({" 과목 ":{" 단원 ":[" 문제 [정답] ",""," 문제 [정답] "]}});console.assert(normalized["과목"]["단원"].length===1,"normalize trims and deduplicates");const parsed=parse("A [B] C [D]");console.assert(parsed.answers.length===2,"parse extracts blanks");console.assert(typeof renderManager==="function","renderManager exists");console.assert(typeof handleQuestionManagerClick==="function","question manager click handler exists");const oldDeleted=deletedQuestionKeys.slice();deletedQuestionKeys=[keyOf("A","one","x [y]")];const afterDelete=applyDeletes({A:{one:["x [y]","z [w]"]}});console.assert(afterDelete.A.one.length===1&&afterDelete.A.one[0]==="z [w]","applyDeletes removes individual questions");deletedQuestionKeys=oldDeleted;const previousStats=clone(statsBySubjectSession);statsBySubjectSession={테스트:{correct:1,total:2}};cache();updateStats("테스트");console.assert(el.subjectRate.textContent.includes("50%"),"session stats render percentage");statsBySubjectSession=previousStats;console.groupEnd();}
 
 async function init(){cache();bind();await loadShared();loadLocal();rebuild();refresh();runTests();}
