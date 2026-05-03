@@ -46,7 +46,8 @@ async function loadShared(){
   try{
     if(location.protocol === "file:") throw new Error("file protocol");
 
-    const BASE_PATH = location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1);
+   const BASE_PATH = new URL(".", location.href).pathname;
+console.log("BASE_PATH:", BASE_PATH);
 
 const indexRes = await fetch(BASE_PATH + "data/index.json?v=" + Date.now(), {
   cache: "no-store"
