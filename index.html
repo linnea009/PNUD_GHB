@@ -204,7 +204,30 @@ function managerQuestionCard(s,u,q,index){const p=parse(q);const card=document.c
 function managerHeader(kind,title){const icon=kind==="filling"?"🥐":kind==="topping"?"🍯":"🧻";const cls=kind==="filling"?"subsection filling-manage":kind==="topping"?"subsection topping-manage":"wrapping-header wrapping-manage";const div=document.createElement("div");div.className=cls;div.dataset.kind=kind;div.dataset.name=title;div.innerHTML='<div class="group-header"><div class="group-title"><span>'+icon+'</span><span>'+esc(title)+'</span></div><div class="group-actions"><button class="secondary meta-rename-btn">수정</button><button class="danger meta-delete-btn">삭제</button></div></div>';return div}
 function renderManager(){const s=el.editSubjectSelect.value,u=el.editUnitSelect.value,qs=quizData?.[s]?.[u]||[];el.questionManagerList.innerHTML="";if(!qs.length){el.questionManagerList.innerHTML='<div class="empty">손볼 레시피가 없습니다.</div>';return}const grouped=groupQuestions(s,u,qs);let idx=0;Object.entries(grouped).forEach(([f,tops])=>{el.questionManagerList.appendChild(managerHeader("filling",f));Object.entries(tops).forEach(([t,wraps])=>{el.questionManagerList.appendChild(managerHeader("topping",t));Object.entries(wraps).forEach(([w,items])=>{el.questionManagerList.appendChild(managerHeader("wrapping",w));items.forEach(q=>el.questionManagerList.appendChild(managerQuestionCard(s,u,q,idx++)))})})})}
 function replaceQuestion(s,u,oldQ,newQ){const list=(quizData?.[s]?.[u]||[]).slice();if(!deletedQuestionKeys.includes(keyOf(s,u,oldQ)))deletedQuestionKeys.push(keyOf(s,u,oldQ));removeBurnt(keyOf(s,u,oldQ));ensureQ(s,u,newQ)}
-function editQ(s,u,q){const m=splitMeta(q);const edited=prompt("문제를 수정하세요:",m.body);if(!edited||!edited.trim())return;if(!/\[.+?\]/.test(edited))return alert("[속 재료] 형식이 필요합니다.");replaceQuestion(s,u,q,joinMeta({...m,body:edited.trim()}));saveRefresh();el.editSubjectSelect.value=s;refreshEdit();el.editUnitSelect.value=u;renderManager()}
+function editQ(s,u,q){
+  const m=splitMeta(q);
+
+  const edited=prompt(
+    "문제를 수정하세요. 줄바꿈은 \\n으로 입력하세요:",
+    m.body.replace(/\n/g,"\\n")
+  );
+
+  if(!edited||!edited.trim())return;
+
+  // 🔥 여기 추가하는거다
+  const finalText = edited.replace(/\\n/g, "\n");
+
+  if(!/\[.+?\]/.test(finalText))
+    return alert("[속 재료] 형식이 필요합니다.");
+
+  replaceQuestion(s,u,q,joinMeta({...m,body:finalText.trim()}));
+
+  saveRefresh();
+  el.editSubjectSelect.value=s;
+  refreshEdit();
+  el.editUnitSelect.value=u;
+  renderManager();
+}
 function delQ(s,u,q){if(!confirm("이 빵을 버릴까요?"))return;if(!deletedQuestionKeys.includes(keyOf(s,u,q)))deletedQuestionKeys.push(keyOf(s,u,q));removeBurnt(keyOf(s,u,q));const list=(quizData?.[s]?.[u]||[]).filter(x=>x!==q);setQList(s,u,list);saveRefresh();el.editSubjectSelect.value=s;refreshEdit();el.editUnitSelect.value=u;renderManager()}
 function editMetaLabel(kind,name){const s=el.editSubjectSelect.value,u=el.editUnitSelect.value;const newName=prompt((kind==="filling"?"필링":kind==="topping"?"토핑":"랩핑")+" 이름을 바꾸세요:",name);if(!newName||!newName.trim()||newName.trim()===name)return;const list=(quizData?.[s]?.[u]||[]).slice();const updated=list.map(q=>{const m=splitMeta(q);const display={filling:m.filling||"기본 필링",topping:m.topping||"기본 토핑",wrapping:m.wrapping||"기본 랩핑"};if(display[kind]===name)m[kind]=newName.trim();if(!deletedQuestionKeys.includes(keyOf(s,u,q)))deletedQuestionKeys.push(keyOf(s,u,q));removeBurnt(keyOf(s,u,q));return joinMeta(m)});setQList(s,u,updated);saveRefresh();el.editSubjectSelect.value=s;refreshEdit();el.editUnitSelect.value=u;renderManager()}
 function deleteMetaLabel(kind,name){const label=kind==="filling"?"필링":kind==="topping"?"토핑":"랩핑";if(!confirm(label+" 라벨을 삭제할까요? 문제는 삭제하지 않고 기본 그룹으로 이동합니다."))return;const s=el.editSubjectSelect.value,u=el.editUnitSelect.value;const list=(quizData?.[s]?.[u]||[]).slice();const updated=list.map(q=>{const m=splitMeta(q);const display={filling:m.filling||"기본 필링",topping:m.topping||"기본 토핑",wrapping:m.wrapping||"기본 랩핑"};if(display[kind]===name)m[kind]="";if(!deletedQuestionKeys.includes(keyOf(s,u,q)))deletedQuestionKeys.push(keyOf(s,u,q));removeBurnt(keyOf(s,u,q));return joinMeta(m)});setQList(s,u,updated);saveRefresh();el.editSubjectSelect.value=s;refreshEdit();el.editUnitSelect.value=u;renderManager()}
