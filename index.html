@@ -46,9 +46,11 @@ async function loadShared(){
   try{
     if(location.protocol === "file:") throw new Error("file protocol");
 
-    const indexRes = await fetch("./data/index.json?v=" + Date.now(), {
-      cache: "no-store"
-    });
+    const BASE_PATH = location.pathname.substring(0, location.pathname.lastIndexOf("/") + 1);
+
+const indexRes = await fetch(BASE_PATH + "data/index.json?v=" + Date.now(), {
+  cache: "no-store"
+});
 
     if(!indexRes.ok) throw new Error("no data/index.json");
 
@@ -66,9 +68,10 @@ async function loadShared(){
         }
 
         for(const file of chapter.files || []){
-          const res = await fetch(file.path + "?v=" + Date.now(), {
-            cache: "no-store"
-          });
+          const cleanPath = file.path.replace(/^\.\//, "");
+const res = await fetch(BASE_PATH + cleanPath + "?v=" + Date.now(), {
+  cache: "no-store"
+});
 
           if(!res.ok){
             console.warn("불러오기 실패:", file.path);
