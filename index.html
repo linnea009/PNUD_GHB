@@ -82,7 +82,12 @@ const res = await fetch(BASE_PATH + cleanPath + "?v=" + Date.now(), {
           const arr = await res.json();
 
           if(Array.isArray(arr)){
-            merged[subjectName][chapterName].push(...arr);
+            arr.forEach(q => {
+  merged[subjectName][chapterName].push({
+    text: q,
+    source: file.path   // ← 어디서 온 문제인지 기록
+  });
+});
           }else{
             console.warn("배열 JSON이 아님:", file.path);
           }
@@ -182,21 +187,52 @@ function downloadJSON(filename, data){
   URL.revokeObjectURL(url);
 }
 
-function downloadCurrentUnit(){
+async function downloadCurrentUnit(){
   const subject = el.solveSubjectSelect.value;
   const unit = el.solveUnitSelect.value;
-  const questions = quizData?.[subject]?.[unit] || [];
 
-  if(!subject || !unit || !questions.length){
-    alert("다운로드할 레시피가 없습니다.");
+  if(!subject || !unit){
+    alert("레시피 선택 안됨");
     return;
   }
 
-  const filename =
-    safeFileName(subject) + "__" +
-    safeFileName(unit) + ".json";
+  try{
+    const indexRes = await fetch("./data/index.json?v=" + Date.now(), {
+      cache: "no-store"
+    });
 
-  downloadJSON(filename, questions);
+    if(!indexRes.ok) throw new Error("index.json 못 불러옴");
+
+    const index = await indexRes.json();
+
+    const subjectObj = index.subjects.find(s => s.name === subject);
+    const chapterObj = subjectObj?.chapters.find(c => c.name === unit);
+
+    if(!chapterObj){
+      alert("해당 레시피 못 찾음");
+      return;
+    }
+
+    for(const file of chapterObj.files){
+      const res = await fetch(file.path + "?v=" + Date.now(), {
+        cache: "no-store"
+      });
+
+      if(!res.ok){
+        console.warn("다운로드 실패:", file.path);
+        continue;
+      }
+
+      const arr = await res.json();
+      const filename = file.path.split("/").pop();
+
+      downloadJSON(filename, arr);
+    }
+
+  }catch(e){
+    console.error(e);
+    alert("다운로드 실패: " + e.message);
+  }
 }
 function bind(){el.menuBtn.onclick=()=>{el.sidebar.classList.toggle("open");el.backdrop.classList.toggle("open")};el.backdrop.onclick=closeMenu;el.sideButtons.forEach(b=>b.onclick=()=>switchPanel(b.dataset.panel));el.quizList.onclick=handleQuizClick;el.burntList.onclick=handleQuizClick;el.showAllBtn.onclick=()=>{document.querySelectorAll(".panel.active .blank").forEach(b=>b.classList.add("revealed"));document.querySelectorAll(".panel.active .answer-list").forEach(a=>a.classList.add("visible"))};el.showBurntAllBtn.onclick=()=>{document.querySelectorAll("#burntList .blank").forEach(b=>b.classList.add("revealed"));document.querySelectorAll("#burntList .answer-list").forEach(a=>a.classList.add("visible"))};el.hideAllBtn.onclick=()=>{document.querySelectorAll(".blank").forEach(b=>b.classList.remove("revealed"));document.querySelectorAll(".answer-list").forEach(a=>a.classList.remove("visible"));document.querySelectorAll(".quiz-item").forEach(i=>{i.classList.remove("creamed","burnt");i.dataset.judged="false";i.querySelectorAll("button[data-judge]").forEach(btn=>btn.disabled=false)});statsBySubjectSession={};updateStats(el.solveSubjectSelect.value)};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=()=>{toggleNewInputs();refreshCreateUnits()};el.createUnitSelect.onchange=()=>{toggleNewInputs();refreshCreateFillings()};el.fillingSelect.onchange=()=>{toggleNewInputs();refreshCreateToppings()};el.toppingSelect.onchange=()=>{toggleNewInputs();refreshCreateWrappings()};el.wrappingSelect.onchange=toggleNewInputs;el.newSubjectInput.oninput=refreshCreateUnits;el.newUnitInput.oninput=refreshCreateFillings;el.newFillingInput.oninput=refreshCreateToppings;el.newToppingInput.oninput=refreshCreateWrappings;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.onclick=handleQuestionManagerClick;el.manageSubjectSelect.onchange=refreshManage;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";[el.newSubjectInput,el.newUnitInput,el.newFillingInput,el.newToppingInput,el.newWrappingInput].forEach(i=>i.value="");refreshCreate()};el.makeExportBtn.onclick=makeExport;
 el.copyExportBtn.onclick=copyExport;
