@@ -42,7 +42,39 @@ function applyRenames(data){const r={};Object.entries(normalize(data)).forEach((
 function applyDeletes(data){const r=clone(data);Object.entries(deletedQuizData||{}).forEach(([s,units])=>{if(!r[s])return;if(units===true){delete r[s];return}Object.entries(units||{}).forEach(([u,d])=>{if(d===true&&r[s])delete r[s][u]});if(r[s]&&Object.keys(r[s]).length===0)delete r[s]});Object.entries(r).forEach(([s,units])=>{Object.entries(units).forEach(([u,qs])=>{r[s][u]=qs.filter(q=>!deletedQuestionKeys.includes(keyOf(s,u,q)));if(!r[s][u].length)delete r[s][u]});if(!Object.keys(r[s]).length)delete r[s]});return r}
 function orderedKeys(keys,order){const set=new Set(keys);const first=(order||[]).filter(x=>set.has(x));const rest=keys.filter(x=>!first.includes(x)).sort((a,b)=>a.localeCompare(b,"ko"));return first.concat(rest)}
 function ordered(data){const clean=normalize(data),r={};orderedKeys(Object.keys(clean),subjectOrder).forEach(s=>{r[s]={};orderedKeys(Object.keys(clean[s]),unitOrders[s]||[]).forEach(u=>r[s][u]=clean[s][u])});return r}
-async function loadShared(){try{if(location.protocol==="file:")throw new Error("file protocol");const res=await fetch("data.json",{cache:"no-store"});if(!res.ok)throw new Error("no data.json");sharedQuizData=normalize(await res.json())}catch(e){console.warn(e);sharedQuizData=normalize(fallbackQuizData)}}
+async function loadShared(){
+  try{
+    if(location.protocol==="file:") throw new Error("file protocol");
+
+    // 👉 불러올 파일 목록 (여기만 추가하면 됨)
+    const files = [
+      "./data/endodontics/ch02/01_pulp_disease_causes.json",
+      "./data/endodontics/ch02/02_pulp_inflammation.json",
+      "./data/endodontics/ch02/03_pulp_disease_classification.json"
+    ];
+
+    let merged = {};
+
+    for (const file of files){
+      const res = await fetch(file + "?v=" + Date.now());
+      if(!res.ok) continue;
+
+      const arr = await res.json();
+
+      // 👉 기존 구조에 맞게 변환해서 넣기
+      if(!merged["근관치료학"]) merged["근관치료학"] = {};
+      if(!merged["근관치료학"]["Chapter 2"]) merged["근관치료학"]["Chapter 2"] = [];
+
+      merged["근관치료학"]["Chapter 2"].push(...arr);
+    }
+
+    sharedQuizData = normalize(merged);
+
+  }catch(e){
+    console.warn(e);
+    sharedQuizData = normalize(fallbackQuizData);
+  }
+}
 function loadJSON(key,def){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(def))}catch{return def}}
 function loadLocal(){localQuizData=normalize(loadJSON("blankQuizLocalData",{}));deletedQuizData=loadJSON("blankQuizDeletedData",{});renamedSubjects=loadJSON("blankQuizRenamedSubjects",{});renamedUnits=loadJSON("blankQuizRenamedUnits",{});subjectOrder=loadJSON("blankQuizSubjectOrder",[]);unitOrders=loadJSON("blankQuizUnitOrders",{});metaOrders=loadJSON("blankBreadMetaOrders",{filling:{},topping:{},wrapping:{}});burntBreads=loadJSON("blankBreadBurntList",[]);deletedQuestionKeys=loadJSON("blankBreadDeletedQuestions",[]);statsBySubjectSession={}}
 function saveLocal(){localQuizData=normalize(localQuizData);localStorage.setItem("blankQuizLocalData",JSON.stringify(localQuizData));localStorage.setItem("blankQuizDeletedData",JSON.stringify(deletedQuizData||{}));localStorage.setItem("blankQuizRenamedSubjects",JSON.stringify(renamedSubjects||{}));localStorage.setItem("blankQuizRenamedUnits",JSON.stringify(renamedUnits||{}));localStorage.setItem("blankQuizSubjectOrder",JSON.stringify(subjectOrder||[]));localStorage.setItem("blankQuizUnitOrders",JSON.stringify(unitOrders||{}));localStorage.setItem("blankBreadMetaOrders",JSON.stringify(metaOrders||{filling:{},topping:{},wrapping:{}}));localStorage.setItem("blankBreadBurntList",JSON.stringify(burntBreads||[]));localStorage.setItem("blankBreadDeletedQuestions",JSON.stringify(deletedQuestionKeys||[]))}
