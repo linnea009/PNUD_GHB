@@ -108,7 +108,51 @@ function parse(question){const meta=splitMeta(question),answers=[];const html=es
 function metaList(subject,unit,type,filter={}){const set=new Set();(quizData?.[subject]?.[unit]||[]).forEach(q=>{const m=splitMeta(q);if(filter.filling!==undefined&&m.filling!==filter.filling)return;if(filter.topping!==undefined&&m.topping!==filter.topping)return;if(m[type])set.add(m[type])});return Array.from(set)}
 function orderKey(subject,unit,filling="",topping=""){return [subject,unit,filling,topping].join("||")}
 function orderedMeta(list,type,subject,unit,filling="",topping=""){const key=type==="filling"?orderKey(subject,unit):type==="topping"?orderKey(subject,unit,filling):orderKey(subject,unit,filling,topping);return orderedKeys(list,metaOrders[type]?.[key]||[])}
-function groupQuestions(subject,unit,questions){const grouped={};questions.forEach(q=>{const m=splitMeta(q);const f=m.filling||"기본 필링",t=m.topping||"기본 토핑",w=m.wrapping||"기본 랩핑";if(!grouped[f])grouped[f]={};if(!grouped[f][t])grouped[f][t]={};if(!grouped[f][t][w])grouped[f][t][w]=[];grouped[f][t][w].push(q)});const out={};orderedMeta(Object.keys(grouped),"filling",subject,unit).forEach(f=>{out[f]={};orderedMeta(Object.keys(grouped[f]),"topping",subject,unit,f).forEach(t=>{out[f][t]={};orderedMeta(Object.keys(grouped[f][t]),"wrapping",subject,unit,f,t).forEach(w=>out[f][t][w]=grouped[f][t][w])})});return out}
+function sortWrappingWithOverviewFirst(list){
+  return list.sort((a,b)=>{
+    const aIsOverview = a === "개요";
+    const bIsOverview = b === "개요";
+
+    if(aIsOverview && !bIsOverview) return -1;
+    if(!aIsOverview && bIsOverview) return 1;
+
+    return 0;
+  });
+}
+function groupQuestions(subject,unit,questions){
+  const grouped={};
+
+  questions.forEach(q=>{
+    const m=splitMeta(q);
+    const f=m.filling||"기본 필링";
+    const t=m.topping||"기본 토핑";
+    const w=m.wrapping||"기본 랩핑";
+
+    if(!grouped[f])grouped[f]={};
+    if(!grouped[f][t])grouped[f][t]={};
+    if(!grouped[f][t][w])grouped[f][t][w]=[];
+
+    grouped[f][t][w].push(q);
+  });
+
+  const out={};
+
+  orderedMeta(Object.keys(grouped),"filling",subject,unit).forEach(f=>{
+    out[f]={};
+
+    orderedMeta(Object.keys(grouped[f]),"topping",subject,unit,f).forEach(t=>{
+      out[f][t]={};
+
+      sortWrappingWithOverviewFirst(
+        orderedMeta(Object.keys(grouped[f][t]),"wrapping",subject,unit,f,t)
+      ).forEach(w=>{
+        out[f][t][w]=grouped[f][t][w];
+      });
+    });
+  });
+
+  return out;
+}
 function refresh(){const ss=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect,el.orderMetaSubjectSelect].forEach(s=>fill(s,ss));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder();renderBurnt()}
 function refreshSolve(){fill(el.solveUnitSelect,units(el.solveSubjectSelect.value));renderQuiz()}function refreshEdit(){fill(el.editUnitSelect,units(el.editSubjectSelect.value));renderManager()}function refreshManage(){fill(el.manageUnitSelect,units(el.manageSubjectSelect.value))}
 function addNewOption(sel,base,kind){const vals=base.slice();const labels=base.slice();vals.push(NEW);labels.push("➕ 새 "+kind+" 추가");fill(sel,vals,labels)}
