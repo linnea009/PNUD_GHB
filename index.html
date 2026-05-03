@@ -109,7 +109,7 @@ function metaList(subject,unit,type,filter={}){const set=new Set();(quizData?.[s
 function orderKey(subject,unit,filling="",topping=""){return [subject,unit,filling,topping].join("||")}
 function orderedMeta(list,type,subject,unit,filling="",topping=""){const key=type==="filling"?orderKey(subject,unit):type==="topping"?orderKey(subject,unit,filling):orderKey(subject,unit,filling,topping);return orderedKeys(list,metaOrders[type]?.[key]||[])}
 function sortWrappingWithOverviewFirst(list){
-  return list.sort((a,b)=>{
+ return list.sort((a,b)=>{
     const aIsOverview = a === "개요";
     const bIsOverview = b === "개요";
 
@@ -119,6 +119,19 @@ function sortWrappingWithOverviewFirst(list){
     return 0;
   });
 }
+
+function sortToppingWithOverviewFirst(list, groupedF){
+  return list.sort((a,b)=>{
+    const aHasOverview = groupedF[a] && groupedF[a]["개요"];
+    const bHasOverview = groupedF[b] && groupedF[b]["개요"];
+
+    if(aHasOverview && !bHasOverview) return -1;
+    if(!aHasOverview && bHasOverview) return 1;
+
+    return 0;
+  });
+}
+
 function groupQuestions(subject,unit,questions){
   const grouped={};
 
@@ -140,7 +153,10 @@ function groupQuestions(subject,unit,questions){
   orderedMeta(Object.keys(grouped),"filling",subject,unit).forEach(f=>{
     out[f]={};
 
-    orderedMeta(Object.keys(grouped[f]),"topping",subject,unit,f).forEach(t=>{
+    sortToppingWithOverviewFirst(
+      orderedMeta(Object.keys(grouped[f]),"topping",subject,unit,f),
+      grouped[f]
+    ).forEach(t=>{
       out[f][t]={};
 
       sortWrappingWithOverviewFirst(
@@ -153,6 +169,8 @@ function groupQuestions(subject,unit,questions){
 
   return out;
 }
+
+
 function refresh(){const ss=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect,el.orderMetaSubjectSelect].forEach(s=>fill(s,ss));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder();renderBurnt()}
 function refreshSolve(){fill(el.solveUnitSelect,units(el.solveSubjectSelect.value));renderQuiz()}function refreshEdit(){fill(el.editUnitSelect,units(el.editSubjectSelect.value));renderManager()}function refreshManage(){fill(el.manageUnitSelect,units(el.manageSubjectSelect.value))}
 function addNewOption(sel,base,kind){const vals=base.slice();const labels=base.slice();vals.push(NEW);labels.push("➕ 새 "+kind+" 추가");fill(sel,vals,labels)}
