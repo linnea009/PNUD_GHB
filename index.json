@@ -1,4 +1,34 @@
 {
+  "subjects": [
+    {
+      "id": "endodontics",
+      "name": "근관치료학",
+      "chapters": [
+        {
+          "id": "ch02",
+          "name": "Chapter 2. 치수 및 치근주위 질환",
+          "files": [
+            {
+              "id": "pulp_disease_causes",
+              "name": "1. 치수 질환의 원인",
+              "path": "./data/endodontics/ch02/01_pulp_disease_causes.json"
+            },
+            {
+              "id": "pulp_inflammation",
+              "name": "2. 치수 염증",
+              "path": "./data/endodontics/ch02/02_pulp_inflammation.json"
+            },
+            {
+              "id": "pulp_disease_classification",
+              "name": "3. 치수 질환의 분류",
+              "path": "./data/endodontics/ch02/03_pulp_disease_classification.json"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}{
   "근관치료학": {
     "Chapter 2. 치수 및 치근주위 질환": [
       "@1. 치수 질환\n#1) 치수 질환의 원인\n~개요\n치수에 해로운 자극은 치수 [염증]이나 [괴사] 및 [치수 변성] 등을 유발한다.",
