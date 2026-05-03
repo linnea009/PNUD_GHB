@@ -44,28 +44,46 @@ function orderedKeys(keys,order){const set=new Set(keys);const first=(order||[])
 function ordered(data){const clean=normalize(data),r={};orderedKeys(Object.keys(clean),subjectOrder).forEach(s=>{r[s]={};orderedKeys(Object.keys(clean[s]),unitOrders[s]||[]).forEach(u=>r[s][u]=clean[s][u])});return r}
 async function loadShared(){
   try{
-    if(location.protocol==="file:") throw new Error("file protocol");
+    if(location.protocol === "file:") throw new Error("file protocol");
 
-    // 👉 불러올 파일 목록 (여기만 추가하면 됨)
-    const files = [
-      "./data/endodontics/ch02/01_pulp_disease_causes.json",
-      "./data/endodontics/ch02/02_pulp_inflammation.json",
-      "./data/endodontics/ch02/03_pulp_disease_classification.json"
-    ];
+    const indexRes = await fetch("./data/index.json?v=" + Date.now(), {
+      cache: "no-store"
+    });
 
-    let merged = {};
+    if(!indexRes.ok) throw new Error("no data/index.json");
 
-    for (const file of files){
-      const res = await fetch(file + "?v=" + Date.now());
-      if(!res.ok) continue;
+    const index = await indexRes.json();
+    const merged = {};
 
-      const arr = await res.json();
+    for(const subject of index.subjects || []){
+      const subjectName = subject.name;
+      if(!merged[subjectName]) merged[subjectName] = {};
 
-      // 👉 기존 구조에 맞게 변환해서 넣기
-      if(!merged["근관치료학"]) merged["근관치료학"] = {};
-      if(!merged["근관치료학"]["Chapter 2"]) merged["근관치료학"]["Chapter 2"] = [];
+      for(const chapter of subject.chapters || []){
+        const chapterName = chapter.name;
+        if(!merged[subjectName][chapterName]){
+          merged[subjectName][chapterName] = [];
+        }
 
-      merged["근관치료학"]["Chapter 2"].push(...arr);
+        for(const file of chapter.files || []){
+          const res = await fetch(file.path + "?v=" + Date.now(), {
+            cache: "no-store"
+          });
+
+          if(!res.ok){
+            console.warn("불러오기 실패:", file.path);
+            continue;
+          }
+
+          const arr = await res.json();
+
+          if(Array.isArray(arr)){
+            merged[subjectName][chapterName].push(...arr);
+          }else{
+            console.warn("배열 JSON이 아님:", file.path);
+          }
+        }
+      }
     }
 
     sharedQuizData = normalize(merged);
