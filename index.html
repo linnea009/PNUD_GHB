@@ -82,12 +82,7 @@ const res = await fetch(BASE_PATH + cleanPath + "?v=" + Date.now(), {
           const arr = await res.json();
 
           if(Array.isArray(arr)){
-            arr.forEach(q => {
-  merged[subjectName][chapterName].push({
-    text: q,
-    source: file.path   // ← 어디서 온 문제인지 기록
-  });
-});
+            merged[subjectName][chapterName].push(...arr);
           }else{
             console.warn("배열 JSON이 아님:", file.path);
           }
