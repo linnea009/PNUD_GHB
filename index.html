@@ -39,13 +39,27 @@
       </div>
     </div>
 
-    <div class="button-row">
-      <button class="secondary" id="selectAllToppingExportBtn">전체 선택</button>
-      <button class="secondary" id="clearToppingExportBtn">전체 해제</button>
-      <button class="secondary" id="selectCurrentUnitExportBtn">현재 레시피만 선택</button>
-    </div>
+    <div class="form-grid">
+  <div>
+    <label>포장할 빵 종류</label>
+    <select id="exportSubjectSelect"></select>
+  </div>
+  <div>
+    <label>포장할 레시피</label>
+    <select id="exportUnitSelect"></select>
+  </div>
+  <div>
+    <label>포장할 필링</label>
+    <select id="exportFillingSelect"></select>
+  </div>
+</div>
 
-    <div id="toppingExportList" class="card" style="max-height:340px; overflow-y:auto; margin-top:12px;"></div>
+<div class="button-row">
+  <button class="secondary" id="selectAllToppingExportBtn">보이는 토핑 전체 선택</button>
+  <button class="secondary" id="clearToppingExportBtn">보이는 토핑 전체 해제</button>
+</div>
+
+<div id="toppingExportList" class="card" style="max-height:340px; overflow-y:auto; margin-top:12px;"></div>
 
     <div class="divider"></div>
 
@@ -87,7 +101,8 @@ document.getElementById("sidebar").innerHTML=menuHTML;document.getElementById("d
 function $(id){const n=document.getElementById(id);if(!n)throw new Error("missing #"+id);return n}
 function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","showBurntAllBtn","burntList","solveSubjectSelect","solveUnitSelect","chapterTitleText","subjectRate","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","fillingSelect","newFillingInput","toppingSelect","newToppingInput","wrappingSelect","newWrappingInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","orderSubjectSelect","unitOrderList","subjectOrderList","orderMetaSubjectSelect","orderMetaUnitSelect","orderMetaFillingSelect","orderMetaToppingSelect","fillingOrderList","toppingOrderList","wrappingOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","downloadSelectedToppingsBtn","downloadUnitBtn","clearLocalBtn","exportOutput",
 "exportBasePathInput","exportPrefixInput","toppingExportList",
-"selectAllToppingExportBtn","clearToppingExportBtn","selectCurrentUnitExportBtn",
+"exportSubjectSelect","exportUnitSelect","exportFillingSelect",
+"selectAllToppingExportBtn","clearToppingExportBtn",
 "makeIndexBtn","copyIndexBtn","downloadIndexBtn","indexOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel")}function clone(v){return JSON.parse(JSON.stringify(v||{}))}
 function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function keyOf(s,u,q){return s+"||"+u+"||"+q}
@@ -228,7 +243,7 @@ function groupQuestions(subject,unit,questions){
 }
 
 
-function refresh(){const ss=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect,el.orderMetaSubjectSelect].forEach(s=>fill(s,ss));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder();renderBurnt();renderToppingExportList()}
+function refresh(){const ss=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect,el.orderMetaSubjectSelect].forEach(s=>fill(s,ss));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder();renderBurnt();refreshExportSelectors();renderToppingExportList()}
 function refreshSolve(){fill(el.solveUnitSelect,units(el.solveSubjectSelect.value));renderQuiz()}function refreshEdit(){fill(el.editUnitSelect,units(el.editSubjectSelect.value));renderManager()}function refreshManage(){fill(el.manageUnitSelect,units(el.manageSubjectSelect.value))}
 function addNewOption(sel,base,kind){const vals=base.slice();const labels=base.slice();vals.push(NEW);labels.push("➕ 새 "+kind+" 추가");fill(sel,vals,labels)}
 function selectedCreateSubject(){return el.createSubjectSelect.value===NEW?el.newSubjectInput.value.trim():el.createSubjectSelect.value}function selectedCreateUnit(){return el.createUnitSelect.value===NEW?el.newUnitInput.value.trim():el.createUnitSelect.value}function selectedCreateFilling(){return el.fillingSelect.value===NEW?el.newFillingInput.value.trim():(el.fillingSelect.value===NONE?"":el.fillingSelect.value)}function selectedCreateTopping(){return el.toppingSelect.value===NEW?el.newToppingInput.value.trim():(el.toppingSelect.value===NONE?"":el.toppingSelect.value)}function selectedCreateWrapping(){return el.wrappingSelect.value===NEW?el.newWrappingInput.value.trim():(el.wrappingSelect.value===NONE?"":el.wrappingSelect.value)}
@@ -257,7 +272,10 @@ function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.r
   if(id==="editPanel")renderManager();
   if(id==="orderPanel")renderOrder();
   if(id==="burntPanel")renderBurnt();
-  if(id==="exportPanel")renderToppingExportList();
+  if(id==="exportPanel"){
+  refreshExportSelectors();
+  renderToppingExportList();
+}
 }
 function saveRefresh(){saveLocal();rebuild();refresh();el.exportOutput.value=""}
 function ensureQ(s,u,q){if(!localQuizData[s])localQuizData[s]={};if(!localQuizData[s][u])localQuizData[s][u]=[];if(!localQuizData[s][u].includes(q))localQuizData[s][u].push(q);if(deletedQuizData[s]===true)delete deletedQuizData[s];if(deletedQuizData[s]?.[u])delete deletedQuizData[s][u];deletedQuestionKeys=deletedQuestionKeys.filter(k=>k!==keyOf(s,u,q))}
@@ -376,68 +394,86 @@ function buildToppingExportItems(){
   return items;
 }
 
+function refreshExportSelectors(){
+  if(!el.exportSubjectSelect || !el.exportUnitSelect || !el.exportFillingSelect) return;
+
+  const subjectList = subjects();
+  fill(el.exportSubjectSelect, subjectList);
+
+  const selectedSubject = el.exportSubjectSelect.value;
+  fill(el.exportUnitSelect, units(selectedSubject));
+
+  const selectedUnit = el.exportUnitSelect.value;
+  const fillingList = metaList(selectedSubject, selectedUnit, "filling");
+
+  fill(el.exportFillingSelect, fillingList.length ? fillingList : ["기본 필링"]);
+}
+
+function getCurrentExportFilter(){
+  return {
+    subject: el.exportSubjectSelect?.value || "",
+    unit: el.exportUnitSelect?.value || "",
+    filling: el.exportFillingSelect?.value || ""
+  };
+}
+
 function renderToppingExportList(){
   if(!el.toppingExportList) return;
 
-  const items = buildToppingExportItems();
-
-  if(!items.length){
-    el.toppingExportList.innerHTML = '<div class="empty">포장할 토핑이 없습니다.</div>';
+  if(!el.exportSubjectSelect || !el.exportUnitSelect || !el.exportFillingSelect){
     return;
   }
 
-  let html = "";
+  const { subject, unit, filling } = getCurrentExportFilter();
 
-  let lastSubject = "";
-  let lastUnit = "";
-  let lastFilling = "";
+  if(!subject || !unit || !filling){
+    el.toppingExportList.innerHTML = '<div class="empty">포장할 빵 종류 / 레시피 / 필링을 선택하세요.</div>';
+    return;
+  }
 
-  items.forEach((item, i) => {
-    if(item.subject !== lastSubject){
-      html += `<h3>${esc(getBreadEmoji(item.subject))} ${esc(item.subject)}</h3>`;
-      lastSubject = item.subject;
-      lastUnit = "";
-      lastFilling = "";
-    }
+  const items = buildToppingExportItems().filter(item =>
+    item.subject === subject &&
+    item.unit === unit &&
+    item.filling === filling
+  );
 
-    if(item.unit !== lastUnit){
-      html += `<div class="subsection">${esc(item.unit)}</div>`;
-      lastUnit = item.unit;
-      lastFilling = "";
-    }
+  if(!items.length){
+    el.toppingExportList.innerHTML = '<div class="empty">이 필링에는 포장할 토핑이 없습니다.</div>';
+    return;
+  }
 
-    if(item.filling !== lastFilling){
-      html += `<div style="font-weight:950; margin:12px 0 6px;">🥐 ${esc(item.filling)}</div>`;
-      lastFilling = item.filling;
-    }
+  let html = `
+    <div style="font-weight:950; margin-bottom:12px;">
+      🥐 ${esc(filling)}
+    </div>
+  `;
 
+  items.forEach(item => {
     html += `
-  <label style="display:flex; align-items:center; gap:8px; margin:7px 0; padding:8px 10px; background:#fffaf0; border:1px solid var(--border); border-radius:12px;">
-    
-    <span style="font-size:16px;">🍯</span>
+      <label style="display:flex; align-items:center; gap:8px; margin:7px 0; padding:8px 10px; background:#fffaf0; border:1px solid var(--border); border-radius:12px;">
+        <span style="font-size:16px; flex:0 0 auto;">🍯</span>
 
-    <input
-  type="checkbox"
-  class="topping-export-check"
-  checked
-  style="width:auto; flex:0 0 auto;"
-  data-subject="${esc(item.subject)}"
-  data-unit="${esc(item.unit)}"
-  data-filling="${esc(item.filling)}"
-  data-topping="${esc(item.topping)}"
-  data-filename="${esc(item.filename)}"
-  data-path="${esc(item.path)}"
->
+        <input
+          type="checkbox"
+          class="topping-export-check"
+          checked
+          style="width:auto; flex:0 0 auto;"
+          data-subject="${esc(item.subject)}"
+          data-unit="${esc(item.unit)}"
+          data-filling="${esc(item.filling)}"
+          data-topping="${esc(item.topping)}"
+          data-filename="${esc(item.filename)}"
+          data-path="${esc(item.path)}"
+        >
 
-    <span style="flex:1;">
-      ${esc(item.topping)}
-      <span style="color:var(--muted); font-size:12px;">
-        (${item.questions.length}개)
-      </span>
-    </span>
-
-  </label>
-`;
+        <span style="flex:1; min-width:0;">
+          ${esc(item.topping)}
+          <span style="color:var(--muted); font-size:12px;">
+            (${item.questions.length}개)
+          </span>
+        </span>
+      </label>
+    `;
   });
 
   el.toppingExportList.innerHTML = html;
@@ -578,14 +614,7 @@ function clearToppingExports(){
   document.querySelectorAll(".topping-export-check").forEach(ch => ch.checked = false);
 }
 
-function selectCurrentUnitExports(){
-  const subject = el.solveSubjectSelect.value;
-  const unit = el.solveUnitSelect.value;
-
-  document.querySelectorAll(".topping-export-check").forEach(ch => {
-    ch.checked = ch.dataset.subject === subject && ch.dataset.unit === unit;
-  });
-}async function copyExport(){if(!el.exportOutput.value.trim())makeExport();try{await navigator.clipboard.writeText(el.exportOutput.value)}catch{el.exportOutput.select();document.execCommand("copy")}alert("포장 복사 완료!")}function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders","blankBreadMetaOrders","blankBreadBurntList","blankBreadDeletedQuestions"].forEach(k=>localStorage.removeItem(k));loadLocal();rebuild();refresh()}
+async function copyExport(){if(!el.exportOutput.value.trim())makeExport();try{await navigator.clipboard.writeText(el.exportOutput.value)}catch{el.exportOutput.select();document.execCommand("copy")}alert("포장 복사 완료!")}function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders","blankBreadMetaOrders","blankBreadBurntList","blankBreadDeletedQuestions"].forEach(k=>localStorage.removeItem(k));loadLocal();rebuild();refresh()}
   function safeFileName(name){
   return String(name || "blankbread")
     .replace(/[\\/:*?"<>|]/g, "_")
@@ -668,7 +697,21 @@ el.clearLocalBtn.onclick=clearLocal;
 
 el.selectAllToppingExportBtn.onclick=selectAllToppingExports;
 el.clearToppingExportBtn.onclick=clearToppingExports;
-el.selectCurrentUnitExportBtn.onclick=selectCurrentUnitExports;
+
+el.exportSubjectSelect.onchange=()=>{
+  fill(el.exportUnitSelect, units(el.exportSubjectSelect.value));
+  const fs = metaList(el.exportSubjectSelect.value, el.exportUnitSelect.value, "filling");
+  fill(el.exportFillingSelect, fs.length ? fs : ["기본 필링"]);
+  renderToppingExportList();
+};
+
+el.exportUnitSelect.onchange=()=>{
+  const fs = metaList(el.exportSubjectSelect.value, el.exportUnitSelect.value, "filling");
+  fill(el.exportFillingSelect, fs.length ? fs : ["기본 필링"]);
+  renderToppingExportList();
+};
+
+el.exportFillingSelect.onchange=renderToppingExportList;
 
 el.makeIndexBtn.onclick=makeIndex;
 el.copyIndexBtn.onclick=copyIndex;
