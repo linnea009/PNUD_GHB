@@ -250,7 +250,15 @@ function renderBurnt(){el.burntList.innerHTML="";if(!burntBreads.length){el.burn
 function markRemembered(card){if(card.dataset.judged==="true")return;card.dataset.judged="true";const s=card.dataset.subject;if(!statsBySubjectSession[s])statsBySubjectSession[s]={correct:0,total:0};statsBySubjectSession[s].correct++;statsBySubjectSession[s].total++;updateStats(s);card.classList.remove("burnt");card.classList.add("creamed");card.querySelectorAll(".blank").forEach(b=>b.classList.add("revealed"));card.querySelectorAll("button[data-judge]").forEach(b=>b.disabled=true);removeBurnt(keyOf(card.dataset.subject,card.dataset.unit,card.dataset.question));renderBurnt()}
 function markForgotten(card){if(card.dataset.judged==="true")return;card.dataset.judged="true";const s=card.dataset.subject;if(!statsBySubjectSession[s])statsBySubjectSession[s]={correct:0,total:0};statsBySubjectSession[s].total++;updateStats(s);card.classList.remove("creamed");card.classList.add("burnt");card.querySelectorAll(".blank").forEach(b=>b.classList.add("revealed"));card.querySelectorAll("button[data-judge]").forEach(b=>b.disabled=true);addBurnt(card.dataset.subject,card.dataset.unit,card.dataset.question);renderBurnt()}
 function handleQuizClick(e){const f=e.target.closest(".filling-header");if(f&&f.closest("#quizList")){const k=f.dataset.key;collapsedFillings.has(k)?collapsedFillings.delete(k):collapsedFillings.add(k);renderQuiz();return}const t=e.target.closest(".topping-header");if(t&&t.closest("#quizList")){const k=t.dataset.key;collapsedToppings.has(k)?collapsedToppings.delete(k):collapsedToppings.add(k);renderQuiz();return}const jb=e.target.closest("button[data-judge]");if(jb){const card=jb.closest(".quiz-item");jb.dataset.judge==="correct"?markRemembered(card):markForgotten(card);return}const blank=e.target.closest(".blank");if(blank)blank.classList.toggle("revealed")}
-function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.remove("open")}function switchPanel(id){el.sideButtons.forEach(b=>b.classList.toggle("active",b.dataset.panel===id));el.panels.forEach(p=>p.classList.toggle("active",p.id===id));closeMenu();if(id==="editPanel")renderManager();if(id==="orderPanel")renderOrder();if(id==="burntPanel")renderBurnt()}if(id==="exportPanel")renderToppingExportList();
+function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.remove("open")}function switchPanel(id){
+  el.sideButtons.forEach(b=>b.classList.toggle("active",b.dataset.panel===id));
+  el.panels.forEach(p=>p.classList.toggle("active",p.id===id));
+  closeMenu();
+  if(id==="editPanel")renderManager();
+  if(id==="orderPanel")renderOrder();
+  if(id==="burntPanel")renderBurnt();
+  if(id==="exportPanel")renderToppingExportList();
+}
 function saveRefresh(){saveLocal();rebuild();refresh();el.exportOutput.value=""}
 function ensureQ(s,u,q){if(!localQuizData[s])localQuizData[s]={};if(!localQuizData[s][u])localQuizData[s][u]=[];if(!localQuizData[s][u].includes(q))localQuizData[s][u].push(q);if(deletedQuizData[s]===true)delete deletedQuizData[s];if(deletedQuizData[s]?.[u])delete deletedQuizData[s][u];deletedQuestionKeys=deletedQuestionKeys.filter(k=>k!==keyOf(s,u,q))}
 function setQList(s,u,qs){if(!localQuizData[s])localQuizData[s]={};localQuizData[s][u]=qs.slice();if(deletedQuizData[s]===true)delete deletedQuizData[s];if(deletedQuizData[s]?.[u])delete deletedQuizData[s][u]}
@@ -404,22 +412,31 @@ function renderToppingExportList(){
     }
 
     html += `
-      <label style="display:block; margin:7px 0; padding:8px 10px; background:#fffaf0; border:1px solid var(--border); border-radius:12px;">
-        <input
-          type="checkbox"
-          class="topping-export-check"
-          checked
-          data-subject="${esc(item.subject)}"
-          data-unit="${esc(item.unit)}"
-          data-filling="${esc(item.filling)}"
-          data-topping="${esc(item.topping)}"
-          data-filename="${esc(item.filename)}"
-          data-path="${esc(item.path)}"
-        >
-        🍯 ${esc(item.topping)}
-        <span style="color:var(--muted); font-size:12px;">(${item.questions.length}개 / ${esc(item.filename)})</span>
-      </label>
-    `;
+  <label style="display:flex; align-items:center; gap:8px; margin:7px 0; padding:8px 10px; background:#fffaf0; border:1px solid var(--border); border-radius:12px;">
+    
+    <span style="font-size:16px;">🍯</span>
+
+    <input
+      type="checkbox"
+      class="topping-export-check"
+      checked
+      data-subject="${esc(item.subject)}"
+      data-unit="${esc(item.unit)}"
+      data-filling="${esc(item.filling)}"
+      data-topping="${esc(item.topping)}"
+      data-filename="${esc(item.filename)}"
+      data-path="${esc(item.path)}"
+    >
+
+    <span style="flex:1;">
+      ${esc(item.topping)}
+      <span style="color:var(--muted); font-size:12px;">
+        (${item.questions.length}개 / ${esc(item.filename)})
+      </span>
+    </span>
+
+  </label>
+`;
   });
 
   el.toppingExportList.innerHTML = html;
