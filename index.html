@@ -417,21 +417,22 @@ function renderToppingExportList(){
     <span style="font-size:16px;">🍯</span>
 
     <input
-      type="checkbox"
-      class="topping-export-check"
-      checked
-      data-subject="${esc(item.subject)}"
-      data-unit="${esc(item.unit)}"
-      data-filling="${esc(item.filling)}"
-      data-topping="${esc(item.topping)}"
-      data-filename="${esc(item.filename)}"
-      data-path="${esc(item.path)}"
-    >
+  type="checkbox"
+  class="topping-export-check"
+  checked
+  style="width:auto; flex:0 0 auto;"
+  data-subject="${esc(item.subject)}"
+  data-unit="${esc(item.unit)}"
+  data-filling="${esc(item.filling)}"
+  data-topping="${esc(item.topping)}"
+  data-filename="${esc(item.filename)}"
+  data-path="${esc(item.path)}"
+>
 
     <span style="flex:1;">
       ${esc(item.topping)}
       <span style="color:var(--muted); font-size:12px;">
-        (${item.questions.length}개 / ${esc(item.filename)})
+        (${item.questions.length}개)
       </span>
     </span>
 
