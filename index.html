@@ -21,7 +21,60 @@
 <section id="editPanel" class="panel"><div class="card"><h2>🧂 레시피 수정</h2><p class="guide">필링/토핑/랩핑의 이름 변경과 라벨 삭제는 여기서 바로 합니다. 삭제는 문제를 지우지 않고 해당 라벨만 제거합니다.</p><div class="form-grid"><div><label>빵 종류</label><select id="editSubjectSelect"></select></div><div><label>레시피</label><select id="editUnitSelect"></select></div></div><div id="questionManagerList" class="question-manager-list"></div></div></section>
 <section id="structurePanel" class="panel"><div class="card"><h2>🗂️ 빵 종류 / 레시피 관리</h2><p class="guide">여기서는 큰 틀만 관리합니다. 필링/토핑/랩핑 수정·삭제는 🧂 레시피 수정 탭으로 옮겼습니다.</p><div class="form-grid"><div><label>빵 종류</label><select id="manageSubjectSelect"></select></div><div><label>레시피</label><select id="manageUnitSelect"></select></div></div><div class="button-row"><button class="danger" id="deleteUnitBtn">레시피 버리기</button><button class="danger" id="deleteSubjectBtn">빵 종류 폐기</button><button class="secondary" id="renameSubjectBtn">빵 이름 바꾸기</button><button class="secondary" id="renameUnitBtn">레시피 이름 바꾸기</button></div></div></section>
 <section id="orderPanel" class="panel"><div class="card"><h2>📦 진열대 정리</h2><p class="guide">드래그해서 순서를 바꾼 뒤 저장하세요.</p><h3>빵 종류 진열</h3><div id="subjectOrderList" class="drag-list"></div><div class="divider"></div><h3>레시피 진열</h3><label>빵 종류 선택</label><select id="orderSubjectSelect"></select><div id="unitOrderList" class="drag-list"></div><div class="divider"></div><h3>필링 / 토핑 / 랩핑 진열</h3><div class="form-grid"><div><label>빵 종류</label><select id="orderMetaSubjectSelect"></select></div><div><label>레시피</label><select id="orderMetaUnitSelect"></select></div><div><label>필링</label><select id="orderMetaFillingSelect"></select></div><div><label>토핑</label><select id="orderMetaToppingSelect"></select></div></div><h3>🥐 필링 순서</h3><div id="fillingOrderList" class="drag-list"></div><h3>🍯 토핑 순서</h3><div id="toppingOrderList" class="drag-list"></div><h3>🧻 랩핑 순서</h3><div id="wrappingOrderList" class="drag-list"></div><div class="button-row"><button id="saveOrderBtn">진열 완료</button><button class="secondary" id="resetOrderBtn">진열 리셋</button></div></div></section>
-<section id="exportPanel" class="panel"><div class="card"><h2>📤 빵 포장</h2><p class="guide">아래 내용을 복사해서 GitHub의 <code>data.json</code>에 붙여넣으면 공유 빵집에 반영됩니다.</p><div class="button-row"><button id="makeExportBtn">포장 만들기</button><button class="secondary" id="copyExportBtn">포장 복사</button><button class="secondary" id="downloadUnitBtn">현재 레시피 JSON 다운로드</button><button class="danger" id="clearLocalBtn">주방 초기화</button></div><textarea id="exportOutput" readonly></textarea></div></section>
+<section id="exportPanel" class="panel">
+  <div class="card">
+    <h2>📤 빵 포장</h2>
+    <p class="guide">
+      토핑 단위로 JSON을 출력/다운로드하고, 선택한 토핑들을 기준으로 <code>index.json</code>도 자동 생성합니다.
+    </p>
+
+    <div class="form-grid">
+      <div>
+        <label>기본 저장 경로</label>
+        <input id="exportBasePathInput" value="data" placeholder="예: data/endodontics/ch02">
+      </div>
+      <div>
+        <label>파일명 접두어</label>
+        <input id="exportPrefixInput" value="bb" placeholder="예: endo_ch02">
+      </div>
+    </div>
+
+    <div class="button-row">
+      <button class="secondary" id="selectAllToppingExportBtn">전체 선택</button>
+      <button class="secondary" id="clearToppingExportBtn">전체 해제</button>
+      <button class="secondary" id="selectCurrentUnitExportBtn">현재 레시피만 선택</button>
+    </div>
+
+    <div id="toppingExportList" class="card" style="max-height:340px; overflow-y:auto; margin-top:12px;"></div>
+
+    <div class="divider"></div>
+
+    <div class="button-row">
+      <button id="makeExportBtn">선택 토핑 JSON 출력</button>
+      <button class="secondary" id="copyExportBtn">JSON 복사</button>
+      <button class="secondary" id="downloadSelectedToppingsBtn">선택 토핑 JSON 다운로드</button>
+      <button class="secondary" id="downloadUnitBtn">현재 레시피 JSON 다운로드</button>
+      <button class="danger" id="clearLocalBtn">주방 초기화</button>
+    </div>
+
+    <textarea id="exportOutput" readonly placeholder="선택한 토핑 JSON이 여기에 출력됩니다."></textarea>
+
+    <div class="divider"></div>
+
+    <h3>🗺️ index.json 자동 생성</h3>
+    <p class="guide">
+      선택한 토핑 JSON 파일들을 기준으로 <code>data/index.json</code>에 넣을 내용을 만듭니다.
+    </p>
+
+    <div class="button-row">
+      <button id="makeIndexBtn">index.json 만들기</button>
+      <button class="secondary" id="copyIndexBtn">index.json 복사</button>
+      <button class="secondary" id="downloadIndexBtn">index.json 다운로드</button>
+    </div>
+
+    <textarea id="indexOutput" readonly placeholder="index.json 내용이 여기에 출력됩니다."></textarea>
+  </div>
+</section>
 </main></div>
 <script>
 "use strict";
@@ -32,8 +85,10 @@ const NEW="__new__",NONE="__none__";
 const menuHTML='<div class="side-head">🥖 BlankBread</div><div class="side-label">시식</div><button class="side-btn active" data-panel="solvePanel">🍽️ 빵 먹기</button><button class="side-btn" data-panel="burntPanel">🔥 탄 빵 재탕</button><div class="side-label">주방</div><button class="side-btn" data-panel="createPanel">👨‍🍳 빵 굽기</button><button class="side-btn" data-panel="editPanel">🧂 레시피 수정</button><button class="side-btn" data-panel="structurePanel">🗂️ 빵 종류 관리</button><button class="side-btn" data-panel="orderPanel">📦 진열대 정리</button><button class="side-btn" data-panel="exportPanel">📤 빵 포장</button>';
 document.getElementById("sidebar").innerHTML=menuHTML;document.getElementById("desktopSidebar").innerHTML=menuHTML;
 function $(id){const n=document.getElementById(id);if(!n)throw new Error("missing #"+id);return n}
-function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","showBurntAllBtn","burntList","solveSubjectSelect","solveUnitSelect","chapterTitleText","subjectRate","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","fillingSelect","newFillingInput","toppingSelect","newToppingInput","wrappingSelect","newWrappingInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","orderSubjectSelect","unitOrderList","subjectOrderList","orderMetaSubjectSelect","orderMetaUnitSelect","orderMetaFillingSelect","orderMetaToppingSelect","fillingOrderList","toppingOrderList","wrappingOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","downloadUnitBtn","clearLocalBtn","exportOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel")}
-function clone(v){return JSON.parse(JSON.stringify(v||{}))}
+function cache(){["menuBtn","backdrop","sidebar","showAllBtn","hideAllBtn","showBurntAllBtn","burntList","solveSubjectSelect","solveUnitSelect","chapterTitleText","subjectRate","sectionTitle","quizList","createSubjectSelect","createUnitSelect","newSubjectInput","newUnitInput","fillingSelect","newFillingInput","toppingSelect","newToppingInput","wrappingSelect","newWrappingInput","customInput","addCustomBtn","clearInputBtn","editSubjectSelect","editUnitSelect","questionManagerList","manageSubjectSelect","manageUnitSelect","deleteUnitBtn","deleteSubjectBtn","renameSubjectBtn","renameUnitBtn","orderSubjectSelect","unitOrderList","subjectOrderList","orderMetaSubjectSelect","orderMetaUnitSelect","orderMetaFillingSelect","orderMetaToppingSelect","fillingOrderList","toppingOrderList","wrappingOrderList","saveOrderBtn","resetOrderBtn","makeExportBtn","copyExportBtn","downloadSelectedToppingsBtn","downloadUnitBtn","clearLocalBtn","exportOutput",
+"exportBasePathInput","exportPrefixInput","toppingExportList",
+"selectAllToppingExportBtn","clearToppingExportBtn","selectCurrentUnitExportBtn",
+"makeIndexBtn","copyIndexBtn","downloadIndexBtn","indexOutput"].forEach(id=>el[id]=$(id));el.sideButtons=document.querySelectorAll(".side-btn");el.panels=document.querySelectorAll(".panel")}function clone(v){return JSON.parse(JSON.stringify(v||{}))}
 function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
 function keyOf(s,u,q){return s+"||"+u+"||"+q}
 function normalize(data){const r={};Object.entries(data||{}).forEach(([s,units])=>{s=String(s||"").trim();if(!s||typeof units!=="object"||Array.isArray(units))return;Object.entries(units).forEach(([u,qs])=>{u=String(u||"").trim();if(!u||!Array.isArray(qs))return;qs.forEach(q=>{q=String(q||"").trim();if(!q)return;if(!r[s])r[s]={};if(!r[s][u])r[s][u]=[];if(!r[s][u].includes(q))r[s][u].push(q)})})});return r}
@@ -173,7 +228,7 @@ function groupQuestions(subject,unit,questions){
 }
 
 
-function refresh(){const ss=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect,el.orderMetaSubjectSelect].forEach(s=>fill(s,ss));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder();renderBurnt()}
+function refresh(){const ss=subjects();[el.solveSubjectSelect,el.createSubjectSelect,el.editSubjectSelect,el.manageSubjectSelect,el.orderSubjectSelect,el.orderMetaSubjectSelect].forEach(s=>fill(s,ss));refreshSolve();refreshCreate();refreshEdit();refreshManage();renderOrder();renderBurnt();renderToppingExportList()}
 function refreshSolve(){fill(el.solveUnitSelect,units(el.solveSubjectSelect.value));renderQuiz()}function refreshEdit(){fill(el.editUnitSelect,units(el.editSubjectSelect.value));renderManager()}function refreshManage(){fill(el.manageUnitSelect,units(el.manageSubjectSelect.value))}
 function addNewOption(sel,base,kind){const vals=base.slice();const labels=base.slice();vals.push(NEW);labels.push("➕ 새 "+kind+" 추가");fill(sel,vals,labels)}
 function selectedCreateSubject(){return el.createSubjectSelect.value===NEW?el.newSubjectInput.value.trim():el.createSubjectSelect.value}function selectedCreateUnit(){return el.createUnitSelect.value===NEW?el.newUnitInput.value.trim():el.createUnitSelect.value}function selectedCreateFilling(){return el.fillingSelect.value===NEW?el.newFillingInput.value.trim():(el.fillingSelect.value===NONE?"":el.fillingSelect.value)}function selectedCreateTopping(){return el.toppingSelect.value===NEW?el.newToppingInput.value.trim():(el.toppingSelect.value===NONE?"":el.toppingSelect.value)}function selectedCreateWrapping(){return el.wrappingSelect.value===NEW?el.newWrappingInput.value.trim():(el.wrappingSelect.value===NONE?"":el.wrappingSelect.value)}
@@ -195,7 +250,7 @@ function renderBurnt(){el.burntList.innerHTML="";if(!burntBreads.length){el.burn
 function markRemembered(card){if(card.dataset.judged==="true")return;card.dataset.judged="true";const s=card.dataset.subject;if(!statsBySubjectSession[s])statsBySubjectSession[s]={correct:0,total:0};statsBySubjectSession[s].correct++;statsBySubjectSession[s].total++;updateStats(s);card.classList.remove("burnt");card.classList.add("creamed");card.querySelectorAll(".blank").forEach(b=>b.classList.add("revealed"));card.querySelectorAll("button[data-judge]").forEach(b=>b.disabled=true);removeBurnt(keyOf(card.dataset.subject,card.dataset.unit,card.dataset.question));renderBurnt()}
 function markForgotten(card){if(card.dataset.judged==="true")return;card.dataset.judged="true";const s=card.dataset.subject;if(!statsBySubjectSession[s])statsBySubjectSession[s]={correct:0,total:0};statsBySubjectSession[s].total++;updateStats(s);card.classList.remove("creamed");card.classList.add("burnt");card.querySelectorAll(".blank").forEach(b=>b.classList.add("revealed"));card.querySelectorAll("button[data-judge]").forEach(b=>b.disabled=true);addBurnt(card.dataset.subject,card.dataset.unit,card.dataset.question);renderBurnt()}
 function handleQuizClick(e){const f=e.target.closest(".filling-header");if(f&&f.closest("#quizList")){const k=f.dataset.key;collapsedFillings.has(k)?collapsedFillings.delete(k):collapsedFillings.add(k);renderQuiz();return}const t=e.target.closest(".topping-header");if(t&&t.closest("#quizList")){const k=t.dataset.key;collapsedToppings.has(k)?collapsedToppings.delete(k):collapsedToppings.add(k);renderQuiz();return}const jb=e.target.closest("button[data-judge]");if(jb){const card=jb.closest(".quiz-item");jb.dataset.judge==="correct"?markRemembered(card):markForgotten(card);return}const blank=e.target.closest(".blank");if(blank)blank.classList.toggle("revealed")}
-function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.remove("open")}function switchPanel(id){el.sideButtons.forEach(b=>b.classList.toggle("active",b.dataset.panel===id));el.panels.forEach(p=>p.classList.toggle("active",p.id===id));closeMenu();if(id==="editPanel")renderManager();if(id==="orderPanel")renderOrder();if(id==="burntPanel")renderBurnt()}
+function closeMenu(){el.sidebar.classList.remove("open");el.backdrop.classList.remove("open")}function switchPanel(id){el.sideButtons.forEach(b=>b.classList.toggle("active",b.dataset.panel===id));el.panels.forEach(p=>p.classList.toggle("active",p.id===id));closeMenu();if(id==="editPanel")renderManager();if(id==="orderPanel")renderOrder();if(id==="burntPanel")renderBurnt()}if(id==="exportPanel")renderToppingExportList();
 function saveRefresh(){saveLocal();rebuild();refresh();el.exportOutput.value=""}
 function ensureQ(s,u,q){if(!localQuizData[s])localQuizData[s]={};if(!localQuizData[s][u])localQuizData[s][u]=[];if(!localQuizData[s][u].includes(q))localQuizData[s][u].push(q);if(deletedQuizData[s]===true)delete deletedQuizData[s];if(deletedQuizData[s]?.[u])delete deletedQuizData[s][u];deletedQuestionKeys=deletedQuestionKeys.filter(k=>k!==keyOf(s,u,q))}
 function setQList(s,u,qs){if(!localQuizData[s])localQuizData[s]={};localQuizData[s][u]=qs.slice();if(deletedQuizData[s]===true)delete deletedQuizData[s];if(deletedQuizData[s]?.[u])delete deletedQuizData[s][u]}
@@ -254,7 +309,265 @@ function refreshOrderMetaLists(){const s=el.orderMetaSubjectSelect.value,u=el.or
 function saveOrder(){subjectOrder=[...el.subjectOrderList.children].map(x=>x.dataset.value);const os=el.orderSubjectSelect.value;if(os)unitOrders[os]=[...el.unitOrderList.children].map(x=>x.dataset.value);const s=el.orderMetaSubjectSelect.value,u=el.orderMetaUnitSelect.value,f=el.orderMetaFillingSelect.value,t=el.orderMetaToppingSelect.value;if(s&&u){if(!metaOrders.filling)metaOrders.filling={};if(!metaOrders.topping)metaOrders.topping={};if(!metaOrders.wrapping)metaOrders.wrapping={};metaOrders.filling[orderKey(s,u)]=[...el.fillingOrderList.children].map(x=>x.dataset.value);if(f)metaOrders.topping[orderKey(s,u,f)]=[...el.toppingOrderList.children].map(x=>x.dataset.value);if(f&&t)metaOrders.wrapping[orderKey(s,u,f,t)]=[...el.wrappingOrderList.children].map(x=>x.dataset.value)}saveRefresh();switchPanel("orderPanel");alert("진열 완료!")}
 function resetOrder(){if(!confirm("모든 진열 순서를 리셋할까요?"))return;subjectOrder=[];unitOrders={};metaOrders={filling:{},topping:{},wrapping:{}};saveRefresh();switchPanel("orderPanel")}
 function afterEl(container,y){return [...container.querySelectorAll(".drag-item:not(.dragging)")].reduce((closest,child)=>{const box=child.getBoundingClientRect(),offset=y-box.top-box.height/2;return offset<0&&offset>closest.offset?{offset,element:child}:closest},{offset:-Infinity}).element}
-function makeExport(){el.exportOutput.value=JSON.stringify(quizData,null,2);switchPanel("exportPanel")}async function copyExport(){if(!el.exportOutput.value.trim())makeExport();try{await navigator.clipboard.writeText(el.exportOutput.value)}catch{el.exportOutput.select();document.execCommand("copy")}alert("포장 복사 완료!")}function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders","blankBreadMetaOrders","blankBreadBurntList","blankBreadDeletedQuestions"].forEach(k=>localStorage.removeItem(k));loadLocal();rebuild();refresh()}
+function exportFileBaseName(subject, unit, filling, topping){
+  return safeFileName([
+    el.exportPrefixInput?.value || "bb",
+    subject,
+    unit,
+    filling,
+    topping
+  ].filter(Boolean).join("_")).toLowerCase() + ".json";
+}
+
+function getSelectedToppingExports(){
+  const checks = [...document.querySelectorAll(".topping-export-check:checked")];
+
+  return checks.map(ch => ({
+    subject: ch.dataset.subject,
+    unit: ch.dataset.unit,
+    filling: ch.dataset.filling,
+    topping: ch.dataset.topping,
+    filename: ch.dataset.filename,
+    path: ch.dataset.path
+  }));
+}
+
+function buildToppingExportItems(){
+  const items = [];
+
+  Object.entries(quizData || {}).forEach(([subject, unitObj]) => {
+    Object.entries(unitObj || {}).forEach(([unit, questions]) => {
+      const grouped = groupQuestions(subject, unit, questions);
+
+      Object.entries(grouped).forEach(([filling, toppingObj]) => {
+        Object.entries(toppingObj).forEach(([topping, wrappingObj]) => {
+          const arr = [];
+
+          Object.values(wrappingObj).forEach(qs => {
+            arr.push(...qs);
+          });
+
+          const basePath = (el.exportBasePathInput?.value || "data").replace(/\/+$/,"");
+          const filename = exportFileBaseName(subject, unit, filling, topping);
+          const path = basePath + "/" + filename;
+
+          items.push({
+            subject,
+            unit,
+            filling,
+            topping,
+            questions: arr,
+            filename,
+            path
+          });
+        });
+      });
+    });
+  });
+
+  return items;
+}
+
+function renderToppingExportList(){
+  if(!el.toppingExportList) return;
+
+  const items = buildToppingExportItems();
+
+  if(!items.length){
+    el.toppingExportList.innerHTML = '<div class="empty">포장할 토핑이 없습니다.</div>';
+    return;
+  }
+
+  let html = "";
+
+  let lastSubject = "";
+  let lastUnit = "";
+  let lastFilling = "";
+
+  items.forEach((item, i) => {
+    if(item.subject !== lastSubject){
+      html += `<h3>${esc(getBreadEmoji(item.subject))} ${esc(item.subject)}</h3>`;
+      lastSubject = item.subject;
+      lastUnit = "";
+      lastFilling = "";
+    }
+
+    if(item.unit !== lastUnit){
+      html += `<div class="subsection">${esc(item.unit)}</div>`;
+      lastUnit = item.unit;
+      lastFilling = "";
+    }
+
+    if(item.filling !== lastFilling){
+      html += `<div style="font-weight:950; margin:12px 0 6px;">🥐 ${esc(item.filling)}</div>`;
+      lastFilling = item.filling;
+    }
+
+    html += `
+      <label style="display:block; margin:7px 0; padding:8px 10px; background:#fffaf0; border:1px solid var(--border); border-radius:12px;">
+        <input
+          type="checkbox"
+          class="topping-export-check"
+          checked
+          data-subject="${esc(item.subject)}"
+          data-unit="${esc(item.unit)}"
+          data-filling="${esc(item.filling)}"
+          data-topping="${esc(item.topping)}"
+          data-filename="${esc(item.filename)}"
+          data-path="${esc(item.path)}"
+        >
+        🍯 ${esc(item.topping)}
+        <span style="color:var(--muted); font-size:12px;">(${item.questions.length}개 / ${esc(item.filename)})</span>
+      </label>
+    `;
+  });
+
+  el.toppingExportList.innerHTML = html;
+}
+
+function selectedToppingDataMap(){
+  const selected = getSelectedToppingExports();
+  const items = buildToppingExportItems();
+  const selectedKeys = new Set(
+    selected.map(x => [x.subject, x.unit, x.filling, x.topping].join("||"))
+  );
+
+  const result = [];
+
+  items.forEach(item => {
+    const k = [item.subject, item.unit, item.filling, item.topping].join("||");
+    if(selectedKeys.has(k)){
+      result.push(item);
+    }
+  });
+
+  return result;
+}
+
+function makeExport(){
+  const selected = selectedToppingDataMap();
+
+  if(!selected.length){
+    alert("포장할 토핑을 하나 이상 선택하세요.");
+    return;
+  }
+
+  const output = {};
+
+  selected.forEach(item => {
+    if(!output[item.subject]) output[item.subject] = {};
+    if(!output[item.subject][item.unit]) output[item.subject][item.unit] = [];
+    output[item.subject][item.unit].push(...item.questions);
+  });
+
+  el.exportOutput.value = JSON.stringify(output, null, 2);
+  switchPanel("exportPanel");
+}
+
+async function copyExport(){
+  if(!el.exportOutput.value.trim()) makeExport();
+
+  try{
+    await navigator.clipboard.writeText(el.exportOutput.value);
+  }catch{
+    el.exportOutput.select();
+    document.execCommand("copy");
+  }
+
+  alert("JSON 복사 완료!");
+}
+
+function downloadSelectedToppings(){
+  const selected = selectedToppingDataMap();
+
+  if(!selected.length){
+    alert("다운로드할 토핑을 하나 이상 선택하세요.");
+    return;
+  }
+
+  selected.forEach(item => {
+    downloadJSON(item.filename, item.questions);
+  });
+}
+
+function makeIndex(){
+  const selected = selectedToppingDataMap();
+
+  if(!selected.length){
+    alert("index.json에 넣을 토핑을 하나 이상 선택하세요.");
+    return;
+  }
+
+  const index = { subjects: [] };
+
+  selected.forEach(item => {
+    let subjectObj = index.subjects.find(s => s.name === item.subject);
+    if(!subjectObj){
+      subjectObj = {
+        name: item.subject,
+        chapters: []
+      };
+      index.subjects.push(subjectObj);
+    }
+
+    let chapterObj = subjectObj.chapters.find(c => c.name === item.unit);
+    if(!chapterObj){
+      chapterObj = {
+        name: item.unit,
+        files: []
+      };
+      subjectObj.chapters.push(chapterObj);
+    }
+
+    if(!chapterObj.files.some(f => f.path === item.path)){
+      chapterObj.files.push({ path: item.path });
+    }
+  });
+
+  el.indexOutput.value = JSON.stringify(index, null, 2);
+  switchPanel("exportPanel");
+}
+
+async function copyIndex(){
+  if(!el.indexOutput.value.trim()) makeIndex();
+
+  try{
+    await navigator.clipboard.writeText(el.indexOutput.value);
+  }catch{
+    el.indexOutput.select();
+    document.execCommand("copy");
+  }
+
+  alert("index.json 복사 완료!");
+}
+
+function downloadIndex(){
+  if(!el.indexOutput.value.trim()) makeIndex();
+
+  try{
+    const data = JSON.parse(el.indexOutput.value);
+    downloadJSON("index.json", data);
+  }catch(e){
+    alert("index.json 생성 실패: " + e.message);
+  }
+}
+
+function selectAllToppingExports(){
+  document.querySelectorAll(".topping-export-check").forEach(ch => ch.checked = true);
+}
+
+function clearToppingExports(){
+  document.querySelectorAll(".topping-export-check").forEach(ch => ch.checked = false);
+}
+
+function selectCurrentUnitExports(){
+  const subject = el.solveSubjectSelect.value;
+  const unit = el.solveUnitSelect.value;
+
+  document.querySelectorAll(".topping-export-check").forEach(ch => {
+    ch.checked = ch.dataset.subject === subject && ch.dataset.unit === unit;
+  });
+}async function copyExport(){if(!el.exportOutput.value.trim())makeExport();try{await navigator.clipboard.writeText(el.exportOutput.value)}catch{el.exportOutput.select();document.execCommand("copy")}alert("포장 복사 완료!")}function clearLocal(){if(!confirm("주방을 초기화할까요?"))return;["blankQuizLocalData","blankQuizDeletedData","blankQuizRenamedSubjects","blankQuizRenamedUnits","blankQuizSubjectOrder","blankQuizUnitOrders","blankBreadMetaOrders","blankBreadBurntList","blankBreadDeletedQuestions"].forEach(k=>localStorage.removeItem(k));loadLocal();rebuild();refresh()}
   function safeFileName(name){
   return String(name || "blankbread")
     .replace(/[\\/:*?"<>|]/g, "_")
@@ -328,10 +641,24 @@ async function downloadCurrentUnit(){
     alert("다운로드 실패: " + e.message);
   }
 }
-function bind(){el.menuBtn.onclick=()=>{el.sidebar.classList.toggle("open");el.backdrop.classList.toggle("open")};el.backdrop.onclick=closeMenu;el.sideButtons.forEach(b=>b.onclick=()=>switchPanel(b.dataset.panel));el.quizList.onclick=handleQuizClick;el.burntList.onclick=handleQuizClick;el.showAllBtn.onclick=()=>{document.querySelectorAll(".panel.active .blank").forEach(b=>b.classList.add("revealed"));document.querySelectorAll(".panel.active .answer-list").forEach(a=>a.classList.add("visible"))};el.showBurntAllBtn.onclick=()=>{document.querySelectorAll("#burntList .blank").forEach(b=>b.classList.add("revealed"));document.querySelectorAll("#burntList .answer-list").forEach(a=>a.classList.add("visible"))};el.hideAllBtn.onclick=()=>{document.querySelectorAll(".blank").forEach(b=>b.classList.remove("revealed"));document.querySelectorAll(".answer-list").forEach(a=>a.classList.remove("visible"));document.querySelectorAll(".quiz-item").forEach(i=>{i.classList.remove("creamed","burnt");i.dataset.judged="false";i.querySelectorAll("button[data-judge]").forEach(btn=>btn.disabled=false)});statsBySubjectSession={};updateStats(el.solveSubjectSelect.value)};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=()=>{toggleNewInputs();refreshCreateUnits()};el.createUnitSelect.onchange=()=>{toggleNewInputs();refreshCreateFillings()};el.fillingSelect.onchange=()=>{toggleNewInputs();refreshCreateToppings()};el.toppingSelect.onchange=()=>{toggleNewInputs();refreshCreateWrappings()};el.wrappingSelect.onchange=toggleNewInputs;el.newSubjectInput.oninput=refreshCreateUnits;el.newUnitInput.oninput=refreshCreateFillings;el.newFillingInput.oninput=refreshCreateToppings;el.newToppingInput.oninput=refreshCreateWrappings;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.onclick=handleQuestionManagerClick;el.manageSubjectSelect.onchange=refreshManage;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";[el.newSubjectInput,el.newUnitInput,el.newFillingInput,el.newToppingInput,el.newWrappingInput].forEach(i=>i.value="");refreshCreate()};el.makeExportBtn.onclick=makeExport;
+function bind(){el.menuBtn.onclick=()=>{el.sidebar.classList.toggle("open");el.backdrop.classList.toggle("open")};el.backdrop.onclick=closeMenu;el.sideButtons.forEach(b=>b.onclick=()=>switchPanel(b.dataset.panel));el.quizList.onclick=handleQuizClick;el.burntList.onclick=handleQuizClick;el.showAllBtn.onclick=()=>{document.querySelectorAll(".panel.active .blank").forEach(b=>b.classList.add("revealed"));document.querySelectorAll(".panel.active .answer-list").forEach(a=>a.classList.add("visible"))};el.showBurntAllBtn.onclick=()=>{document.querySelectorAll("#burntList .blank").forEach(b=>b.classList.add("revealed"));document.querySelectorAll("#burntList .answer-list").forEach(a=>a.classList.add("visible"))};el.hideAllBtn.onclick=()=>{document.querySelectorAll(".blank").forEach(b=>b.classList.remove("revealed"));document.querySelectorAll(".answer-list").forEach(a=>a.classList.remove("visible"));document.querySelectorAll(".quiz-item").forEach(i=>{i.classList.remove("creamed","burnt");i.dataset.judged="false";i.querySelectorAll("button[data-judge]").forEach(btn=>btn.disabled=false)});statsBySubjectSession={};updateStats(el.solveSubjectSelect.value)};el.solveSubjectSelect.onchange=refreshSolve;el.solveUnitSelect.onchange=renderQuiz;el.createSubjectSelect.onchange=()=>{toggleNewInputs();refreshCreateUnits()};el.createUnitSelect.onchange=()=>{toggleNewInputs();refreshCreateFillings()};el.fillingSelect.onchange=()=>{toggleNewInputs();refreshCreateToppings()};el.toppingSelect.onchange=()=>{toggleNewInputs();refreshCreateWrappings()};el.wrappingSelect.onchange=toggleNewInputs;el.newSubjectInput.oninput=refreshCreateUnits;el.newUnitInput.oninput=refreshCreateFillings;el.newFillingInput.oninput=refreshCreateToppings;el.newToppingInput.oninput=refreshCreateWrappings;el.editSubjectSelect.onchange=refreshEdit;el.editUnitSelect.onchange=renderManager;el.questionManagerList.onclick=handleQuestionManagerClick;el.manageSubjectSelect.onchange=refreshManage;el.renameSubjectBtn.onclick=renameSubject;el.renameUnitBtn.onclick=renameUnit;el.deleteUnitBtn.onclick=delUnit;el.deleteSubjectBtn.onclick=delSubject;el.addCustomBtn.onclick=addQ;el.clearInputBtn.onclick=()=>{el.customInput.value="";[el.newSubjectInput,el.newUnitInput,el.newFillingInput,el.newToppingInput,el.newWrappingInput].forEach(i=>i.value="");refreshCreate()};
+          el.makeExportBtn.onclick=makeExport;
 el.copyExportBtn.onclick=copyExport;
+el.downloadSelectedToppingsBtn.onclick=downloadSelectedToppings;
 el.downloadUnitBtn.onclick=downloadCurrentUnit;
-el.clearLocalBtn.onclick=clearLocal;el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));el.orderMetaSubjectSelect.onchange=refreshOrderMetaUnits;el.orderMetaUnitSelect.onchange=refreshOrderMetaLists;el.orderMetaFillingSelect.onchange=refreshOrderMetaLists;el.orderMetaToppingSelect.onchange=refreshOrderMetaLists;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;[el.subjectOrderList,el.unitOrderList,el.fillingOrderList,el.toppingOrderList,el.wrappingOrderList].forEach(c=>{c.addEventListener("dragstart",e=>{if(e.target.classList.contains("drag-item"))e.target.classList.add("dragging")});c.addEventListener("dragend",e=>{if(e.target.classList.contains("drag-item"))e.target.classList.remove("dragging")});c.addEventListener("dragover",e=>{e.preventDefault();const d=c.querySelector(".dragging"),a=afterEl(c,e.clientY);if(!d)return;a?c.insertBefore(d,a):c.appendChild(d)})})}
+el.clearLocalBtn.onclick=clearLocal;
+
+el.selectAllToppingExportBtn.onclick=selectAllToppingExports;
+el.clearToppingExportBtn.onclick=clearToppingExports;
+el.selectCurrentUnitExportBtn.onclick=selectCurrentUnitExports;
+
+el.makeIndexBtn.onclick=makeIndex;
+el.copyIndexBtn.onclick=copyIndex;
+el.downloadIndexBtn.onclick=downloadIndex;
+
+el.exportBasePathInput.oninput=renderToppingExportList;
+el.exportPrefixInput.oninput=renderToppingExportList;      
+el.orderSubjectSelect.onchange=()=>renderDrag(el.unitOrderList,units(el.orderSubjectSelect.value));el.orderMetaSubjectSelect.onchange=refreshOrderMetaUnits;el.orderMetaUnitSelect.onchange=refreshOrderMetaLists;el.orderMetaFillingSelect.onchange=refreshOrderMetaLists;el.orderMetaToppingSelect.onchange=refreshOrderMetaLists;el.saveOrderBtn.onclick=saveOrder;el.resetOrderBtn.onclick=resetOrder;[el.subjectOrderList,el.unitOrderList,el.fillingOrderList,el.toppingOrderList,el.wrappingOrderList].forEach(c=>{c.addEventListener("dragstart",e=>{if(e.target.classList.contains("drag-item"))e.target.classList.add("dragging")});c.addEventListener("dragend",e=>{if(e.target.classList.contains("drag-item"))e.target.classList.remove("dragging")});c.addEventListener("dragover",e=>{e.preventDefault();const d=c.querySelector(".dragging"),a=afterEl(c,e.clientY);if(!d)return;a?c.insertBefore(d,a):c.appendChild(d)})})}
 function runTests(){console.group("BlankBread self-test");console.assert(splitMeta("@F\n#T\n~W\nbody [a]").filling==="F","meta filling");console.assert(splitMeta("#old\nbody [a]").filling==="old","legacy # as filling");console.assert(joinMeta({filling:"F",topping:"T",wrapping:"W",body:"x [y]"}).includes("~W"),"join wrapping");console.groupEnd()}
 async function init(){cache();bind();await loadShared();loadLocal();rebuild();refresh();runTests()}
 init().catch(e=>{console.error(e);alert("앱 오류: "+e.message)});
