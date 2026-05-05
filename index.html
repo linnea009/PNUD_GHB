@@ -556,9 +556,16 @@ function makeIndex(){
   const index = { subjects: [] };
 
   allItems.forEach(item => {
+    const subjectId = makeIndexId(item.subject);
+    const chapterId = makeChapterId(item.unit);
+    const fileId = makeFileId(item.topping);
+    const fileName = item.topping;
+
     let subjectObj = index.subjects.find(s => s.name === item.subject);
+
     if(!subjectObj){
       subjectObj = {
+        id: subjectId,
         name: item.subject,
         chapters: []
       };
@@ -566,23 +573,75 @@ function makeIndex(){
     }
 
     let chapterObj = subjectObj.chapters.find(c => c.name === item.unit);
+
     if(!chapterObj){
       chapterObj = {
+        id: chapterId,
         name: item.unit,
         files: []
       };
       subjectObj.chapters.push(chapterObj);
     }
 
-    if(!chapterObj.files.some(f => f.path === item.path)){
-      chapterObj.files.push({ path: item.path });
+    const path = normalizeIndexPath(item.path);
+
+    if(!chapterObj.files.some(f => f.path === path)){
+      chapterObj.files.push({
+        id: fileId,
+        name: fileName,
+        path: path
+      });
     }
   });
 
   el.indexOutput.value = JSON.stringify(index, null, 2);
   switchPanel("exportPanel");
 }
+function makeIndexId(text){
+  return String(text || "")
+    .trim()
+    .toLowerCase()
+    .replace(/근관치료학/g, "endodontics")
+    .replace(/구강병리학/g, "oral_pathology")
+    .replace(/보존학/g, "operative")
+    .replace(/보철학/g, "prosthodontics")
+    .replace(/구강외과학/g, "oral_surgery")
+    .replace(/치주학/g, "periodontics")
+    .replace(/소아치과학/g, "pediatric_dentistry")
+    .replace(/교정학/g, "orthodontics")
+    .replace(/영상치의학/g, "oral_radiology")
+    .replace(/[^a-z0-9가-힣]+/g, "_")
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "");
+}
 
+function makeChapterId(unitName){
+  const text = String(unitName || "").toLowerCase();
+
+  const chapterMatch = text.match(/chapter\s*([0-9]+)/i);
+  if(chapterMatch){
+    return "ch" + chapterMatch[1].padStart(2, "0");
+  }
+
+  const koreanChapterMatch = text.match(/([0-9]+)\s*장/);
+  if(koreanChapterMatch){
+    return "ch" + koreanChapterMatch[1].padStart(2, "0");
+  }
+
+  return makeIndexId(unitName);
+}
+
+function makeFileId(toppingName){
+  return makeIndexId(toppingName)
+    .replace(/^[0-9]+_?/, "")
+    .replace(/^\)_?/, "");
+}
+
+function normalizeIndexPath(path){
+  const cleanPath = String(path || "").replace(/^\.?\//, "");
+  return "./" + cleanPath;
+}
+  
 async function copyIndex(){
   if(!el.indexOutput.value.trim()) makeIndex();
 
