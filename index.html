@@ -335,14 +335,15 @@ function refreshOrderMetaLists(){const s=el.orderMetaSubjectSelect.value,u=el.or
 function saveOrder(){subjectOrder=[...el.subjectOrderList.children].map(x=>x.dataset.value);const os=el.orderSubjectSelect.value;if(os)unitOrders[os]=[...el.unitOrderList.children].map(x=>x.dataset.value);const s=el.orderMetaSubjectSelect.value,u=el.orderMetaUnitSelect.value,f=el.orderMetaFillingSelect.value,t=el.orderMetaToppingSelect.value;if(s&&u){if(!metaOrders.filling)metaOrders.filling={};if(!metaOrders.topping)metaOrders.topping={};if(!metaOrders.wrapping)metaOrders.wrapping={};metaOrders.filling[orderKey(s,u)]=[...el.fillingOrderList.children].map(x=>x.dataset.value);if(f)metaOrders.topping[orderKey(s,u,f)]=[...el.toppingOrderList.children].map(x=>x.dataset.value);if(f&&t)metaOrders.wrapping[orderKey(s,u,f,t)]=[...el.wrappingOrderList.children].map(x=>x.dataset.value)}saveRefresh();switchPanel("orderPanel");alert("진열 완료!")}
 function resetOrder(){if(!confirm("모든 진열 순서를 리셋할까요?"))return;subjectOrder=[];unitOrders={};metaOrders={filling:{},topping:{},wrapping:{}};saveRefresh();switchPanel("orderPanel")}
 function afterEl(container,y){return [...container.querySelectorAll(".drag-item:not(.dragging)")].reduce((closest,child)=>{const box=child.getBoundingClientRect(),offset=y-box.top-box.height/2;return offset<0&&offset>closest.offset?{offset,element:child}:closest},{offset:-Infinity}).element}
+let exportFileCounter = 1;
+
 function exportFileBaseName(subject, unit, filling, topping){
-  return safeFileName([
-    el.exportPrefixInput?.value || "bb",
-    subject,
-    unit,
-    filling,
-    topping
-  ].filter(Boolean).join("_")).toLowerCase() + ".json";
+  const prefix = el.exportPrefixInput?.value || "bb";
+
+  const number = String(exportFileCounter).padStart(3, "0");
+  exportFileCounter++;
+
+  return `${prefix}_${number}.json`;
 }
 
 function getSelectedToppingExports(){
