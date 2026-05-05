@@ -9,19 +9,29 @@
           "name": "Chapter 2. 치수 및 치근주위 질환",
           "files": [
             {
-              "id": "pulp_disease_causes",
-              "name": "1. 치수 질환의 원인",
-              "path": "./data/endodontics/ch02/01_pulp_disease_causes.json"
+              "id": "치수_질환의_원인",
+              "name": "1) 치수 질환의 원인",
+              "path": "./data/endodontics/ch02/01_pulp_disease_cause.json"
             },
             {
-              "id": "pulp_inflammation",
-              "name": "2. 치수 염증",
+              "id": "치수_염증",
+              "name": "2) 치수 염증",
               "path": "./data/endodontics/ch02/02_pulp_inflammation.json"
             },
             {
-              "id": "pulp_disease_classification",
-              "name": "3. 치수 질환의 분류",
+              "id": "치수_질환의_분류",
+              "name": "3) 치수 질환의 분류",
               "path": "./data/endodontics/ch02/03_pulp_disease_classification.json"
+            },
+            {
+              "id": "치근주위_질환",
+              "name": "1) 치근주위 질환",
+              "path": "./data/endodontics/ch02/01_periodont_disease.json"
+            },
+            {
+              "id": "치근주위_질환의_분류",
+              "name": "2) 치근주위 질환의 분류",
+              "path": "./data/endodontics/ch02/02_periodont_disease_classification.json"
             }
           ]
         }
